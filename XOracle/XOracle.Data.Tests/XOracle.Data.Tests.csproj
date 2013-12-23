@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,13 +51,25 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XOracle.Data.Core\XOracle.Data.Core.csproj">
       <Project>{391f1378-4706-4b8e-b1d3-e4a6ca2eed3b}</Project>
       <Name>XOracle.Data.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XOracle.Data\XOracle.Data.csproj">
+      <Project>{383a25bf-1bcb-4820-a785-2a2a03faf2ee}</Project>
+      <Name>XOracle.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XOracle.Infrastructure.Core\XOracle.Infrastructure.Core.csproj">
+      <Project>{ef5c02be-2e57-4ca2-bb7b-2a9582fb3d05}</Project>
+      <Name>XOracle.Infrastructure.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XOracle.Infrastructure\XOracle.Infrastructure.csproj">
+      <Project>{0055d589-299a-439e-9f8d-286b871ba831}</Project>
+      <Name>XOracle.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

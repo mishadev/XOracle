@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 using XOracle.Infrastructure.Core;
 
-namespace XOracle.Infrastructure.Logging
+namespace XOracle.Infrastructure
 {
     internal class MockLogger : ILogger
     {

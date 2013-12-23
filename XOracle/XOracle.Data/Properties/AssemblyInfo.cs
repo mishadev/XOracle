@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 #if DEBUG
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("XOracle.Domain.Tests")]
+[assembly: InternalsVisibleTo("XOracle.Data.Tests")]
 #endif
 
-[assembly: AssemblyTitle("XOracle.Domain.Core")]
+[assembly: AssemblyTitle("XOracle.Data")]
 [assembly: AssemblyDescription("")]
-[assembly: Guid("da85df83-5a2f-47a4-ad90-3eb23bdcccb0")]
+[assembly: Guid("cb3c0142-71ce-4e80-8484-f247eca49c94")]

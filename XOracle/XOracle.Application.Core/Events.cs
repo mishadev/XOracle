@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace XOracle.Data.Core
+namespace XOracle.Application.Core
 {
-    public class Class1
+    public class Events
     {
     }
 }

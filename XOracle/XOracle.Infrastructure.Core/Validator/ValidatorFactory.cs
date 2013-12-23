@@ -2,16 +2,16 @@
 
 namespace XOracle.Infrastructure.Core
 {
-    public static class LoggerFactory
+    public static class ValidatorFactory
     {
-        static ILoggerFactory _factory = null;
+        static IValidatorFactory _factory = null;
 
-        public static void SetCurrent(ILoggerFactory factory)
+        public static void SetCurrent(IValidatorFactory factory)
         {
             _factory = factory;
         }
 
-        public static async Task<ILogger> Create()
+        public static async Task<IValidator> Create()
         {
             if (_factory != null)
                 return await _factory.Create();

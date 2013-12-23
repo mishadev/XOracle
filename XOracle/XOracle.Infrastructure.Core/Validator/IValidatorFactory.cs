@@ -2,8 +2,8 @@
 
 namespace XOracle.Infrastructure.Core
 {
-    public interface ILoggerFactory
+    public interface IValidatorFactory
     {
-        Task<ILogger> Create();
+        Task<IValidator> Create();
     }
 }

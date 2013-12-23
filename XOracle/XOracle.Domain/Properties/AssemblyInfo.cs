@@ -7,6 +7,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("XOracle.Domain.Tests")]
 #endif
 
-[assembly: AssemblyTitle("XOracle.Domain.Core")]
+[assembly: AssemblyTitle("XOracle.Domain")]
 [assembly: AssemblyDescription("")]
-[assembly: Guid("da85df83-5a2f-47a4-ad90-3eb23bdcccb0")]
+[assembly: Guid("c921d744-df0c-47e2-b6f6-bd7483fd4ad9")]
