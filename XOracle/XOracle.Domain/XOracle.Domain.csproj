@@ -37,10 +37,15 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="EventService\EventCreateRequest.cs" />
-    <Compile Include="EventService\EventCreateResponse.cs" />
-    <Compile Include="EventService\EventService.cs" />
+    <Compile Include="Services\AccountsDomainService.cs" />
+    <Compile Include="Services\EventDomainService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XOracle.Domain.Core\XOracle.Domain.Core.csproj">
+      <Project>{70ecb2b5-48d1-4056-952d-b7180ecb8e66}</Project>
+      <Name>XOracle.Domain.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

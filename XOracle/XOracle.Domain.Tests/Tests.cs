@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
+using XOracle.Domain.Core;
+using XOracle.Domain.Services;
 
 namespace XOracle.Domain.Tests
 {
@@ -13,7 +15,7 @@ namespace XOracle.Domain.Tests
         [TestMethod]
         public async Task TryCreateEvent()
         {
-            var service = new EventService();
+            var service = new EventDomainService();
 
             EventCreateResponse response = await service.CreateEvent(new EventCreateRequest());
 

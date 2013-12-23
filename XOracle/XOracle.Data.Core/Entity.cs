@@ -52,10 +52,7 @@ namespace XOracle.Data.Core
             if (!IsTransient())
             {
                 // XOR for random distribution (http://blogs.msdn.com/b/ericlippert/archive/2011/02/28/guidelines-and-rules-for-gethashcode.aspx)
-                if (!_requestedHashCode.HasValue)
-                    _requestedHashCode = this.Id.GetHashCode() ^ 31;
-
-                return _requestedHashCode.Value;
+                return (int)(_requestedHashCode ?? (_requestedHashCode = this.Id.GetHashCode() ^ 31));
             }
             else
                 return base.GetHashCode();

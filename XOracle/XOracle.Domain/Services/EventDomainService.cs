@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
+using XOracle.Domain.Core;
+using XOracle.Domain.Core.Services;
 
-namespace XOracle.Domain
+namespace XOracle.Domain.Services
 {
-    public class EventService
+    public class EventDomainService : IEventDomainService
     {
         public async Task<EventCreateResponse> CreateEvent(EventCreateRequest request)
         {
