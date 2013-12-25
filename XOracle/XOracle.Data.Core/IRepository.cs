@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace XOracle.Data.Core
 {
@@ -8,14 +9,14 @@ namespace XOracle.Data.Core
     {
         IUnitOfWork UnitOfWork { get; }
 
-        void Add(TEntity item);
+        Task Add(TEntity item);
 
-        void Remove(TEntity item);
+        Task Remove(TEntity item);
 
-        void Modify(TEntity item);
+        Task Modify(TEntity item);
 
-        TEntity Get(Guid id);
+        Task<TEntity> Get(Guid id);
 
-        IEnumerable<TEntity> GetAll();
+        Task<IEnumerable<TEntity>> GetAll();
     }
 }

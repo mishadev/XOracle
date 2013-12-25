@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace XOracle.Data.Core
 {
     public interface IUnitOfWork : IDisposable
     {
-        void Commit();
+        Task Commit();
 
-        void Rollback();
+        Task Rollback();
     }
 }

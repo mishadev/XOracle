@@ -42,6 +42,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\XOracle.Data.Core\XOracle.Data.Core.csproj">
+      <Project>{391f1378-4706-4b8e-b1d3-e4a6ca2eed3b}</Project>
+      <Name>XOracle.Data.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XOracle.Data\XOracle.Data.csproj">
+      <Project>{383a25bf-1bcb-4820-a785-2a2a03faf2ee}</Project>
+      <Name>XOracle.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XOracle.Domain.Core\XOracle.Domain.Core.csproj">
       <Project>{70ecb2b5-48d1-4056-952d-b7180ecb8e66}</Project>
       <Name>XOracle.Domain.Core</Name>

@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XOracle.Data", "..\XOracle\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XOracle.Application", "..\XOracle\XOracle.Application\XOracle.Application.csproj", "{33C11068-7043-4ED5-BD7E-FCD9071AE9CC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{B5D21337-AFDD-45A9-95F5-5E41AC49182E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XOracle.Console", "..\XOracle\XOracle.Console\XOracle.Console.csproj", "{B7F906ED-7665-47A7-BB33-59957673F0BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +93,10 @@ Global
 		{33C11068-7043-4ED5-BD7E-FCD9071AE9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33C11068-7043-4ED5-BD7E-FCD9071AE9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33C11068-7043-4ED5-BD7E-FCD9071AE9CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7F906ED-7665-47A7-BB33-59957673F0BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7F906ED-7665-47A7-BB33-59957673F0BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7F906ED-7665-47A7-BB33-59957673F0BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7F906ED-7665-47A7-BB33-59957673F0BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,5 +114,6 @@ Global
 		{41F7675A-3E26-4857-B0D2-7EF89FE733EF} = {ED0357D1-42C2-4448-AF0A-E8A4D38A5586}
 		{391F1378-4706-4B8E-B1D3-E4A6CA2EED3B} = {930C3663-79D2-4540-9C47-374C98715D0B}
 		{383A25BF-1BCB-4820-A785-2A2A03FAF2EE} = {930C3663-79D2-4540-9C47-374C98715D0B}
+		{B7F906ED-7665-47A7-BB33-59957673F0BB} = {B5D21337-AFDD-45A9-95F5-5E41AC49182E}
 	EndGlobalSection
 EndGlobal

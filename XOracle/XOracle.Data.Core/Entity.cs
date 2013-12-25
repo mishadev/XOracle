@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace XOracle.Data.Core
 {
+    [Serializable]
     public abstract class Entity
     {
         private int? _requestedHashCode;

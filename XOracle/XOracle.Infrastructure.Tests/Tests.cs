@@ -1,8 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XOracle.Infrastructure.Core;
+using XOracle.Infrastructure.Utils;
 
 namespace XOracle.Infrastructure.Tests
 {
@@ -87,6 +89,26 @@ namespace XOracle.Infrastructure.Tests
             IValidator validator = await ValidatorFactory.Create();
 
             Assert.AreEqual(Enumerable.Empty<string>().Count(), validator.GetErrorMessages(string.Empty).Count());
+        }
+
+        [TestMethod]
+        public async Task BinarySerealizerMethodth1()
+        {
+            var e1 = new Dictionary<int, long>();
+            var bytes = await BinarySerializer.ToBinary(e1);
+            var e2 = await BinarySerializer.FromBinary(bytes);
+
+            Assert.AreEqual(e1.GetType(), e2.GetType());
+        }
+
+        [TestMethod]
+        public async Task BinarySerealizerMethodth2()
+        {
+            var e1 = new Dictionary<int, long> { { 15, 300 } };
+            var bytes = await BinarySerializer.ToBinary(e1);
+            var e2 = (Dictionary<int, long>)await BinarySerializer.FromBinary(bytes);
+
+            Assert.AreEqual(e1[15], e2[15]);
         }
     }
 }
