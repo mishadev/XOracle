@@ -6,10 +6,10 @@ namespace XOracle.Application.Core
     {
         public Guid AccountId { get; set; }
 
-        public double Reputation { get; set; }
+        public decimal Reputation { get; set; }
 
         public string Name { get; set; }
 
-        public string EMail { get; set; }
+        public string Email { get; set; }
     }
 }

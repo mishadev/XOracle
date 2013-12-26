@@ -63,10 +63,6 @@
       <Project>{ef5c02be-2e57-4ca2-bb7b-2a9582fb3d05}</Project>
       <Name>XOracle.Infrastructure.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\XOracle.Infrastructure\XOracle.Infrastructure.csproj">
-      <Project>{0055d589-299a-439e-9f8d-286b871ba831}</Project>
-      <Name>XOracle.Infrastructure</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

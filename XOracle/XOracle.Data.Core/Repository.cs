@@ -62,13 +62,11 @@ namespace XOracle.Data.Core
             return value;
         }
 
-        public async Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter, int page, int size)
+        public async Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter)
         {
             var set = await this.GetSet();
 
             return set
-                .Skip(page * size)
-                .Take(size)
                 .Select(kvp => kvp.Value)
                 .Where(filter.Compile());
         }

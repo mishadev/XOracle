@@ -38,9 +38,23 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Accounts\Account.cs" />
+    <Compile Include="Accounts\Account.Validation.cs" />
+    <Compile Include="Accounts\AccountBalance.cs" />
+    <Compile Include="Accounts\AccountBalance.Validation.cs" />
+    <Compile Include="Accounts\AccountTransaction.cs" />
+    <Compile Include="Accounts\AccountTransaction.Validation.cs" />
+    <Compile Include="Accounts\ValueType.cs" />
+    <Compile Include="Accounts\ValueType.Validation.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\IdentityGenerator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XOracle.Infrastructure.Core\XOracle.Infrastructure.Core.csproj">
+      <Project>{ef5c02be-2e57-4ca2-bb7b-2a9582fb3d05}</Project>
+      <Name>XOracle.Infrastructure.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

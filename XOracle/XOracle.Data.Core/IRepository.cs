@@ -19,6 +19,6 @@ namespace XOracle.Data.Core
 
         Task<TEntity> Get(Guid id);
 
-        Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter, int page, int size);
+        Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter);
     }
 }

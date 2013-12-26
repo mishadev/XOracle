@@ -34,7 +34,7 @@ namespace XOracle.Console
             var details = GetAccoutDetails(singIn.AccountId).GetAwaiter().GetResult();
 
             System.Console.WriteLine("AccoutnId : " + details.AccountId);
-            System.Console.WriteLine("EMail : " + details.EMail);
+            System.Console.WriteLine("EMail : " + details.Email);
             System.Console.WriteLine("Name : " + details.Name);
             System.Console.WriteLine("Reputation : " + details.Reputation);
 
