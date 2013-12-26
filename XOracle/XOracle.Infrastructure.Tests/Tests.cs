@@ -14,8 +14,8 @@ namespace XOracle.Infrastructure.Tests
         [TestInitialize]
         public void Initialize()
         {
-            LoggerFactory.SetCurrent(new MockLoggerFactory());
-            ValidatorFactory.SetCurrent(new DataAnnotationsEntityValidatorFactory());
+            Factory<ILogger>.SetCurrent(new MockLoggerFactory());
+            Factory<IValidator>.SetCurrent(new DataAnnotationsEntityValidatorFactory());
         }
 
         private string GetMessage(Exception ex)
@@ -33,7 +33,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task LoggingCanBeCreated()
         {
-            ILogger logger = await LoggerFactory.Create();
+            ILogger logger = await Factory<ILogger>.Create();
 
             Assert.IsNotNull(logger);
         }
@@ -41,7 +41,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task LoggingCanCallDebugMethodth()
         {
-            ILogger logger = await LoggerFactory.Create();
+            ILogger logger = await Factory<ILogger>.Create();
 
             await logger.Debug(null);
             await logger.Debug(string.Empty);
@@ -51,7 +51,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task LoggingCanCallFatalMethodth()
         {
-            ILogger logger = await LoggerFactory.Create();
+            ILogger logger = await Factory<ILogger>.Create();
 
             await logger.Fatal(string.Empty);
             await logger.Fatal(string.Empty, (Exception)null);
@@ -60,7 +60,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task LoggingCanCallLogErrorMethodth()
         {
-            ILogger logger = await LoggerFactory.Create();
+            ILogger logger = await Factory<ILogger>.Create();
 
             await logger.LogError(string.Empty);
             await logger.LogError(string.Empty, (Exception)null);
@@ -69,7 +69,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task LoggingCanCallLogInfoMethodth()
         {
-            ILogger logger = await LoggerFactory.Create();
+            ILogger logger = await Factory<ILogger>.Create();
 
             await logger.LogInfo(string.Empty);
             await logger.LogInfo(string.Empty, (Exception)null);
@@ -78,7 +78,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task ValidatorCanCallIsValidMethodth()
         {
-            IValidator validator = await ValidatorFactory.Create();
+            IValidator validator = await Factory<IValidator>.Create();
 
             Assert.IsTrue(validator.IsValid(string.Empty));
         }
@@ -86,7 +86,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task ValidatorCanCallGetErrorMessagesMethodth()
         {
-            IValidator validator = await ValidatorFactory.Create();
+            IValidator validator = await Factory<IValidator>.Create();
 
             Assert.AreEqual(Enumerable.Empty<string>().Count(), validator.GetErrorMessages(string.Empty).Count());
         }

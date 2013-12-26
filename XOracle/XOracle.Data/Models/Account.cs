@@ -6,6 +6,6 @@ namespace XOracle.Data
     [Serializable]
     public class Account : Entity
     {
-
+        public string EMail { get; set; }
     }
 }

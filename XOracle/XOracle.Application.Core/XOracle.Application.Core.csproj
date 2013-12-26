@@ -37,13 +37,13 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Services\IAccountsService.cs" />
+    <Compile Include="Services\IAccountingService.cs" />
     <Compile Include="Services\IBetsService.cs" />
     <Compile Include="Services\IEventsService.cs" />
-    <Compile Include="Models\Accounts\CreateAccountRequest.cs" />
-    <Compile Include="Models\Accounts\CreateAccountResponse.cs" />
-    <Compile Include="Models\Accounts\GetAccountRequest.cs" />
-    <Compile Include="Models\Accounts\GetAccountResponse.cs" />
+    <Compile Include="Models\Accounts\SingInRequest.cs" />
+    <Compile Include="Models\Accounts\SingInResponse.cs" />
+    <Compile Include="Models\Accounts\GetDetailsAccountRequest.cs" />
+    <Compile Include="Models\Accounts\GetDetailsAccountResponse.cs" />
     <Compile Include="Models\Bets\GetBetRateRequest.cs" />
     <Compile Include="Models\Bets\GetBetRateResponse.cs" />
     <Compile Include="Models\Bets\CreateBetResponse.cs" />

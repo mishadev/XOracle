@@ -12,7 +12,7 @@ namespace XOracle.Data.Core
 
         public Repository(IUnitOfWork unitOfWork)
         {
-            if (unitOfWork is IDictionarySetUnitOfWork)
+            if (!(unitOfWork is IDictionarySetUnitOfWork))
                 throw new InvalidCastException("unitOfWork");
 
             this._unitOfWork = (IDictionarySetUnitOfWork)unitOfWork;
@@ -31,7 +31,8 @@ namespace XOracle.Data.Core
         public async Task Add(TEntity item)
         {
             var set = await this.GetSet();
-
+            
+            item.EnsureIdentity();
             set.Add(item.Id, item);
         }
 

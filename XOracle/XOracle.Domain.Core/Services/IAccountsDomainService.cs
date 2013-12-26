@@ -4,6 +4,10 @@ namespace XOracle.Domain.Core.Services
 {
     public interface IAccountsDomainService
     {
-        Task<EventCreateResponse> CreateAccount(EventCreateRequest request);
+        Task<CreateAccountResponse> CreateAccount(CreateAccountRequest request);
+
+        Task<GetAccountResponse> GetAccount(GetAccountRequest request);
+
+        Task<GetDetailsAccountResponse> GetDetailsAccount(GetDetailsAccountRequest request);
     }
 }

@@ -40,6 +40,13 @@
     <Compile Include="Models\EventCreateRequest.cs" />
     <Compile Include="Models\EventCreateResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\CreateAccountRequest.cs" />
+    <Compile Include="Models\CreateAccountResponse.cs" />
+    <Compile Include="Models\GetAccountRequest.cs" />
+    <Compile Include="Models\GetAccountResponse.cs" />
+    <Compile Include="Models\LoginRequest.cs" />
+    <Compile Include="Models\LoginResponse.cs" />
+    <Compile Include="Services\IAuthenticationDomainService.cs" />
     <Compile Include="Services\IEventDomainService.cs" />
     <Compile Include="Services\IAccountsDomainService.cs" />
   </ItemGroup>

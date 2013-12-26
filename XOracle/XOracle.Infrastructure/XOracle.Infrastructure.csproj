@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\..\sln\packages\AutoMapper.3.1.0\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\..\sln\packages\AutoMapper.3.1.0\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -38,6 +44,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Adapter\AutomapperTypeAdapter.cs" />
+    <Compile Include="Adapter\AutomapperTypeAdapterFactory.cs" />
     <Compile Include="Logging\MockLogger.cs" />
     <Compile Include="Logging\MockLoggerFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -50,6 +58,9 @@
       <Project>{ef5c02be-2e57-4ca2-bb7b-2a9582fb3d05}</Project>
       <Name>XOracle.Infrastructure.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

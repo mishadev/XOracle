@@ -13,7 +13,7 @@ namespace XOracle.Data.Tests
         [TestInitialize]
         public void Initialize()
         {
-            ValidatorFactory.SetCurrent(new DataAnnotationsEntityValidatorFactory());
+            Factory<IValidator>.SetCurrent(new DataAnnotationsEntityValidatorFactory());
         }
 
         [TestMethod]
@@ -45,7 +45,7 @@ namespace XOracle.Data.Tests
         public async Task NewEventIsNotValid()
         {
             Event @event = new Event();
-            IValidator validator = await ValidatorFactory.Create();
+            IValidator validator = await Factory<IValidator>.Create();
 
             Assert.IsFalse(validator.IsValid(@event));
         }

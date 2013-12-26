@@ -3,7 +3,7 @@ using XOracle.Infrastructure.Core;
 
 namespace XOracle.Infrastructure
 {
-    public class DataAnnotationsEntityValidatorFactory : IValidatorFactory
+    public class DataAnnotationsEntityValidatorFactory : IFactory<IValidator>
     {
         public async Task<IValidator> Create()
         {

@@ -42,6 +42,7 @@
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\BetCondition.cs" />
     <Compile Include="Models\AccessibilityCondition.cs" />
+    <Compile Include="Models\Reputation.cs" />
     <Compile Include="Validation\Event.cs" />
     <Compile Include="Models\VictoryCondition.cs" />
     <Compile Include="Models\JudgingCondition.cs" />
