@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace XOracle.Data.Core
+namespace XOracle.Domain.Core
 {
     [Serializable]
     public abstract class Entity

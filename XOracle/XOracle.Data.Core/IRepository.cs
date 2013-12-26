@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using XOracle.Domain.Core;
 
 namespace XOracle.Data.Core
 {
@@ -17,6 +19,6 @@ namespace XOracle.Data.Core
 
         Task<TEntity> Get(Guid id);
 
-        Task<IEnumerable<TEntity>> GetAll();
+        Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter, int page, int size);
     }
 }

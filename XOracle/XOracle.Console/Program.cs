@@ -4,8 +4,8 @@ using XOracle.Application;
 using XOracle.Application.Core;
 using XOracle.Data;
 using XOracle.Data.Core;
+using XOracle.Domain;
 using XOracle.Domain.Core;
-using XOracle.Domain.Services;
 using XOracle.Infrastructure;
 using XOracle.Infrastructure.Core;
 
@@ -21,11 +21,7 @@ namespace XOracle.Console
             Factory<ILogger>.SetCurrent(new MockLoggerFactory());
             Factory<ITypeAdapter>.SetCurrent(new AutomapperTypeAdapterFactory());
 
-            _accountingService = new AccountingService(
-                new AccountsDomainService(
-                    new Repository<Account>(new InmemoryUnitOfWork()),
-                    new Repository<Reputation>(new InmemoryUnitOfWork())),
-                new LoginDomainService());
+
         }
 
         static void Main(string[] args)

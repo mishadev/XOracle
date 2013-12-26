@@ -1,6 +1,6 @@
-﻿using XOracle.Data.Core;
+﻿using XOracle.Domain.Core;
 
-namespace XOracle.Data
+namespace XOracle.Domain
 {
     public class JudgingCondition : Entity
     {

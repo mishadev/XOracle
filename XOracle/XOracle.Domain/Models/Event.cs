@@ -1,7 +1,7 @@
 ﻿using System;
-using XOracle.Data.Core;
+using XOracle.Domain.Core;
 
-namespace XOracle.Data
+namespace XOracle.Domain
 {
     public partial class Event : Entity
     {

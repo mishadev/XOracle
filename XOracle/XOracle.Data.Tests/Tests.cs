@@ -4,6 +4,7 @@ using XOracle.Data.Core;
 using XOracle.Infrastructure;
 using XOracle.Infrastructure.Core;
 using System.Threading.Tasks;
+using XOracle.Domain;
 
 namespace XOracle.Data.Tests
 {
@@ -19,9 +20,7 @@ namespace XOracle.Data.Tests
         [TestMethod]
         public void IdentityGeneratorCanGenerat()
         {
-            var guid = IdentityGenerator.NewSequentialGuid();
 
-            Assert.AreNotEqual(Guid.Empty, guid);
         }
 
         [TestMethod]
@@ -45,7 +44,7 @@ namespace XOracle.Data.Tests
         public async Task NewEventIsNotValid()
         {
             Event @event = new Event();
-            IValidator validator = await Factory<IValidator>.Create();
+            IValidator validator = await Factory<IValidator>.GetInstance();
 
             Assert.IsFalse(validator.IsValid(@event));
         }

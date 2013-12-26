@@ -12,7 +12,7 @@ namespace XOracle.Infrastructure.Core
             _factory = factory;
         }
 
-        public static async Task<TInstance> Create()
+        public static async Task<TInstance> GetInstance()
         {
             if (_factory != null)
                 return await _factory.Create();

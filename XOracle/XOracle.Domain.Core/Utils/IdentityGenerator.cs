@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XOracle.Data.Core
+namespace XOracle.Domain.Core
 {
     internal static class IdentityGenerator
     {

@@ -42,6 +42,8 @@
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\IBinarySerializer.cs" />
+    <Compile Include="Utils\IEmailAddressValidator.cs" />
     <Compile Include="Validator\IValidator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

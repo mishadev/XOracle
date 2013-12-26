@@ -1,12 +1,13 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
+using XOracle.Infrastructure.Core;
 
 namespace XOracle.Infrastructure.Utils
 {
-    public static class BinarySerializer
+    public class NetBinarySerializer : IBinarySerializer
     {
-        public static async Task<byte[]> ToBinary(object graph)
+        public async Task<byte[]> ToBinary(object graph)
         {
             using (MemoryStream stream = new MemoryStream())
             {
@@ -18,7 +19,7 @@ namespace XOracle.Infrastructure.Utils
             }
         }
 
-        public static async Task<object> FromBinary(byte[] buffer)
+        public async Task<object> FromBinary(byte[] buffer)
         {
             using (MemoryStream stream = new MemoryStream())
             {

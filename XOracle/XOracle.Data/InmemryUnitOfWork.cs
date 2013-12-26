@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using XOracle.Data.Core;
-using XOracle.Infrastructure.Utils;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using XOracle.Data.Core;
+using XOracle.Domain.Core;
+using XOracle.Infrastructure.Core;
 
 namespace XOracle.Data
 {
@@ -21,9 +21,11 @@ namespace XOracle.Data
 
         public async Task Commit()
         {
+            var serializer = await Factory<IBinarySerializer>.GetInstance();
+
             foreach (var key in _raw.Keys)
             {
-                _store.Add(key, await BinarySerializer.ToBinary(_raw[key]));
+                _store.Add(key, await serializer.ToBinary(_raw[key]));
             }
         }
 
@@ -54,15 +56,16 @@ namespace XOracle.Data
             var stored = await GetFromStorage<TEntity>();
             var raw = GetFromRaw(stored);
 
-            return  raw;
+            return raw;
         }
 
         private async Task<IDictionary<Guid, TEntity>> GetFromStorage<TEntity>()
         {
             var key = typeof(TEntity);
+            var serializer = await Factory<IBinarySerializer>.GetInstance();
 
             if (_store.ContainsKey(key))
-                return (IDictionary<Guid, TEntity>) await BinarySerializer.FromBinary(_store[key]);
+                return (IDictionary<Guid, TEntity>)await serializer.FromBinary(_store[key]);
 
             return new Dictionary<Guid, TEntity>();
         }

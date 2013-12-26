@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using XOracle.Domain.Core;
 
 namespace XOracle.Data.Core
 {
@@ -54,14 +56,21 @@ namespace XOracle.Data.Core
         {
             var set = await this.GetSet();
 
-            return set[id];
+            TEntity value;
+            set.TryGetValue(id, out value);
+
+            return value;
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public async Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter, int page, int size)
         {
             var set = await this.GetSet();
 
-            return set.Select(kvp => kvp.Value);
+            return set
+                .Skip(page * size)
+                .Take(size)
+                .Select(kvp => kvp.Value)
+                .Where(filter.Compile());
         }
 
         public void Dispose()
