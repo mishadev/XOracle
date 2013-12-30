@@ -37,6 +37,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Models\Accounts\CreateAccountRequest.cs" />
+    <Compile Include="Models\Accounts\CreateAccountResponse.cs" />
     <Compile Include="Services\IAccountingService.cs" />
     <Compile Include="Services\IBetsService.cs" />
     <Compile Include="Services\IEventsService.cs" />

@@ -1,7 +1,7 @@
 ﻿namespace XOracle.Application.Core
 {
-    public class SingInRequest
+    public class SingUpRequest
     {
-        public string EMail { get; set; }
+        public string Email { get; set; }
     }
 }

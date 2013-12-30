@@ -1,8 +1,6 @@
-﻿using XOracle.Domain.Core;
-
-namespace XOracle.Domain
+﻿namespace XOracle.Application.Core
 {
-    public partial class Account : Entity
+    public class CreateAccountRequest
     {
         public string Email { get; set; }
 

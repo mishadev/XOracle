@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
-using XOracle.Application;
-using XOracle.Application.Core;
-using XOracle.Data;
-using XOracle.Data.Core;
-using XOracle.Domain;
-using XOracle.Domain.Core;
-using XOracle.Infrastructure;
-using XOracle.Infrastructure.Core;
 
 namespace XOracle.Console
 {
+    using XOracle.Application;
+    using XOracle.Application.Core;
+    using XOracle.Data;
+    using XOracle.Data.Core;
+    using XOracle.Domain.Core;
+    using XOracle.Infrastructure;
+    using XOracle.Infrastructure.Core;
+    using XOracle.Infrastructure.Utils;
+
     class Program
     {
         static IAccountingService _accountingService;
@@ -19,14 +20,19 @@ namespace XOracle.Console
         {
             Factory<IValidator>.SetCurrent(new DataAnnotationsEntityValidatorFactory());
             Factory<ILogger>.SetCurrent(new MockLoggerFactory());
-            Factory<ITypeAdapter>.SetCurrent(new AutomapperTypeAdapterFactory());
+            Factory<IBinarySerializer>.SetCurrent(new NetBinarySerializerFactory());
 
-
+            var uow = new InmemoryUnitOfWork();
+            _accountingService = new AccountingService(
+                new Repository<Account>(uow),
+                new Repository<AccountBalance>(uow),
+                new Repository<ValueType>(uow),
+                new ScopeableUnitOfWorkFactory(uow));
         }
 
         static void Main(string[] args)
         {
-            var singIn = SingInAccout().GetAwaiter().GetResult();
+            var singIn = SingUpAccout().GetAwaiter().GetResult();
 
             System.Console.WriteLine("AccoutnId : " + singIn.AccountId);
             System.Console.WriteLine("Ticket : " + singIn.Ticket);
@@ -41,9 +47,9 @@ namespace XOracle.Console
             System.Console.ReadLine();
         }
 
-        static async Task<SingInResponse> SingInAccout()
+        static async Task<SingUpResponse> SingUpAccout()
         {
-            SingInResponse response = await _accountingService.SingIn(new SingInRequest { EMail = "misha_dev@live.com" });
+            SingUpResponse response = await _accountingService.SingUp(new SingUpRequest { Email = "misha_dev@live.com" });
 
             return response;
         }

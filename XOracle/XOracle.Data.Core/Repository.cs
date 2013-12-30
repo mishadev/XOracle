@@ -62,6 +62,15 @@ namespace XOracle.Data.Core
             return value;
         }
 
+        public async Task<TEntity> GetBy(Expression<Func<TEntity, bool>> filter)
+        {
+            var set = await this.GetSet();
+
+            return set
+                .Select(kvp => kvp.Value)
+                .FirstOrDefault(filter.Compile());
+        }
+
         public async Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter)
         {
             var set = await this.GetSet();

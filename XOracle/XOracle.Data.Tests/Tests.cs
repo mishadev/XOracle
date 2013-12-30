@@ -4,6 +4,7 @@ using XOracle.Data.Core;
 using XOracle.Infrastructure;
 using XOracle.Infrastructure.Core;
 using System.Threading.Tasks;
+using XOracle.Domain.Core;
 using XOracle.Domain;
 
 namespace XOracle.Data.Tests

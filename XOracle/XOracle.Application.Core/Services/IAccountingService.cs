@@ -4,8 +4,10 @@ namespace XOracle.Application.Core
 {
     public interface IAccountingService
     {
-        Task<SingInResponse> SingIn(SingInRequest request);
+        Task<SingUpResponse> SingUp(SingUpRequest request);
 
         Task<GetDetailsAccountResponse> GetDetailsAccount(GetDetailsAccountRequest request);
+
+        Task<CreateAccountResponse> CreateAccount(CreateAccountRequest request);
     }
 }

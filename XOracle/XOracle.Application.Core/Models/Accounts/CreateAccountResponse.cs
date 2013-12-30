@@ -2,10 +2,8 @@
 
 namespace XOracle.Application.Core
 {
-    public class SingUpResponse
+    public class CreateAccountResponse
     {
         public Guid AccountId { get; set; }
-
-        public Guid Ticket { get; set; }
     }
 }

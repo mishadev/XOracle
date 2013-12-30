@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using XOracle.Application.Core;
 using XOracle.Data.Core;
 using XOracle.Domain.Core;
+using XOracle.Infrastructure.Core;
 
 namespace XOracle.Application
 {
@@ -10,33 +11,54 @@ namespace XOracle.Application
     {
         private IRepository<Account> _accountRepository;
         private IRepository<AccountBalance> _accountBalanceRepository;
-        private IRepository<AccountTransaction> _accountTransactionRepository;
         private IRepository<ValueType> _valueTypeRepository;
+        private IFactory<IScopeable<IUnitOfWork>> _scopeableFactory;
 
         public AccountingService(
             IRepository<Account> accountRepository,
             IRepository<AccountBalance> accountBalanceRepository,
-            IRepository<AccountTransaction> accountTransactionRepository,
-            IRepository<ValueType> valueTypeRepository)
+            IRepository<ValueType> valueTypeRepository,
+            IFactory<IScopeable<IUnitOfWork>> scopeableFactory)
         {
             this._accountRepository = accountRepository;
             this._accountBalanceRepository = accountBalanceRepository;
-            this._accountTransactionRepository = accountTransactionRepository;
             this._valueTypeRepository = valueTypeRepository;
+            this._scopeableFactory = scopeableFactory;
         }
 
-        public async Task<SingInResponse> SingIn(SingInRequest request)
+        public async Task<SingUpResponse> SingUp(SingUpRequest request)
         {
-            throw new System.NotImplementedException();
+            var creation = await CreateAccount(new CreateAccountRequest { Email = request.Email });
+
+            return new SingUpResponse { AccountId = creation.AccountId, Ticket = System.Guid.NewGuid() };
         }
 
         public async Task<GetDetailsAccountResponse> GetDetailsAccount(GetDetailsAccountRequest request)
         {
             var account = await this._accountRepository.Get(request.AccountId);
-            var valueType = (await this._valueTypeRepository.GetFiltered(v => v.Name.Equals(ValueType.ReputationName))).First();
-            var balance = (await this._accountBalanceRepository.GetFiltered(b => b.AccountId == account.Id && b.ValueTypeId == valueType.Id)).First();
+            var valueType = await this._valueTypeRepository.GetBy(v => v.Name == ValueType.ReputationName);
+            var balance = await this._accountBalanceRepository.GetBy(b => b.AccountId == account.Id && b.ValueTypeId == valueType.Id);
             
             return new GetDetailsAccountResponse { AccountId = account.Id, Email = account.Email, Name = account.Name, Reputation = balance.Value };
+        }
+
+        public async Task<CreateAccountResponse> CreateAccount(CreateAccountRequest request)
+        {
+            var account = await this._accountRepository.GetBy(a => a.Email == request.Email);
+            if (account == null)
+            {
+                using (var scope = await this._scopeableFactory.Create())
+                {
+                    account = new Account { Email = request.Email, Name = request.Name ?? request.Email };
+                    await this._accountRepository.Add(account);
+
+                    var valueType = (await this._valueTypeRepository.GetBy(v => v.Name == ValueType.ReputationName));
+                    var balance = new AccountBalance { AccountId = account.Id, Value = 1, ValueTypeId = valueType.Id };
+                    await this._accountBalanceRepository.Add(balance);
+                }
+            }
+
+            return new CreateAccountResponse { AccountId = account.Id };
         }
     }
 }
