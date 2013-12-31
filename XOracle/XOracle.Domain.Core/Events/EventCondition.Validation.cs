@@ -5,15 +5,12 @@ using System.ComponentModel.DataAnnotations;
 namespace XOracle.Domain.Core
 {
     [Serializable]
-    public partial class AccountBalance : IValidatableObject
+    public partial class EventCondition : IValidatableObject
     {
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             ValidationResult[] results = {
-                this.Is(value => value < 0, this.Value, "Value"),
-                     
-                this.IsDefault(this.AccountId, "AccountId"),
-                this.IsDefault(this.CurrencyTypeId, "CurrencyTypeId"),                
+                this.Is(desc => string.IsNullOrWhiteSpace(desc) || desc.Length >= 1 << 10, this.Description, "Description"),
             };
 
             return results;

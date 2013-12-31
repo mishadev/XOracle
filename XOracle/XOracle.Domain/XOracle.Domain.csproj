@@ -38,13 +38,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Models\AccessibilityCondition.cs" />
-    <Compile Include="Models\BetCondition.cs" />
-    <Compile Include="Models\Event.cs" />
-    <Compile Include="Models\JudgingCondition.cs" />
-    <Compile Include="Models\VictoryCondition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Validation\Event.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XOracle.Domain.Core\XOracle.Domain.Core.csproj">

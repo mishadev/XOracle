@@ -33,12 +33,14 @@ namespace XOracle.Infrastructure
         {
             var results = Enumerable.Empty<string>();
 
-            if (typeof(IValidatableObject).IsAssignableFrom(typeof(TEntity)))
+            if (item is IValidatableObject)
             {
                 var context = new ValidationContext(item, null, null);
                 var validationResults = ((IValidatableObject)item).Validate(context);
 
-                results = validationResults.Select(vr => vr.ErrorMessage);
+                results = validationResults
+                    .Where(vr => vr != null)
+                    .Select(vr => vr.ErrorMessage);
             }
 
             return results;

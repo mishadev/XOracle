@@ -7,7 +7,7 @@ namespace XOracle.Domain.Core
     {
         public Guid AccountId { get; set; }
 
-        public Guid ValueTypeId { get; set; }
+        public Guid CurrencyTypeId { get; set; }
 
         public decimal Value { get; set; }
     }

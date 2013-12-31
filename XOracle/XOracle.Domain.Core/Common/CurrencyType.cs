@@ -1,8 +1,6 @@
-﻿using XOracle.Domain.Core;
-
-namespace XOracle.Domain.Core
+﻿namespace XOracle.Domain.Core
 {
-    public partial class ValueType : Entity
+    public partial class CurrencyType : Entity, IEnum
     {
         public static string ReputationName = "Reputation";
 

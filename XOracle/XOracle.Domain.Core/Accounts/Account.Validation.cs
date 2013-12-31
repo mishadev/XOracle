@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using XOracle.Infrastructure.Core;
 
 namespace XOracle.Domain.Core
@@ -8,24 +9,21 @@ namespace XOracle.Domain.Core
     [Serializable]
     public partial class Account : IValidatableObject
     {
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
-            var results = new List<ValidationResult>();
-
-            if (this.IsEmailAddressValid(this.Email))
-                results.Add(new ValidationResult("Email", new[] { "Email" }));
-
-            if (string.IsNullOrWhiteSpace(this.Name))
-                results.Add(new ValidationResult("Name", new[] { "Name" }));
+            ValidationResult[] results = {
+                this.Is(email => !this.IsEmailAddressValid(email).GetAwaiter().GetResult(), this.Email, "Email"),
+                this.Is(name => string.IsNullOrWhiteSpace(name), this.Name, "Name"),
+            };
 
             return results;
         }
 
-        private bool IsEmailAddressValid(string email)
+        private async Task<bool> IsEmailAddressValid(string email)
         {
-            var validator = Factory<IEmailAddressValidator>.GetInstance().GetAwaiter().GetResult();
+            var validator = await Factory<IEmailAddressValidator>.GetInstance();
 
-            return validator.IsValid(email).GetAwaiter().GetResult();
+            return await validator.IsValid(email);
         }
     }
 }

@@ -13,9 +13,18 @@ namespace XOracle.Data
 
         private static async Task Init(IUnitOfWork unit)
         {
-            Repository<ValueType> r = new Repository<ValueType>(unit);
+            Repository<CurrencyType> valueTypeRepo = new Repository<CurrencyType>(unit);
+            await valueTypeRepo.Add(new CurrencyType { Name = CurrencyType.ReputationName });
 
-            await r.Add(new ValueType { Name = ValueType.ReputationName });
+            Repository<EventRelationType> eventRelationTypeRepo = new Repository<EventRelationType>(unit);
+            await eventRelationTypeRepo.Add(new EventRelationType { Name = EventRelationType.OneVsOne });
+            await eventRelationTypeRepo.Add(new EventRelationType { Name = EventRelationType.OneVsMeny });
+            await eventRelationTypeRepo.Add(new EventRelationType { Name = EventRelationType.MenyVsMeny });
+
+            Repository<AlgorithmType> algorithmTypeRepo = new Repository<AlgorithmType>(unit);
+            await algorithmTypeRepo.Add(new AlgorithmType { Name = AlgorithmType.Exponential });
+            await algorithmTypeRepo.Add(new AlgorithmType { Name = AlgorithmType.Linear });
+
             await unit.Commit();
         }
     }

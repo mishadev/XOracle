@@ -11,13 +11,13 @@ namespace XOracle.Application
     {
         private IRepository<Account> _accountRepository;
         private IRepository<AccountBalance> _accountBalanceRepository;
-        private IRepository<ValueType> _valueTypeRepository;
+        private IRepository<CurrencyType> _valueTypeRepository;
         private IFactory<IScopeable<IUnitOfWork>> _scopeableFactory;
 
         public AccountingService(
             IRepository<Account> accountRepository,
             IRepository<AccountBalance> accountBalanceRepository,
-            IRepository<ValueType> valueTypeRepository,
+            IRepository<CurrencyType> valueTypeRepository,
             IFactory<IScopeable<IUnitOfWork>> scopeableFactory)
         {
             this._accountRepository = accountRepository;
@@ -36,8 +36,8 @@ namespace XOracle.Application
         public async Task<GetDetailsAccountResponse> GetDetailsAccount(GetDetailsAccountRequest request)
         {
             var account = await this._accountRepository.Get(request.AccountId);
-            var valueType = await this._valueTypeRepository.GetBy(v => v.Name == ValueType.ReputationName);
-            var balance = await this._accountBalanceRepository.GetBy(b => b.AccountId == account.Id && b.ValueTypeId == valueType.Id);
+            var valueType = await this._valueTypeRepository.GetBy(v => v.Name == CurrencyType.ReputationName);
+            var balance = await this._accountBalanceRepository.GetBy(b => b.AccountId == account.Id && b.CurrencyTypeId == valueType.Id);
             
             return new GetDetailsAccountResponse { AccountId = account.Id, Email = account.Email, Name = account.Name, Reputation = balance.Value };
         }
@@ -52,8 +52,8 @@ namespace XOracle.Application
                     account = new Account { Email = request.Email, Name = request.Name ?? request.Email };
                     await this._accountRepository.Add(account);
 
-                    var valueType = (await this._valueTypeRepository.GetBy(v => v.Name == ValueType.ReputationName));
-                    var balance = new AccountBalance { AccountId = account.Id, Value = 1, ValueTypeId = valueType.Id };
+                    var valueType = (await this._valueTypeRepository.GetBy(v => v.Name == CurrencyType.ReputationName));
+                    var balance = new AccountBalance { AccountId = account.Id, Value = 1, CurrencyTypeId = valueType.Id };
                     await this._accountBalanceRepository.Add(balance);
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -27,10 +28,31 @@ namespace XOracle.Data
                 var store = await this.GetFromStorage(key);
                 var local = (IDictionary)_local[key];
 
-                var data = Merge(store, local);
+                if (await IsValid(local))
+                {
+                    var data = Merge(store, local);
 
-                Replace((IDictionary)_store, key, await serializer.ToBinary(data));
+                    Replace((IDictionary)_store, key, await serializer.ToBinary(data));
+                }
+                else
+                {
+                    throw new InvalidOperationException("Commit");
+                }
             }
+        }
+
+        private async Task<bool> IsValid(IDictionary objects)
+        {
+            var validator = await Factory<IValidator>.GetInstance();
+            var invalid = false;
+
+            foreach (var item in objects.Values)
+            {
+                if (invalid = !validator.IsValid(item))
+                    break;
+            }
+
+            return !invalid;
         }
 
         private IDictionary Merge(IDictionary store, IDictionary local)
