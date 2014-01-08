@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using XOracle.Domain.Core;
+using XOracle.Infrastructure.Core;
 
 namespace XOracle.Data.Core
 {
@@ -33,8 +34,10 @@ namespace XOracle.Data.Core
         public async Task Add(TEntity item)
         {
             var set = await this.GetSet();
-            
             item.EnsureIdentity();
+
+            await Validate(item);
+
             set.Add(item.Id, item);
         }
 
@@ -48,6 +51,8 @@ namespace XOracle.Data.Core
         public async Task Modify(TEntity item)
         {
             var set = await this.GetSet();
+
+            await Validate(item);
 
             set[item.Id] = item;
         }
@@ -83,6 +88,15 @@ namespace XOracle.Data.Core
         public void Dispose()
         {
             this._unitOfWork.Dispose();
+        }
+
+        private async Task Validate(TEntity item)
+        {
+            var validator = await Factory<IValidator>.GetInstance();
+            var validationErrors = validator.GetErrorMessages(item);
+
+            if (validationErrors.Any())
+                throw new InvalidOperationException("validation errors: " + string.Join(", ", validationErrors));
         }
     }
 }

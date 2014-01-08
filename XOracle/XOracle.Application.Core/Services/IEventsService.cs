@@ -7,5 +7,7 @@ namespace XOracle.Application.Core
         Task<CreateEventResponse> CreateEvent(CreateEventRequest request);
 
         Task<GetEventsResponse> GetEvents(GetEventsRequest request);
+
+        Task<GetEventDetailsResponse> GetEventDetails(GetEventDetailsRequest request);
     }
 }

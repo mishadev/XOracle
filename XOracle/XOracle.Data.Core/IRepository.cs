@@ -6,11 +6,9 @@ using XOracle.Domain.Core;
 
 namespace XOracle.Data.Core
 {
-    public interface IRepository<TEntity> : IDisposable
+    public interface IRepository<TEntity> : IRepository, IDisposable
         where TEntity : Entity
     {
-        IUnitOfWork UnitOfWork { get; }
-
         Task Add(TEntity item);
 
         Task Remove(TEntity item);
@@ -22,5 +20,10 @@ namespace XOracle.Data.Core
         Task<TEntity> GetBy(Expression<Func<TEntity, bool>> filter);
 
         Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter);
+    }
+
+    public interface IRepository
+    {
+        IUnitOfWork UnitOfWork { get; }
     }
 }

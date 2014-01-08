@@ -1,27 +1,35 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using XOracle.Data.Core;
+using XOracle.Domain;
 using XOracle.Infrastructure;
 using XOracle.Infrastructure.Core;
-using System.Threading.Tasks;
-using XOracle.Domain.Core;
-using XOracle.Domain;
+using XOracle.Infrastructure.Utils;
 
 namespace XOracle.Data.Tests
 {
     [TestClass]
     public class Tests
     {
+        private string _emailFormat = "misha_dev{0}@live.com";
+
+        private string UniqueEmail
+        {
+            get
+            {
+                return string.Format(this._emailFormat, Guid.NewGuid().GetHashCode());
+            }
+        }
+
         [TestInitialize]
         public void Initialize()
         {
             Factory<IValidator>.SetCurrent(new DataAnnotationsEntityValidatorFactory());
-        }
-
-        [TestMethod]
-        public void IdentityGeneratorCanGenerat()
-        {
-
+            Factory<ILogger>.SetCurrent(new MockLoggerFactory());
+            Factory<IBinarySerializer>.SetCurrent(new NetBinarySerializerFactory());
+            Factory<IEmailAddressValidator>.SetCurrent(new RegexEmailAddressValidatorFactory());
         }
 
         [TestMethod]
@@ -53,7 +61,7 @@ namespace XOracle.Data.Tests
         [TestMethod]
         public async Task CreateUnitOfWork()
         {
-            InmemoryUnitOfWork unitOfWork = new InmemoryUnitOfWork();
+            var unitOfWork = new InmemoryUnitOfWork();
             var set = await unitOfWork.CreateSet<Account>();
 
             Assert.IsNotNull(set);
@@ -62,7 +70,7 @@ namespace XOracle.Data.Tests
         [TestMethod]
         public async Task FillByOneTypeUnitOfWork()
         {
-            InmemoryUnitOfWork unitOfWork = new InmemoryUnitOfWork();
+            var unitOfWork = new InmemoryUnitOfWork();
             var set = await unitOfWork.CreateSet<Account>();
 
             var account = new Account();
@@ -76,7 +84,7 @@ namespace XOracle.Data.Tests
         [TestMethod]
         public async Task TestByRelationsUnitOfWork()
         {
-            InmemoryUnitOfWork unitOfWork = new InmemoryUnitOfWork();
+            var unitOfWork = new InmemoryUnitOfWork();
             var set = await unitOfWork.CreateSet<Account>();
             var set2 = await unitOfWork.CreateSet<Account>();
 
@@ -91,7 +99,7 @@ namespace XOracle.Data.Tests
         [TestMethod]
         public async Task TestByRelationsUnitOfWork2()
         {
-            InmemoryUnitOfWork unitOfWork = new InmemoryUnitOfWork();
+            var unitOfWork = new InmemoryUnitOfWork();
             var set = await unitOfWork.CreateSet<Account>();
             var count = set.Count;
 
@@ -100,18 +108,16 @@ namespace XOracle.Data.Tests
 
             set.Add(account.Id, account);
 
-            await unitOfWork.CreateSet<Account>();
-
-            Assert.AreEqual(count, set.Count);
+            Assert.AreEqual(count + 1, set.Count);
         }
 
         [TestMethod]
         public async Task CommitByRelationsUnitOfWork()
         {
-            InmemoryUnitOfWork unitOfWork = new InmemoryUnitOfWork();
+            var unitOfWork = new InmemoryUnitOfWork();
             var set = await unitOfWork.CreateSet<Account>();
 
-            var account = new Account();
+            var account = new Account { Email = this.UniqueEmail, Name = "misha" };
             account.EnsureIdentity();
 
             set.Add(account.Id, account);
@@ -126,11 +132,11 @@ namespace XOracle.Data.Tests
         [TestMethod]
         public async Task RollbackUnitOfWork()
         {
-            InmemoryUnitOfWork unitOfWork = new InmemoryUnitOfWork();
+            var unitOfWork = new InmemoryUnitOfWork();
             var set = await unitOfWork.CreateSet<Account>();
-            var count = set.Count;
 
-            var account = new Account();
+            var count = set.Count;
+            var account = new Account { Email = this.UniqueEmail, Name = "misha" };
             account.EnsureIdentity();
 
             set.Add(account.Id, account);
@@ -143,10 +149,10 @@ namespace XOracle.Data.Tests
         [TestMethod]
         public async Task CommitRollbackUnitOfWork()
         {
-            InmemoryUnitOfWork unitOfWork = new InmemoryUnitOfWork();
+            var unitOfWork = new InmemoryUnitOfWork();
             var set = await unitOfWork.CreateSet<Account>();
 
-            var account = new Account();
+            var account = new Account { Email = this.UniqueEmail, Name = "misha" };
             account.EnsureIdentity();
 
             set.Add(account.Id, account);
@@ -165,10 +171,10 @@ namespace XOracle.Data.Tests
         [TestMethod]
         public async Task CommitRollbackUnitOfWork1()
         {
-            InmemoryUnitOfWork unitOfWork = new InmemoryUnitOfWork();
+            var unitOfWork = new InmemoryUnitOfWork();
             var set = await unitOfWork.CreateSet<Account>();
 
-            var account = new Account();
+            var account = new Account { Email = this.UniqueEmail, Name = "misha" };
             account.EnsureIdentity();
 
             set.Add(account.Id, account);
@@ -178,7 +184,7 @@ namespace XOracle.Data.Tests
             var set1 = await unitOfWork.CreateSet<Account>();
             var count = set1.Count;
 
-            var account1 = new Account();
+            var account1 = new Account { Email = this.UniqueEmail, Name = "misha" };
             account1.EnsureIdentity();
 
             set1.Add(account1.Id, account1);
@@ -188,6 +194,153 @@ namespace XOracle.Data.Tests
             var set3 = await unitOfWork.CreateSet<Account>();
 
             Assert.AreEqual(count, set3.Count);
+        }
+
+        [TestMethod]
+        public async Task CurrencyTypeRepository()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var repo = new Repository<CurrencyType>(unitOfWork);
+
+            var currencyType = await repo.GetBy(n => n.Name == CurrencyType.Reputation);
+
+            Assert.AreEqual(CurrencyType.Reputation, currencyType.Name);
+        }
+
+        [TestMethod]
+        public async Task AlgorithmTypeAllRepository()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var repo = new Repository<AlgorithmType>(unitOfWork);
+
+            var algorithmTypes = await repo.GetFiltered(n => true);
+
+            Assert.AreEqual(2, algorithmTypes.Count());
+        }
+
+        [TestMethod]
+        public async Task AlgorithmTypeRepository()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var repo = new Repository<AlgorithmType>(unitOfWork);
+
+            var algorithmType = await repo.GetBy(n => n.Name == AlgorithmType.Linear);
+
+            Assert.AreEqual(AlgorithmType.Linear, algorithmType.Name);
+
+            algorithmType = await repo.GetBy(n => n.Name == AlgorithmType.Exponential);
+
+            Assert.AreEqual(AlgorithmType.Exponential, algorithmType.Name);
+        }
+
+        [TestMethod]
+        public async Task EventRelationTypeAllRepository()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var repo = new Repository<EventRelationType>(unitOfWork);
+
+            var eventRelationTypes = await repo.GetFiltered(n => true);
+
+            Assert.AreEqual(3, eventRelationTypes.Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task ScopeableUnitOfWorkFactoryEx()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var f = new ScopeableUnitOfWorkFactory(unitOfWork);
+            var repo = new Repository<EventRelationType>(unitOfWork);
+
+            var count = (await repo.GetFiltered(x => true)).Count();
+
+            using (new InmemoryUnitOfWork())
+            {
+                using (var scope1 = await f.Create())
+                {
+                    await repo.Add(new EventRelationType { Name = string.Empty });
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task ScopeableUnitOfWorkFactory()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var f = new ScopeableUnitOfWorkFactory(unitOfWork);
+            var repo = new Repository<EventRelationType>(unitOfWork);
+
+            var count = (await repo.GetFiltered(x => true)).Count();
+
+            using (await f.Create())
+            {
+                await repo.Add(new EventRelationType { Name = "x1" });
+            }
+
+            Assert.AreEqual(count + 1, (await repo.GetFiltered(x => true)).Count());
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task ScopeableUnitOfWorkFactorySubEx()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var f = new ScopeableUnitOfWorkFactory(unitOfWork);
+            var repo = new Repository<EventRelationType>(unitOfWork);
+
+            var count = (await repo.GetFiltered(x => true)).Count();
+
+            using (await f.Create())
+            {
+                await repo.Add(new EventRelationType { Name = "x3" });
+                using (await f.Create())
+                {
+                    await repo.Add(new EventRelationType { Name = string.Empty });
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task ScopeableUnitOfWorkFactorySubRollback()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var f = new ScopeableUnitOfWorkFactory(unitOfWork);
+            var repo = new Repository<EventRelationType>(unitOfWork);
+
+            var count = (await repo.GetFiltered(x => true)).Count();
+
+            using (await f.Create())
+            {
+                await repo.Add(new EventRelationType { Name = "x4" });
+                using (await f.Create())
+                {
+                    await repo.Add(new EventRelationType { Name = "x5" });
+                }
+                await unitOfWork.Rollback();
+            }
+
+            Assert.AreEqual(count, (await repo.GetFiltered(x => true)).Count());
+        }
+
+        [TestMethod]
+        public async Task ScopeableUnitOfWorkFactorySub()
+        {
+            var unitOfWork = new InmemoryUnitOfWork();
+            var f = new ScopeableUnitOfWorkFactory(unitOfWork);
+            var repo = new Repository<EventRelationType>(unitOfWork);
+
+            var count = (await repo.GetFiltered(x => true)).Count();
+
+            using (await f.Create())
+            {
+                await repo.Add(new EventRelationType { Name = "x6" });
+                using (await f.Create())
+                {
+                    await repo.Add(new EventRelationType { Name = "x7" });
+                }
+            }
+
+            Assert.AreEqual(count + 2, (await repo.GetFiltered(x => true)).Count());
         }
     }
 }

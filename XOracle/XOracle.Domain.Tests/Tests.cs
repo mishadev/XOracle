@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
-using XOracle.Domain.Core;
 
 namespace XOracle.Domain.Tests
 {

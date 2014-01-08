@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XOracle.Domain</RootNamespace>
     <AssemblyName>XOracle.Domain</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,9 +39,48 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Accounts\AccountLogin.Validation.cs" />
+    <Compile Include="Accounts\AccountLogin.cs" />
+    <Compile Include="Accounts\Account.cs" />
+    <Compile Include="Accounts\Account.Validation.cs" />
+    <Compile Include="Accounts\AccountBalance.cs" />
+    <Compile Include="Accounts\AccountBalance.Validation.cs" />
+    <Compile Include="Accounts\AccountSet.cs" />
+    <Compile Include="Accounts\AccountSet.Validation.cs" />
+    <Compile Include="Accounts\AccountsFactory.cs" />
+    <Compile Include="Accounts\AccountTransaction.cs" />
+    <Compile Include="Accounts\AccountTransaction.Validation.cs" />
+    <Compile Include="Bets\Bet.cs" />
+    <Compile Include="Bets\Bet.Validation.cs" />
+    <Compile Include="Bets\BetFactory.cs" />
+    <Compile Include="Bets\BetRate.cs" />
+    <Compile Include="Bets\BetRateCalculatorFactory.cs" />
+    <Compile Include="Bets\BetRateExponentialCalculator.cs" />
+    <Compile Include="Bets\BetRateLinearCalculator.cs" />
+    <Compile Include="Common\AlgorithmType.cs" />
+    <Compile Include="Common\AlgorithmType.Validation.cs" />
+    <Compile Include="Common\OutcomesType.Validation.cs" />
+    <Compile Include="Common\CurrencyType.cs" />
+    <Compile Include="Common\CurrencyType.Validation.cs" />
+    <Compile Include="Common\OutcomesType.cs" />
+    <Compile Include="Events\Event.cs" />
+    <Compile Include="Events\Event.Validation.cs" />
+    <Compile Include="Events\EventBetCondition.cs" />
+    <Compile Include="Events\EventBetCondition.Validation.cs" />
+    <Compile Include="Bets\BetRateAlgorithm.cs" />
+    <Compile Include="Bets\BetRateAlgorithm.Validation.cs" />
+    <Compile Include="Events\EventCondition.cs" />
+    <Compile Include="Events\EventCondition.Validation.cs" />
+    <Compile Include="Events\EventRelationType.cs" />
+    <Compile Include="Events\EventRelationType.Validation.cs" />
+    <Compile Include="Events\EventsFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\XOracle.Data.Core\XOracle.Data.Core.csproj">
+      <Project>{391f1378-4706-4b8e-b1d3-e4a6ca2eed3b}</Project>
+      <Name>XOracle.Data.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XOracle.Domain.Core\XOracle.Domain.Core.csproj">
       <Project>{70ecb2b5-48d1-4056-952d-b7180ecb8e66}</Project>
       <Name>XOracle.Domain.Core</Name>
@@ -50,6 +90,7 @@
       <Name>XOracle.Infrastructure.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

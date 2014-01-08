@@ -1,64 +1,71 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using XOracle.Application.Core;
 using XOracle.Data.Core;
-using XOracle.Domain.Core;
-using XOracle.Infrastructure.Core;
+using XOracle.Domain;
 
 namespace XOracle.Application
 {
     public class AccountingService : IAccountingService
     {
-        private IRepository<Account> _accountRepository;
-        private IRepository<AccountBalance> _accountBalanceRepository;
-        private IRepository<CurrencyType> _valueTypeRepository;
-        private IFactory<IScopeable<IUnitOfWork>> _scopeableFactory;
+        private IAccountsFactory _accountsFactory;
+        private IRepositoryFactory _repositories;
 
         public AccountingService(
-            IRepository<Account> accountRepository,
-            IRepository<AccountBalance> accountBalanceRepository,
-            IRepository<CurrencyType> valueTypeRepository,
-            IFactory<IScopeable<IUnitOfWork>> scopeableFactory)
+            IRepositoryFactory repositories,
+            IAccountsFactory accountsFactory)
         {
-            this._accountRepository = accountRepository;
-            this._accountBalanceRepository = accountBalanceRepository;
-            this._valueTypeRepository = valueTypeRepository;
-            this._scopeableFactory = scopeableFactory;
+            this._repositories = repositories;
+            this._accountsFactory = accountsFactory;
         }
 
-        public async Task<SingUpResponse> SingUp(SingUpRequest request)
+        public async Task<GetAccountResponse> GetAccount(GetAccountRequest request)
         {
-            var creation = await CreateAccount(new CreateAccountRequest { Email = request.Email });
+            var account = request.AccountId.HasValue ?
+                await this._repositories.Get<Account>().Get(request.AccountId.Value) :
+                await this._repositories.Get<Account>().GetBy(a => a.Name == request.Name);
+            var currencyType = await this._repositories.Get<CurrencyType>().GetBy(v => v.Name == CurrencyType.Reputation);
+            var balance = await this._repositories.Get<AccountBalance>().GetBy(b => b.AccountId == account.Id && b.CurrencyTypeId == currencyType.Id);
 
-            return new SingUpResponse { AccountId = creation.AccountId, Ticket = System.Guid.NewGuid() };
-        }
-
-        public async Task<GetDetailsAccountResponse> GetDetailsAccount(GetDetailsAccountRequest request)
-        {
-            var account = await this._accountRepository.Get(request.AccountId);
-            var valueType = await this._valueTypeRepository.GetBy(v => v.Name == CurrencyType.ReputationName);
-            var balance = await this._accountBalanceRepository.GetBy(b => b.AccountId == account.Id && b.CurrencyTypeId == valueType.Id);
-            
-            return new GetDetailsAccountResponse { AccountId = account.Id, Email = account.Email, Name = account.Name, Reputation = balance.Value };
+            return new GetAccountResponse { AccountId = account.Id, Email = account.Email, Name = account.Name, Reputation = balance.Value };
         }
 
         public async Task<CreateAccountResponse> CreateAccount(CreateAccountRequest request)
         {
-            var account = await this._accountRepository.GetBy(a => a.Email == request.Email);
-            if (account == null)
-            {
-                using (var scope = await this._scopeableFactory.Create())
-                {
-                    account = new Account { Email = request.Email, Name = request.Name ?? request.Email };
-                    await this._accountRepository.Add(account);
-
-                    var valueType = (await this._valueTypeRepository.GetBy(v => v.Name == CurrencyType.ReputationName));
-                    var balance = new AccountBalance { AccountId = account.Id, Value = 1, CurrencyTypeId = valueType.Id };
-                    await this._accountBalanceRepository.Add(balance);
-                }
-            }
+            var account = await this._accountsFactory.CreateAccount(request.Email, request.Name);
 
             return new CreateAccountResponse { AccountId = account.Id };
+        }
+
+        public async Task<DeleteAccountResponse> DeleteAccount(DeleteAccountRequest request)
+        {
+            var account = await this._repositories.Get<Account>().Get(request.AccountId);
+
+            await this._repositories.Get<Account>().Remove(account);
+
+            return new DeleteAccountResponse { };
+        }
+
+        public async Task<GetAccountLoginResponse> GetAccountLogin(GetAccountLoginRequest request)
+        {
+            AccountLogin accountlogin = await this._repositories.Get<AccountLogin>().Get(request.AccountLoginId);
+
+            return new GetAccountLoginResponse { 
+                AccountLoginId = accountlogin.Id, 
+                LoginProvider = accountlogin.LoginProvider, 
+                ProviderKey = accountlogin.ProviderKey,
+                AccountId = accountlogin.AccountId};
+        }
+
+        public async Task<CreateAccountLoginResponse> CreateAccountLogin(CreateAccountLoginRequest request)
+        {
+            AccountLogin accountLogin = new AccountLogin { 
+                AccountId = request.AccountId, 
+                LoginProvider = request.LoginProvider, 
+                ProviderKey = request.ProviderKey };
+
+            await this._repositories.Get<AccountLogin>().Add(accountLogin);
+
+            return new CreateAccountLoginResponse { AccountLoginId = accountLogin.Id };
         }
     }
 }

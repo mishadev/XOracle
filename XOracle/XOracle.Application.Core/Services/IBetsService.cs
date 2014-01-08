@@ -6,7 +6,7 @@ namespace XOracle.Application.Core
     {
         Task<CreateBetResponse> CreateBet(CreateBetRequest request);
 
-        Task<GetBetRateResponse> GetBetRate(GetBetRateRequest request);
+        Task<CalculateBetRateResponse> CalculateBetRate(CalculateBetRateRequest request);
 
         Task<GetBetsResponse> GetBets(GetBetsRequest request);
     }

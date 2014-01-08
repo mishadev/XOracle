@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,76 +27,31 @@ namespace XOracle.Data
                 var store = await this.GetFromStorage(key);
                 var local = (IDictionary)_local[key];
 
-                if (await IsValid(local))
-                {
-                    var data = Merge(store, local);
-
-                    Replace((IDictionary)_store, key, await serializer.ToBinary(data));
-                }
-                else
-                {
-                    throw new InvalidOperationException("Commit");
-                }
+                var data = Merge(store, local);
+                Replace((IDictionary)_store, key, await serializer.ToBinary(data));
             }
-        }
-
-        private async Task<bool> IsValid(IDictionary objects)
-        {
-            var validator = await Factory<IValidator>.GetInstance();
-            var invalid = false;
-
-            foreach (var item in objects.Values)
-            {
-                if (invalid = !validator.IsValid(item))
-                    break;
-            }
-
-            return !invalid;
-        }
-
-        private IDictionary Merge(IDictionary store, IDictionary local)
-        {
-            if (store == null)
-                return local;
-
-            foreach (var key in local.Keys)
-                Replace(store, key, local[key]);
-
-            return store;
-        }
-
-        private void Replace(IDictionary store, object key, object value)
-        {
-            if (store.Contains(key))
-                store[key] = value;
-            else
-                store.Add(key, value);
         }
 
         public async Task Rollback()
         {
-            this.SyncRollback();
-        }
-
-        private void SyncRollback()
-        {
             foreach (var key in _local.Keys)
             {
-                ((IDictionary)_local[key]).Clear();
+                var storage = await GetFromStorage(key);
+
+                this.ResetLocal(key, (IDictionary)storage);
             }
-            _local.Clear();
         }
 
         public void Dispose()
         {
-            this.SyncRollback();
+            this.Rollback().GetAwaiter().GetResult();
         }
 
         public async Task<IDictionary<Guid, TEntity>> CreateSet<TEntity>()
             where TEntity : Entity
         {
-            var stored = await GetFromStorage<TEntity>();
-            var local = UpdateLocal(stored);
+            var stored = await this.GetFromStorage<TEntity>();
+            var local = this.UpdateLocal(stored);
 
             return local;
         }
@@ -107,6 +61,11 @@ namespace XOracle.Data
             var storage = await this.GetFromStorage(typeof(TEntity));
 
             return storage as IDictionary<Guid, TEntity> ?? new Dictionary<Guid, TEntity>();
+        }
+
+        private IDictionary<Guid, TEntity> UpdateLocal<TEntity>(IDictionary<Guid, TEntity> stored)
+        {
+            return (IDictionary<Guid, TEntity>)this.UpdateLocal(typeof(TEntity), (IDictionary)stored);
         }
 
         private async Task<IDictionary> GetFromStorage(Type key)
@@ -119,24 +78,53 @@ namespace XOracle.Data
             return null;
         }
 
-        private IDictionary<Guid, TEntity> UpdateLocal<TEntity>(IDictionary<Guid, TEntity> stored)
+        private IDictionary UpdateLocal(Type type, IDictionary stored)
         {
-            var type = typeof(TEntity);
-
-            if (_local.ContainsKey(type))
-            {
-                var innerlocal = (IDictionary<Guid, TEntity>)_local[type];
-                innerlocal.Clear();
-
-                foreach (var item in stored)
-                    innerlocal.Add(item);
-            }
+            if (this._local.ContainsKey(type))
+                this.Merge((IDictionary)this._local[type], stored);
             else
-            {
-                _local.Add(type, stored);
-            }
+                this._local.Add(type, stored);
 
-            return (IDictionary<Guid, TEntity>)_local[type];
+            return (IDictionary)this._local[type];
+        }
+
+        private IDictionary ResetLocal(Type type, IDictionary stored)
+        {
+            if (this._local.ContainsKey(type))
+                this.Substitution((IDictionary)this._local[type], stored);
+            else
+                this._local.Add(type, stored);
+
+            return (IDictionary)this._local[type];
+        }
+
+        private IDictionary Substitution(IDictionary to, IDictionary from)
+        {
+            to.Clear();
+
+            return this.Merge(to, from);
+        }
+
+        private IDictionary Merge(IDictionary to, IDictionary from)
+        {
+            if (to == null)
+                return from;
+
+            if (from == null)
+                return to;
+
+            foreach (var key in from.Keys)
+                Replace(to, key, from[key]);
+
+            return to;
+        }
+
+        private void Replace(IDictionary store, object key, object value)
+        {
+            if (store.Contains(key))
+                store[key] = value;
+            else
+                store.Add(key, value);
         }
     }
 }

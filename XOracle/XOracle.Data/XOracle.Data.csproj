@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XOracle.Data</RootNamespace>
     <AssemblyName>XOracle.Data</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -50,6 +51,10 @@
     <ProjectReference Include="..\XOracle.Domain.Core\XOracle.Domain.Core.csproj">
       <Project>{70ecb2b5-48d1-4056-952d-b7180ecb8e66}</Project>
       <Name>XOracle.Domain.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XOracle.Domain\XOracle.Domain.csproj">
+      <Project>{8732c3b6-7dae-443d-b81d-560df4cc5de3}</Project>
+      <Name>XOracle.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\XOracle.Infrastructure.Core\XOracle.Infrastructure.Core.csproj">
       <Project>{ef5c02be-2e57-4ca2-bb7b-2a9582fb3d05}</Project>
