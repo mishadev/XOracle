@@ -1,0 +1,93 @@
+﻿<section id="events-view" class="mainbar" data-ng-controller="events as vm">
+    <section class="matter">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="widget wviolet">
+                        <div data-cc-widget-header title="{{vm.title}}"
+                             allow-collapse="true">
+                        </div>
+                        <div class="widget-content text-center text-info" data-ng-if="vm.ready">
+                            <div data-ng-if="vm.hasEvents">
+                                <ul class="nav">
+                                    <li data-ng-repeat="event in vm.events">
+                                        {{event}}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div data-ng-if="!vm.hasEvents">
+                                No results
+                            </div>
+                        </div>
+                        <div class="widget-foot">
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="widget wviolet">
+                        <div data-cc-widget-header title="{{vm.title}}"
+                             allow-collapse="true">
+                        </div>
+                        <div class="widget-content text-center text-info" data-ng-if="vm.ready">
+                            <div class="form-group">
+                                <label for="eventTitle">Title</label>
+                                <input id="eventTitle" type="text" data-ng-model="vm.event.title" />
+                            </div>
+                            <div class="form-group">
+                                <label for="eventcloseDate">Close Date</label>
+                                <input id="eventcloseDate" type="text" data-ng-model="vm.event.closeDate" />
+                            </div>
+                            <div class="form-group">
+                                <label for="eventendDate">End Date</label>
+                                <input id="eventendDate" type="text" data-ng-model="vm.event.endDate" />
+                            </div>
+                            <div class="form-group">
+                                <label for="eventexpectedEventCondition">Expected Event Condition</label>
+                                <input id="eventexpectedEventCondition" type="text" data-ng-model="vm.event.expectedEventCondition" />
+                            </div>
+                            <div class="form-group">
+                                <label for="eventcurrencyType">Currency Type</label>
+                                <select id="eventcurrencyType" data-ng-model="vm.event.currencyType">
+                                    <option data-ng-repeat="currencyType in vm.currencyTypes">{{currencyType}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="eventRelationType">Relation Type</label>
+                                <select id="eventRelationType" data-ng-model="vm.event.eventRelationType">
+                                    <option data-ng-repeat="eventRelationType in vm.eventRelationTypes">{{eventRelationType}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="eventstartRate">Start Rate</label>
+                                <input id="eventstartRate" type="text" data-ng-model="vm.event.startRate" />
+                            </div>
+                            <div class="form-group">
+                                <label for="eventendRate">End Rate</label>
+                                <input id="eventendRate" type="text" data-ng-model="vm.event.endRate" />
+                            </div>
+                            <div class="form-group">
+                                <label for="eventlocusRage">Locus Rage</label>
+                                <input id="eventlocusRage" type="text" data-ng-model="vm.event.locusRage" />
+                            </div>
+                            <div class="form-group">
+                                <label for="eventRelationType">Relation Type</label>
+                                <select id="eventRelationType" data-ng-model="vm.event.algorithmType">
+                                    <option data-ng-repeat="algorithmType in vm.algorithmTypes">{{algorithmType}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="eventjudgingAccounts">Judging Accounts</label>
+                                <input id="eventjudgingAccounts" type="text" data-ng-model="vm.event.judgingAccounts" />
+                            </div>
+                            <button class="btn btn-default" data-ng-click="vm.create()">Create</button>
+                        </div>
+                        <div class="widget-foot">
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>

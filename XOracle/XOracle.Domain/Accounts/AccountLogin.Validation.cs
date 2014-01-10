@@ -8,9 +8,14 @@ namespace XOracle.Domain
     [Serializable]
     public partial class AccountLogin : IValidatableObject
     {
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
-            throw new NotImplementedException();
+            ValidationResult[] results = {
+                this.IsDefault(this.AccountId, "AccountId"),
+                this.IsDefault(this.ProviderKey, "ProviderKey"),
+            }; 
+
+            return results;
         }
     }
 }

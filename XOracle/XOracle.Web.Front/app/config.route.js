@@ -5,11 +5,10 @@
 
     // Collect the routes
     app.constant('routes', getRoutes());
-    
+
     // Configure the routes and route resolvers
     app.config(['$routeProvider', 'routes', routeConfigurator]);
     function routeConfigurator($routeProvider, routes) {
-
         routes.forEach(function (r) {
             $routeProvider.when(r.url, r.config);
         });
@@ -22,22 +21,19 @@
             {
                 url: '/',
                 config: {
-                    templateUrl: 'app/controllers/login/login.html',
-                    title: 'login',
+                    templateUrl: 'app/controllers/events/events.html',
+                    title: 'events',
                     settings: {
                         nav: 1,
-                        content: '<i class="icon-login"></i> Login'
+                        content: '<i class="icon-login"></i> Events'
                     }
                 }
-            }, {
-                url: '/admin',
+            },
+            {
+                url: '/SignUp',
                 config: {
-                    title: 'admin',
-                    templateUrl: 'app/controllers/admin/admin.html',
-                    settings: {
-                        nav: 2,
-                        content: '<i class="icon-lock"></i> Admin'
-                    }
+                    templateUrl: 'app/controllers/login/login.html',
+                    title: 'login'
                 }
             }
         ];

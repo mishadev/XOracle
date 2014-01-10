@@ -15,6 +15,11 @@ namespace XOracle.Application
         private IEventsFactory _eventsFactory;
         private IRepositoryFactory _repositories;
 
+        public IRepositoryFactory Repositories
+        {
+            get { return _repositories; }
+        }
+
         public EventsService(
             IRepositoryFactory repositories,
             IEventsFactory eventsFactory,

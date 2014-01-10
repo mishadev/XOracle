@@ -11,6 +11,8 @@ namespace XOracle.Domain
     {
         Task<Account> CreateAccount(string email, string name);
 
+        Task<AccountLogin> CreateAccountLogin(Guid accountId, string loginProvider, string providerKey);
+
         Task<AccountBalance> CreateAccountBalance(Account account, CurrencyType currencyType, decimal value);
     }
 
@@ -61,6 +63,23 @@ namespace XOracle.Domain
                 await this._repositories.Get<AccountBalance>().Add(balance);
 
                 return balance;
+            }
+        }
+
+        public async Task<AccountLogin> CreateAccountLogin(Guid accountId, string loginProvider, string providerKey)
+        {
+            using (await this._scopeableFactory.Create())
+            {
+                AccountLogin accountLogin = new AccountLogin
+                {
+                    AccountId = accountId,
+                    LoginProvider = loginProvider,
+                    ProviderKey = providerKey
+                };
+
+                await this._repositories.Get<AccountLogin>().Add(accountLogin);
+
+                return accountLogin;
             }
         }
     }

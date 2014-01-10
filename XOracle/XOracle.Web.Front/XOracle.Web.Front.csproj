@@ -122,8 +122,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\controllers\admin\admin.html" />
-    <Content Include="app\controllers\admin\admin.js" />
     <Content Include="app\app.js" />
     <Content Include="app\common\bootstrap\bootstrap.dialog.js" />
     <Content Include="app\common\common.js" />
@@ -132,6 +130,8 @@
     <Content Include="app\config.exceptionHandler.js" />
     <Content Include="app\config.js" />
     <Content Include="app\config.route.js" />
+    <Content Include="app\controllers\events\events.html" />
+    <Content Include="app\controllers\events\events.js" />
     <Content Include="app\controllers\login\login.html" />
     <Content Include="app\controllers\login\login.js" />
     <Content Include="app\layout\shell.html" />
@@ -203,6 +203,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -210,6 +211,8 @@
     <Compile Include="App_Code\IdentityAccount.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\EventBindingModels.cs" />
+    <Compile Include="Models\EventsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />

@@ -12,6 +12,11 @@ namespace XOracle.Application
         private IBetsFactory _betsFactory;
         private IRepositoryFactory _repositories;
 
+        public IRepositoryFactory Repositories
+        {
+            get { return _repositories; }
+        }
+
         public BetsService(
             IRepositoryFactory repositories,
             IBetsFactory betsFactory)

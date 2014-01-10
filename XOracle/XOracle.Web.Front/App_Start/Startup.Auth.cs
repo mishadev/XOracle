@@ -48,9 +48,9 @@ namespace XOracle.Web.Front
             //    clientId: "",
             //    clientSecret: "");
 
-            //app.UseTwitterAuthentication(
-            //    consumerKey: "",
-            //    consumerSecret: "");
+            app.UseTwitterAuthentication(
+                consumerKey: "mUnZ9yDNN2pRwzyqzrkwjQ",
+                consumerSecret: "Ow9pJWZNzmg4TX1zrLxfQFnvBFpBi8CydxeQ3Xu6uM");
 
             app.UseFacebookAuthentication(
                 appId: "562885513799724",

@@ -1,14 +1,15 @@
-﻿(function () { 
+﻿(function () {
     'use strict';
-    
+
     var controllerId = 'shell';
     angular.module('app').controller(controllerId,
-        ['$rootScope', 'common', 'config', shell]);
+        ['$rootScope', '$route', 'common', 'config', shell]);
 
-    function shell($rootScope, common, config) {
-        var vm = this;
-        var logSuccess = common.logger.getLogFn(controllerId, 'success');
-        var events = config.events;
+    function shell($rootScope, $route, common, config) {
+        var vm = this,
+            logSuccess = common.logger.getLogFn(controllerId, 'success'),
+            events = config.events;
+
         vm.busyMessage = 'loading ...';
         vm.isBusy = true;
         vm.spinnerOptions = {
@@ -25,7 +26,6 @@
         activate();
 
         function activate() {
-            common.restoreSessionStorageFromLocalStorage();
             logSuccess('xOracle loaded!', null, true);
             common.activateController([], controllerId);
         }
@@ -35,7 +35,7 @@
         $rootScope.$on('$routeChangeStart',
             function (event, next, current) { toggleSpinner(true); }
         );
-        
+
         $rootScope.$on(events.controllerActivateSuccess,
             function (data) { toggleSpinner(false); }
         );

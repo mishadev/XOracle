@@ -2,7 +2,7 @@
 
 namespace XOracle.Application.Core
 {
-    public interface IAccountingService
+    public interface IAccountingService : IAppService
     {
         Task<GetAccountResponse> GetAccount(GetAccountRequest request);
 
@@ -11,6 +11,8 @@ namespace XOracle.Application.Core
         Task<DeleteAccountResponse> DeleteAccount(DeleteAccountRequest request);
 
         Task<GetAccountLoginResponse> GetAccountLogin(GetAccountLoginRequest request);
+
+        Task<GetAccountLoginsResponse> GetAccountLogins(GetAccountLoginsRequest request);
 
         Task<CreateAccountLoginResponse> CreateAccountLogin(CreateAccountLoginRequest request);
     }

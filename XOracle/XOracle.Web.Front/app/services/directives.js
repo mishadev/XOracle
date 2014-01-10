@@ -1,4 +1,4 @@
-﻿(function() {
+﻿(function () {
     'use strict';
 
     var app = angular.module('app');
@@ -136,7 +136,7 @@
                 });
 
                 function toggleIcon() {
-                    $win.scrollTop() > 300 ? element.slideDown(): element.slideUp();
+                    $win.scrollTop() > 300 ? element.slideDown() : element.slideUp();
                 }
             }
         }
@@ -165,7 +165,7 @@
         }
     }]);
 
-    app.directive('ccWidgetHeader', function() {
+    app.directive('ccWidgetHeader', function () {
         //Usage:
         //<div data-cc-widget-header title="vm.map.title"></div>
         var directive = {
@@ -185,4 +185,50 @@
             attrs.$set('class', 'widget-head');
         }
     });
+
+    app.directive('ccWidgetSingout', ['common', 'datacontext', function (common, datacontext) {
+        //Usage:
+        //<ANY data-cc-widget-singout></ANY>
+        var logError = common.logger.getLogFn('app', 'error'),
+            directive = {
+                link: link,
+                template: '<li class="hide"><a href="#"></a></li>',
+                restrict: 'A',
+            };
+
+        return directive;
+
+        function link(scope, element, attrs) {
+            attrs.$set('class', 'nav pull-right');
+
+            if (common.IsLogedIn()) {
+                getUserInfo();
+
+                element.find('a').click(function (e) {
+                    e.preventDefault();
+
+                    signOut();
+                });
+            }
+
+            function signOut() {
+                return datacontext.Logout()
+                    .then(function () {
+                        common.$location.path('SingIn');
+                    }, logErrors);
+            }
+
+            function getUserInfo() {
+                return datacontext.GetUserInfo()
+                    .then(function (data) {
+                        element.find('li').show();
+                        element.find('a').text(data.UserName);
+                    }, logErrors);
+            }
+        }
+
+        function logErrors(data) {
+            logError(data.ExceptionMessage || data.Message || data);
+        }
+    }]);
 })();

@@ -25,27 +25,42 @@
     });
 
     commonModule.factory('common',
-        ['$q', '$rootScope', '$timeout', '$http', 'commonConfig', 'logger', common]);
+        ['$q', '$rootScope', '$timeout', '$http', '$location', 'commonConfig', 'logger', common]);
 
-    function common($q, $rootScope, $timeout, $http, commonConfig, logger) {
-        var throttles = {};
+    function common($q, $rootScope, $timeout, $http, $location, commonConfig, logger) {
+        var throttles = {},
+            allowAnonymous = ['login', 'shell', 'sidebar'],
 
-        var service = {
-            // common angular dependencies
-            $broadcast: $broadcast,
-            $q: $q,
-            $timeout: $timeout,
-            $http: $http,
-            // generic
-            activateController: activateController,
-            createSearchThrottle: createSearchThrottle,
-            debouncedThrottle: debouncedThrottle,
-            isNumber: isNumber,
-            logger: logger, // for accessibility
-            textContains: textContains,
-            archiveSessionStorageToLocalStorage: archiveSessionStorageToLocalStorage,
-            restoreSessionStorageFromLocalStorage: restoreSessionStorageFromLocalStorage
-        };
+            service = {
+                // common angular dependencies
+                $broadcast: $broadcast,
+                $q: $q,
+                $timeout: $timeout,
+                $http: $http,
+                $location: $location,
+                // generic
+                activateController: activateController,
+                createSearchThrottle: createSearchThrottle,
+                debouncedThrottle: debouncedThrottle,
+                isNumber: isNumber,
+                logger: logger, // for accessibility
+                textContains: textContains,
+                archiveSessionStorageToLocalStorage: archiveSessionStorageToLocalStorage,
+                restoreSessionStorageFromLocalStorage: restoreSessionStorageFromLocalStorage,
+                /*Auth*/
+                //SetAccessToken: setAccessToken,
+                ClearAccessToken: clearAccessToken,
+                GetSecurityHeaders: getSecurityHeaders,
+                IsLogedIn: isLogedIn
+                //ParseQueryString: parseQueryString,
+                //EnsuteUserAuthenticated: ensuteUserAuthenticated
+            };
+
+        $rootScope.$on('$routeChangeStart',
+            function (event, next, current) {
+                ensuteUserAuthenticated(next.$$route);
+            }
+        );
 
         return service;
 
@@ -54,6 +69,7 @@
                 var data = { controllerId: controllerId };
                 $broadcast(commonConfig.config.controllerActivateSuccessEvent, data);
             });
+            return $q.defer().promise;
         }
 
         function $broadcast() {
@@ -154,5 +170,107 @@
                 localStorage.removeItem("sessionStorageBackup");
             }
         };
+
+        // Other private operations
+        function getSecurityHeaders() {
+            var accessToken = getSecurityAccessToken()
+
+            if (accessToken) {
+                return { "Authorization": "Bearer " + accessToken };
+            }
+
+            return {};
+        }
+
+        function getSecurityAccessToken()
+        {
+            return sessionStorage["accessToken"] || localStorage["accessToken"];
+        }
+
+        // Operations
+        function clearAccessToken() {
+            localStorage.removeItem("accessToken");
+            sessionStorage.removeItem("accessToken");
+        }
+
+        function setAccessToken(accessToken, persistent) {
+            if (persistent) {
+                localStorage["accessToken"] = accessToken;
+            } else {
+                sessionStorage["accessToken"] = accessToken;
+            }
+        }
+
+        function ensuteUserAuthenticated(route) {
+            if (!isLogedIn()) {
+                if (route) {
+                    if (route.title && route.title !== 'login') {
+                        $location.path('SignUp').replace();
+                    }
+                } else {
+                    var token = parseQueryString($location.path().substr(1));
+                    validateToken(token);
+                    verifyStateMatch(token);
+
+                    if (typeof (token.error) !== "undefined") {
+                        logger.getLogFn('app', 'error')(token.error);
+                    } else if (typeof (token.access_token) !== "undefined") {
+                        setAccessToken(token.access_token);
+
+                        $location.path('/');
+                    }
+                }
+            }
+        }
+
+        function isLogedIn() {
+            return !!getSecurityAccessToken();
+        }
+
+        function validateToken(token) {
+            if (typeof (token.access_token) === "undefined" || typeof (token.token_type) === "undefined")
+                token.error = "invalid_token";
+        }
+
+        function verifyStateMatch(token) {
+            if (typeof (token.access_token) !== "undefined") {
+                var state = sessionStorage["state"];
+                sessionStorage.removeItem("state");
+
+                if (state === null || token.state !== state)
+                    token.error = "invalid_state";
+            }
+        }
+
+        function parseQueryString(queryString) {
+            var data = {},
+                pairs, pair, separatorIndex, escapedKey, escapedValue, key, value;
+
+            if (queryString === null) {
+                return data;
+            }
+
+            pairs = queryString.split("&");
+
+            for (var i = 0; i < pairs.length; i++) {
+                pair = pairs[i];
+                separatorIndex = pair.indexOf("=");
+
+                if (separatorIndex === -1) {
+                    escapedKey = pair;
+                    escapedValue = null;
+                } else {
+                    escapedKey = pair.substr(0, separatorIndex);
+                    escapedValue = pair.substr(separatorIndex + 1);
+                }
+
+                key = decodeURIComponent(escapedKey);
+                value = decodeURIComponent(escapedValue);
+
+                data[key] = value;
+            }
+
+            return data;
+        }
     }
 })();

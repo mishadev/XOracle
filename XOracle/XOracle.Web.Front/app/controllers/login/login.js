@@ -20,23 +20,15 @@
             var promises = [externalLoginProviders()];
             common.activateController(promises, controllerId)
                 .then(function () {
-
                     vm.ready = true;
-                });
-        }
-
-        function externalLoginProviders() {
-            return datacontext.ExternalLoginsUrl(window.location.href)
-                .then(function (data) {
-                    vm.loginProviders = data;
                 }, logErrors);
         }
 
-        function login() {
-            return datacontext.Login().then(function (data) {
-                debugger
-                return vm.user = data;
-            }, logErrors);
+        function externalLoginProviders() {
+            return datacontext.GetExternalLogins(window.location.href, true)
+                .then(function (data) {
+                    vm.loginProviders = data;
+                }, logErrors);
         }
 
         function logErrors(data)
@@ -53,6 +45,10 @@
             // to localStorage to work around this problem.
             common.archiveSessionStorageToLocalStorage();
             window.location = provider.Url;
+        }
+
+        vm.registerExternal = function (userName) {
+            return datacontext.RegisterExternal(userName).then(function () { }, logErrors);
         }
     }
 })();

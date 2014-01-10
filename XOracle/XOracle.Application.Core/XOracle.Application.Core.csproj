@@ -51,7 +51,10 @@
     <Compile Include="Models\Accounts\GetAccountLoginResponse.cs" />
     <Compile Include="Models\Accounts\CreateAccountLoginRequest.cs" />
     <Compile Include="Models\Accounts\CreateAccountLoginResponse.cs" />
+    <Compile Include="Models\Accounts\GetAccountLoginsRequest.cs" />
+    <Compile Include="Models\Accounts\GetAccountLoginsResponse.cs" />
     <Compile Include="Services\IAccountingService.cs" />
+    <Compile Include="Services\IAppService.cs" />
     <Compile Include="Services\IBetsService.cs" />
     <Compile Include="Services\IEventsService.cs" />
     <Compile Include="Models\Accounts\GetAccountRequest.cs" />

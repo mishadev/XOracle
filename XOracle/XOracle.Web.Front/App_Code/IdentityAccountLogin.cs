@@ -2,9 +2,9 @@
 {
     public class IdentityAccountLogin
     {
-        public virtual string LoginProvider { get; set; }
-        public virtual string ProviderKey { get; set; }
-        public virtual IdentityAccount User { get; set; }
-        public virtual string UserId { get; set; }
+        public string LoginProvider { get; set; }
+        public string ProviderKey { get; set; }
+        public IdentityAccount User { get; set; }
+        public string UserId { get; set; }
     }
 }

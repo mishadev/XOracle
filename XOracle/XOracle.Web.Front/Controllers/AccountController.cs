@@ -3,8 +3,8 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -180,7 +180,7 @@ namespace XOracle.Web.Front.Controllers
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
         [AllowAnonymous]
-        [Route("ExternalLogin", Name="ExternalLogin")]
+        [Route("ExternalLogin", Name = "ExternalLogin")]
         public async Task<IHttpActionResult> GetExternalLogin(string provider, string error = null)
         {
             if (error != null)
@@ -194,37 +194,34 @@ namespace XOracle.Web.Front.Controllers
             }
 
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
-
-            if (externalLogin == null)
+            if (externalLogin == null || externalLogin.LoginProvider != provider)
             {
-                return InternalServerError();
+                Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+                return Redirect(Url.Content("~/"));
             }
 
-            if (externalLogin.LoginProvider != provider)
-            {
-                Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                return new ChallengeResult(provider, this);
+            IdentityAccount account = await _userManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey));
+            if (account == null)
+            { 
+                account = new IdentityAccount { UserName = externalLogin.UserName };
+                IdentityResult result = await _userManager.CreateAsync(account);
+                
+                if (!result.Succeeded) return InternalServerError();
+
+                UserLoginInfo login = new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey);
+                account = await _userManager.FindByNameAsync(account.UserName);
+                result = await _userManager.AddLoginAsync(account.Id, login);
+
+                if (!result.Succeeded) return InternalServerError();
             }
 
-            IdentityAccount account = await _userManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider,
-                externalLogin.ProviderKey));
-
-            if (account != null)
-            {
-                Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                ClaimsIdentity oAuthIdentity = await _userManager.CreateIdentityAsync(account,
-                    OAuthDefaults.AuthenticationType);
-                ClaimsIdentity cookieIdentity = await _userManager.CreateIdentityAsync(account,
-                    CookieAuthenticationDefaults.AuthenticationType);
-                AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(account.UserName);
-                Authentication.SignIn(properties, oAuthIdentity, cookieIdentity);
-            }
-            else
-            {
-                IEnumerable<Claim> claims = externalLogin.GetClaims();
-                ClaimsIdentity identity = new ClaimsIdentity(claims, OAuthDefaults.AuthenticationType);
-                Authentication.SignIn(identity);
-            }
+            Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            ClaimsIdentity oAuthIdentity = await _userManager.CreateIdentityAsync(account,
+                OAuthDefaults.AuthenticationType);
+            ClaimsIdentity cookieIdentity = await _userManager.CreateIdentityAsync(account,
+                CookieAuthenticationDefaults.AuthenticationType);
+            AuthenticationProperties properties = ApplicationOAuthProvider.CreateProperties(account.UserName);
+            Authentication.SignIn(properties, oAuthIdentity, cookieIdentity);
 
             return Ok();
         }
@@ -304,10 +301,7 @@ namespace XOracle.Web.Front.Controllers
                 return InternalServerError();
             }
 
-            IdentityAccount account = new IdentityAccount
-            {
-                UserName = model.UserName
-            };
+            IdentityAccount account = new IdentityAccount { UserName = model.UserName };
             account.Logins.Add(new IdentityAccountLogin
             {
                 LoginProvider = externalLogin.LoginProvider,
