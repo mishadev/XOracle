@@ -1,0 +1,1 @@
+bin\XOracle.Azure.Web.Front.dll

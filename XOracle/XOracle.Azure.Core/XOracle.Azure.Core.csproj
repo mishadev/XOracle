@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0055D589-299A-439E-9F8D-286B871BA831}</ProjectGuid>
+    <ProjectGuid>{515FEDC5-9529-45B7-93ED-22756B7BD9DC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XOracle.Infrastructure</RootNamespace>
-    <AssemblyName>XOracle.Infrastructure</AssemblyName>
+    <RootNamespace>XOracle.Azure.Core</RootNamespace>
+    <AssemblyName>XOracle.Azure.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,31 +30,29 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\sln\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Logging\MockLogger.cs" />
-    <Compile Include="Logging\TraceLoggerFactory.cs" />
-    <Compile Include="Logging\MockLoggerFactory.cs" />
-    <Compile Include="Logging\TraceLogger.cs" />
+    <Compile Include="Helpers\CloudConfiguration.cs" />
+    <Compile Include="Helpers\ExceptionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\NetBinarySerializer.cs" />
-    <Compile Include="Utils\NetBinarySerializerFactory.cs" />
-    <Compile Include="Utils\RegexEmailAddressValidator.cs" />
-    <Compile Include="Utils\RegexEmailAddressValidatorFactory.cs" />
-    <Compile Include="Validator\DataAnnotationsEntityValidator.cs" />
-    <Compile Include="Validator\DataAnnotationsEntityValidatorFactory.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XOracle.Infrastructure.Core\XOracle.Infrastructure.Core.csproj">
-      <Project>{ef5c02be-2e57-4ca2-bb7b-2a9582fb3d05}</Project>
-      <Name>XOracle.Infrastructure.Core</Name>
-    </ProjectReference>
+    <Folder Include="DataExtensibility\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
