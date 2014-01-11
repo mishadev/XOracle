@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using XOracle.Application;
 using XOracle.Application.Core;
+using XOracle.Azure.Core.Helpers;
+using XOracle.Azure.Web.Front.Models;
 using XOracle.Data;
+using XOracle.Data.Azure;
+using XOracle.Data.Azure.Entities;
 using XOracle.Data.Core;
 using XOracle.Domain;
-using XOracle.Azure.Web.Front.Models;
 
 namespace XOracle.Azure.Web.Front.Controllers
 {
@@ -23,14 +26,23 @@ namespace XOracle.Azure.Web.Front.Controllers
 
         public EventsController()
         {
-            var uow = new InmemoryUnitOfWork();
+            var account = CloudConfiguration.GetStorageAccount("DataConnectionString");
 
             this._eventsService = new EventsService(
-                new RepositoryFactory(uow),
+                new AzureRepository<AzureAccount, Account>(account),
+                new AzureRepository<AzureEventRelationType, EventRelationType>(account),
+                new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                new AzureRepository<AzureAlgorithmType, AlgorithmType>(account),
+                new AzureRepository<AzureEvent, Event>(account),
                 new EventsFactory(
-                    new RepositoryFactory(uow),
-                    new ScopeableUnitOfWorkFactory(uow)),
-                new ScopeableUnitOfWorkFactory(uow));
+                    new AzureRepository<AzureAccountSet, AccountSet>(account),
+                    new AzureRepository<AzureEvent, Event>(account),
+                    new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
+                    new AzureRepository<AzureEventCondition, EventCondition>(account),
+                    new AzureRepository<AzureBetRateAlgorithm, BetRateAlgorithm>(account),
+                    new AzureRepository<AzureEventBetCondition, EventBetCondition>(account),
+                    new AzureScopeableUnitOfWorkFactory()),
+                new AzureScopeableUnitOfWorkFactory());
 
             this._userManager = Startup.UserManagerFactory();
         }

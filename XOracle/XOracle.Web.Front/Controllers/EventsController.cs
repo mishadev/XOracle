@@ -26,9 +26,18 @@ namespace XOracle.Web.Front.Controllers
             var uow = new InmemoryUnitOfWork();
 
             this._eventsService = new EventsService(
-                new RepositoryFactory(uow),
+                new Repository<Account>(uow),
+                new Repository<EventRelationType>(uow),
+                new Repository<CurrencyType>(uow),
+                new Repository<AlgorithmType>(uow),
+                new Repository<Event>(uow),
                 new EventsFactory(
-                    new RepositoryFactory(uow),
+                    new Repository<AccountSet>(uow),
+                    new Repository<Event>(uow),
+                    new Repository<AccountSetAccounts>(uow),
+                    new Repository<EventCondition>(uow),
+                    new Repository<BetRateAlgorithm>(uow),
+                    new Repository<EventBetCondition>(uow),
                     new ScopeableUnitOfWorkFactory(uow)),
                 new ScopeableUnitOfWorkFactory(uow));
 

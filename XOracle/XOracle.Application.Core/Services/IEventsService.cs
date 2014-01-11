@@ -2,7 +2,7 @@
 
 namespace XOracle.Application.Core
 {
-    public interface IEventsService : IAppService
+    public interface IEventsService
     {
         Task<CreateEventResponse> CreateEvent(CreateEventRequest request);
 

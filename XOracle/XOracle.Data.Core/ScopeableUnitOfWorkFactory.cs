@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using XOracle.Infrastructure.Core;
 
 namespace XOracle.Data.Core
@@ -13,7 +12,7 @@ namespace XOracle.Data.Core
             this._unitOfWork = unitOfWork;
         }
 
-        public async Task<IScopeable<IUnitOfWork>> Create()
+        public IScopeable<IUnitOfWork> Create()
         {
             return new ScopeableUnitOfWork(this._unitOfWork);
         }

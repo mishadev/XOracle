@@ -48,8 +48,6 @@
     <Compile Include="Accounts\AccountSet.cs" />
     <Compile Include="Accounts\AccountSet.Validation.cs" />
     <Compile Include="Accounts\AccountsFactory.cs" />
-    <Compile Include="Accounts\AccountTransaction.cs" />
-    <Compile Include="Accounts\AccountTransaction.Validation.cs" />
     <Compile Include="Bets\Bet.cs" />
     <Compile Include="Bets\Bet.Validation.cs" />
     <Compile Include="Bets\BetFactory.cs" />

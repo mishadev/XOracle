@@ -5,7 +5,7 @@ namespace XOracle.Infrastructure.Utils
 {
     public class NetBinarySerializerFactory : IFactory<IBinarySerializer>
     {
-        public async Task<IBinarySerializer> Create()
+        public IBinarySerializer Create()
         {
             return new NetBinarySerializer();
         }

@@ -5,7 +5,7 @@ namespace XOracle.Infrastructure
 {
     public class MockLoggerFactory : IFactory<ILogger>
     {
-        public async Task<ILogger> Create()
+        public ILogger Create()
         {
             return new MockLogger();
         }

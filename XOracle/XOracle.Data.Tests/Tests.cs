@@ -50,10 +50,10 @@ namespace XOracle.Data.Tests
         }
 
         [TestMethod]
-        public async Task NewEventIsNotValid()
+        public void NewEventIsNotValid()
         {
             Event @event = new Event();
-            IValidator validator = await Factory<IValidator>.GetInstance();
+            IValidator validator = Factory<IValidator>.GetInstance();
 
             Assert.IsFalse(validator.IsValid(@event));
         }
@@ -256,7 +256,7 @@ namespace XOracle.Data.Tests
 
             using (new InmemoryUnitOfWork())
             {
-                using (var scope1 = await f.Create())
+                using (f.Create())
                 {
                     await repo.Add(new EventRelationType { Name = string.Empty });
                 }
@@ -272,7 +272,7 @@ namespace XOracle.Data.Tests
 
             var count = (await repo.GetFiltered(x => true)).Count();
 
-            using (await f.Create())
+            using (f.Create())
             {
                 await repo.Add(new EventRelationType { Name = "x1" });
             }
@@ -290,10 +290,10 @@ namespace XOracle.Data.Tests
 
             var count = (await repo.GetFiltered(x => true)).Count();
 
-            using (await f.Create())
+            using (f.Create())
             {
                 await repo.Add(new EventRelationType { Name = "x3" });
-                using (await f.Create())
+                using (f.Create())
                 {
                     await repo.Add(new EventRelationType { Name = string.Empty });
                 }
@@ -309,10 +309,10 @@ namespace XOracle.Data.Tests
 
             var count = (await repo.GetFiltered(x => true)).Count();
 
-            using (await f.Create())
+            using (f.Create())
             {
                 await repo.Add(new EventRelationType { Name = "x4" });
-                using (await f.Create())
+                using (f.Create())
                 {
                     await repo.Add(new EventRelationType { Name = "x5" });
                 }
@@ -331,10 +331,10 @@ namespace XOracle.Data.Tests
 
             var count = (await repo.GetFiltered(x => true)).Count();
 
-            using (await f.Create())
+            using (f.Create())
             {
                 await repo.Add(new EventRelationType { Name = "x6" });
-                using (await f.Create())
+                using (f.Create())
                 {
                     await repo.Add(new EventRelationType { Name = "x7" });
                 }

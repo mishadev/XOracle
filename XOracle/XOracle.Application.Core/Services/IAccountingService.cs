@@ -2,7 +2,7 @@
 
 namespace XOracle.Application.Core
 {
-    public interface IAccountingService : IAppService
+    public interface IAccountingService
     {
         Task<GetAccountResponse> GetAccount(GetAccountRequest request);
 

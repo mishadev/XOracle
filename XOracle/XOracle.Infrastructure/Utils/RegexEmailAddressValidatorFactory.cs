@@ -5,7 +5,7 @@ namespace XOracle.Infrastructure.Utils
 {
     public class RegexEmailAddressValidatorFactory : IFactory<IEmailAddressValidator>
     {
-        public async Task<IEmailAddressValidator> Create()
+        public IEmailAddressValidator Create()
         {
             return new RegexEmailAddressValidator();
         }

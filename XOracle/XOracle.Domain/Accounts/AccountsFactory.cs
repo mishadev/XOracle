@@ -19,13 +19,24 @@ namespace XOracle.Domain
     public class AccountsFactory : IAccountsFactory
     {
         private IFactory<IScopeable<IUnitOfWork>> _scopeableFactory;
-        private IRepositoryFactory _repositories;
+
+        private IRepository<Account> _repositoryAccount;
+        private IRepository<CurrencyType> _repositoryCurrencyType;
+        private IRepository<AccountBalance> _repositoryAccountBalance;
+        private IRepository<AccountLogin> _repositoryAccountLogin;
 
         public AccountsFactory(
-            IRepositoryFactory repositories,
+            IRepository<Account> repositoryAccount,
+            IRepository<CurrencyType> repositoryCurrencyType,
+            IRepository<AccountBalance> repositoryAccountBalance,
+            IRepository<AccountLogin> repositoryAccountLogin,
             IFactory<IScopeable<IUnitOfWork>> scopeableFactory)
         {
-            this._repositories = repositories;
+            this._repositoryAccount = repositoryAccount;
+            this._repositoryCurrencyType = repositoryCurrencyType;
+            this._repositoryAccountBalance = repositoryAccountBalance;
+            this._repositoryAccountLogin = repositoryAccountLogin;
+
             this._scopeableFactory = scopeableFactory;
         }
 
@@ -33,12 +44,12 @@ namespace XOracle.Domain
         {
             await this.Check(name);
 
-            using (await this._scopeableFactory.Create())
-            {                                                    
+            using (this._scopeableFactory.Create())
+            {
                 var account = new Account { Email = email, Name = name ?? email.Substring(0, email.IndexOf('@')) };
-                await this._repositories.Get<Account>().Add(account);
+                await this._repositoryAccount.Add(account);
 
-                CurrencyType currencyType = (await this._repositories.Get<CurrencyType>().GetBy(v => v.Name == CurrencyType.Reputation));
+                CurrencyType currencyType = (await this._repositoryCurrencyType.GetBy(v => v.Name == CurrencyType.Reputation));
 
                 await this.CreateAccountBalance(account, currencyType, 1);
 
@@ -48,7 +59,7 @@ namespace XOracle.Domain
 
         private async Task Check(string name)
         {
-            IEnumerable<Account> accounts = await this._repositories.Get<Account>().GetFiltered(a => a.Name == name);
+            IEnumerable<Account> accounts = await this._repositoryAccount.GetFiltered(a => a.Name == name);
 
             if (accounts.Any())
                 throw new InvalidOperationException("email should be unique");
@@ -56,11 +67,11 @@ namespace XOracle.Domain
 
         public async Task<AccountBalance> CreateAccountBalance(Account account, CurrencyType currencyType, decimal value)
         {
-            using (await this._scopeableFactory.Create())
+            using (this._scopeableFactory.Create())
             {
                 var balance = new AccountBalance { AccountId = account.Id, Value = 1, CurrencyTypeId = currencyType.Id };
 
-                await this._repositories.Get<AccountBalance>().Add(balance);
+                await this._repositoryAccountBalance.Add(balance);
 
                 return balance;
             }
@@ -68,7 +79,7 @@ namespace XOracle.Domain
 
         public async Task<AccountLogin> CreateAccountLogin(Guid accountId, string loginProvider, string providerKey)
         {
-            using (await this._scopeableFactory.Create())
+            using (this._scopeableFactory.Create())
             {
                 AccountLogin accountLogin = new AccountLogin
                 {
@@ -77,7 +88,7 @@ namespace XOracle.Domain
                     ProviderKey = providerKey
                 };
 
-                await this._repositories.Get<AccountLogin>().Add(accountLogin);
+                await this._repositoryAccountLogin.Add(accountLogin);
 
                 return accountLogin;
             }

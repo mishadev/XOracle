@@ -39,20 +39,39 @@ namespace XOracle.Application.Tests
             var uow = new InmemoryUnitOfWork();
 
             _accountingService = new AccountingService(
-                new RepositoryFactory(uow),
+                new Repository<Account>(uow),
+                new Repository<CurrencyType>(uow),
+                new Repository<AccountBalance>(uow),
+                new Repository<AccountLogin>(uow),
                 new AccountsFactory(
-                    new RepositoryFactory(uow),
+                    new Repository<Account>(uow),
+                    new Repository<CurrencyType>(uow),
+                    new Repository<AccountBalance>(uow),
+                    new Repository<AccountLogin>(uow),
                     new ScopeableUnitOfWorkFactory(uow)));
 
             _eventsService = new EventsService(
-                new RepositoryFactory(uow),
+                new Repository<Account>(uow),
+                new Repository<EventRelationType>(uow),
+                new Repository<CurrencyType>(uow),
+                new Repository<AlgorithmType>(uow),
+                new Repository<Event>(uow),
                 new EventsFactory(
-                    new RepositoryFactory(uow),
+                    new Repository<AccountSet>(uow),
+                    new Repository<Event>(uow),
+                    new Repository<AccountSetAccounts>(uow),
+                    new Repository<EventCondition>(uow),
+                    new Repository<BetRateAlgorithm>(uow),
+                    new Repository<EventBetCondition>(uow),
                     new ScopeableUnitOfWorkFactory(uow)),
                 new ScopeableUnitOfWorkFactory(uow));
 
             _betsService = new BetsService(
-                new RepositoryFactory(uow),
+                new Repository<Account>(uow),
+                new Repository<Event>(uow),
+                new Repository<OutcomesType>(uow),
+                new Repository<Bet>(uow),
+                new Repository<CurrencyType>(uow),
                 new BetsFactory(
                     new RepositoryFactory(uow),
                     new ScopeableUnitOfWorkFactory(uow))

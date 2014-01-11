@@ -5,7 +5,7 @@ namespace XOracle.Infrastructure
 {
     public class DataAnnotationsEntityValidatorFactory : IFactory<IValidator>
     {
-        public async Task<IValidator> Create()
+        public IValidator Create()
         {
             return new DataAnnotationsEntityValidator();
         }

@@ -20,7 +20,7 @@ namespace XOracle.Data
 
         public async Task Commit()
         {
-            var serializer = await Factory<IBinarySerializer>.GetInstance();
+            var serializer = Factory<IBinarySerializer>.GetInstance();
 
             foreach (var key in _local.Keys)
             {
@@ -70,7 +70,7 @@ namespace XOracle.Data
 
         private async Task<IDictionary> GetFromStorage(Type key)
         {
-            var serializer = await Factory<IBinarySerializer>.GetInstance();
+            var serializer = Factory<IBinarySerializer>.GetInstance();
 
             if (_store.ContainsKey(key))
                 return (IDictionary)await serializer.FromBinary(_store[key]);

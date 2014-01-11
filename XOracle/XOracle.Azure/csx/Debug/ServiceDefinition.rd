@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<serviceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="XOracle.Azure" generation="1" functional="0" release="0" Id="db0dfe7b-e3a3-4ecb-9e9f-26388df5b9c4" dslVersion="1.2.0.0" xmlns="http://schemas.microsoft.com/dsltools/RDSM">
+<serviceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="XOracle.Azure" generation="1" functional="0" release="0" Id="c450b071-c172-473c-a265-0f6c27866e4d" dslVersion="1.2.0.0" xmlns="http://schemas.microsoft.com/dsltools/RDSM">
   <groups>
     <group name="XOracle.AzureGroup" generation="1" functional="0" release="0">
       <componentports>
@@ -13,6 +13,11 @@
         <aCS name="Certificate|XOracle.Azure.Web.Front:localhost" defaultValue="">
           <maps>
             <mapMoniker name="/XOracle.Azure/XOracle.AzureGroup/MapCertificate|XOracle.Azure.Web.Front:localhost" />
+          </maps>
+        </aCS>
+        <aCS name="XOracle.Azure.Web.Front:DataConnectionString" defaultValue="">
+          <maps>
+            <mapMoniker name="/XOracle.Azure/XOracle.AzureGroup/MapXOracle.Azure.Web.Front:DataConnectionString" />
           </maps>
         </aCS>
         <aCS name="XOracle.Azure.Web.Front:Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" defaultValue="">
@@ -39,6 +44,11 @@
             <certificateMoniker name="/XOracle.Azure/XOracle.AzureGroup/XOracle.Azure.Web.Front/localhost" />
           </certificate>
         </map>
+        <map name="MapXOracle.Azure.Web.Front:DataConnectionString" kind="Identity">
+          <setting>
+            <aCSMoniker name="/XOracle.Azure/XOracle.AzureGroup/XOracle.Azure.Web.Front/DataConnectionString" />
+          </setting>
+        </map>
         <map name="MapXOracle.Azure.Web.Front:Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" kind="Identity">
           <setting>
             <aCSMoniker name="/XOracle.Azure/XOracle.AzureGroup/XOracle.Azure.Web.Front/Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
@@ -57,6 +67,7 @@
               <inPort name="HttpsIn" protocol="https" portRanges="443" />
             </componentports>
             <settings>
+              <aCS name="DataConnectionString" defaultValue="" />
               <aCS name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" defaultValue="" />
               <aCS name="__ModelData" defaultValue="&lt;m role=&quot;XOracle.Azure.Web.Front&quot; xmlns=&quot;urn:azure:m:v1&quot;&gt;&lt;r name=&quot;XOracle.Azure.Web.Front&quot;&gt;&lt;e name=&quot;HttpsIn&quot; /&gt;&lt;/r&gt;&lt;/m&gt;" />
             </settings>
@@ -90,9 +101,9 @@
     </group>
   </groups>
   <implements>
-    <implementation Id="3740dd7e-96a7-4701-b554-4d85315bd270" ref="Microsoft.RedDog.Contract\ServiceContract\XOracle.AzureContract@ServiceDefinition">
+    <implementation Id="4dd69d0e-0005-4a12-977d-624b79b2be5e" ref="Microsoft.RedDog.Contract\ServiceContract\XOracle.AzureContract@ServiceDefinition">
       <interfacereferences>
-        <interfaceReference Id="39e1fe55-c6f5-4d0f-9ff5-12160305c460" ref="Microsoft.RedDog.Contract\Interface\XOracle.Azure.Web.Front:HttpsIn@ServiceDefinition">
+        <interfaceReference Id="f87b0c13-ecd1-4fbb-935e-91e29df73de1" ref="Microsoft.RedDog.Contract\Interface\XOracle.Azure.Web.Front:HttpsIn@ServiceDefinition">
           <inPort>
             <inPortMoniker name="/XOracle.Azure/XOracle.AzureGroup/XOracle.Azure.Web.Front:HttpsIn" />
           </inPort>

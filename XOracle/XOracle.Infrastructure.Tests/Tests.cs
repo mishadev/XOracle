@@ -34,60 +34,41 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task LoggingCanBeCreated()
         {
-            ILogger logger = await Factory<ILogger>.GetInstance();
+            ILogger logger = Factory<ILogger>.GetInstance();
 
             Assert.IsNotNull(logger);
         }
 
         [TestMethod]
-        public async Task LoggingCanCallDebugMethodth()
+        public void LoggingCanCallLogErrorMethodth()
         {
-            ILogger logger = await Factory<ILogger>.GetInstance();
+            ILogger logger = Factory<ILogger>.GetInstance();
 
-            await logger.Debug(null);
-            await logger.Debug(string.Empty);
-            await logger.Debug(string.Empty, (Exception)null);
+            logger.LogError(string.Empty);
+            logger.LogError(string.Empty, (Exception)null);
         }
 
         [TestMethod]
-        public async Task LoggingCanCallFatalMethodth()
+        public void LoggingCanCallLogInfoMethodth()
         {
-            ILogger logger = await Factory<ILogger>.GetInstance();
+            ILogger logger = Factory<ILogger>.GetInstance();
 
-            await logger.Fatal(string.Empty);
-            await logger.Fatal(string.Empty, (Exception)null);
+            logger.LogInfo(string.Empty);
+            logger.LogInfo(string.Empty, (Exception)null);
         }
 
         [TestMethod]
-        public async Task LoggingCanCallLogErrorMethodth()
+        public void ValidatorCanCallIsValidMethodth()
         {
-            ILogger logger = await Factory<ILogger>.GetInstance();
-
-            await logger.LogError(string.Empty);
-            await logger.LogError(string.Empty, (Exception)null);
-        }
-
-        [TestMethod]
-        public async Task LoggingCanCallLogInfoMethodth()
-        {
-            ILogger logger = await Factory<ILogger>.GetInstance();
-
-            await logger.LogInfo(string.Empty);
-            await logger.LogInfo(string.Empty, (Exception)null);
-        }
-
-        [TestMethod]
-        public async Task ValidatorCanCallIsValidMethodth()
-        {
-            IValidator validator = await Factory<IValidator>.GetInstance();
+            IValidator validator = Factory<IValidator>.GetInstance();
 
             Assert.IsTrue(validator.IsValid(string.Empty));
         }
 
         [TestMethod]
-        public async Task ValidatorCanCallGetErrorMessagesMethodth()
+        public void ValidatorCanCallGetErrorMessagesMethodth()
         {
-            IValidator validator = await Factory<IValidator>.GetInstance();
+            IValidator validator = Factory<IValidator>.GetInstance();
 
             Assert.AreEqual(Enumerable.Empty<string>().Count(), validator.GetErrorMessages(string.Empty).Count());
         }
@@ -95,7 +76,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task BinarySerealizerMethodth1()
         {
-            var serializer = await Factory<IBinarySerializer>.GetInstance();
+            var serializer = Factory<IBinarySerializer>.GetInstance();
 
             var e1 = new Dictionary<int, long>();
             var bytes = await serializer.ToBinary(e1);
@@ -107,7 +88,7 @@ namespace XOracle.Infrastructure.Tests
         [TestMethod]
         public async Task BinarySerealizerMethodth2()
         {
-            var serializer = await Factory<IBinarySerializer>.GetInstance();
+            var serializer = Factory<IBinarySerializer>.GetInstance();
 
             var e1 = new Dictionary<int, long> { { 15, 300 } };
             var bytes = await serializer.ToBinary(e1);

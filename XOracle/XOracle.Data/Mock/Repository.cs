@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using XOracle.Data.Core;
 using XOracle.Domain.Core;
 using XOracle.Infrastructure.Core;
 
-namespace XOracle.Data.Core
+namespace XOracle.Data
 {
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : Entity
@@ -36,9 +37,15 @@ namespace XOracle.Data.Core
             var set = await this.GetSet();
             item.EnsureIdentity();
 
-            await Validate(item);
+            Validate(item);
 
             set.Add(item.Id, item);
+        }
+
+        public async Task Add(IEnumerable<TEntity> items)
+        {
+            foreach (var item in items)
+               await this.Add(item);
         }
 
         public async Task Remove(TEntity item)
@@ -48,13 +55,25 @@ namespace XOracle.Data.Core
             set.Remove(item.Id);
         }
 
+        public async Task Remove(IEnumerable<TEntity> items)
+        {
+            foreach (var item in items)
+                await this.Remove(item);
+        }
+
         public async Task Modify(TEntity item)
         {
             var set = await this.GetSet();
 
-            await Validate(item);
+            Validate(item);
 
             set[item.Id] = item;
+        }
+
+        public async Task Modify(IEnumerable<TEntity> items)
+        {
+            foreach (var item in items)
+                await this.Modify(item);
         }
 
         public async Task<TEntity> Get(Guid id)
@@ -90,9 +109,9 @@ namespace XOracle.Data.Core
             this._unitOfWork.Dispose();
         }
 
-        private async Task Validate(TEntity item)
+        private void Validate(TEntity item)
         {
-            var validator = await Factory<IValidator>.GetInstance();
+            var validator = Factory<IValidator>.GetInstance();
             var validationErrors = validator.GetErrorMessages(item);
 
             if (validationErrors.Any())

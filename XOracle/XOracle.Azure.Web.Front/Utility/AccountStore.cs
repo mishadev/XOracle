@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNet.Identity;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using XOracle.Application;
 using XOracle.Application.Core;
+using XOracle.Azure.Core.Helpers;
 using XOracle.Data;
-using XOracle.Data.Core;
+using XOracle.Data.Azure;
+using XOracle.Data.Azure.Entities;
 using XOracle.Domain;
 
 namespace XOracle.Azure.Web.Front
@@ -17,13 +19,19 @@ namespace XOracle.Azure.Web.Front
 
         public AccountStore()
         {
-            IUnitOfWork uow = new InmemoryUnitOfWork();
+            var account = CloudConfiguration.GetStorageAccount("DataConnectionString");
 
             this._accountingService = new AccountingService(
-                new RepositoryFactory(uow),
+                new AzureRepository<AzureAccount, Account>(account),
+                new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                new AzureRepository<AzureAccountBalance, AccountBalance>(account),
+                new AzureRepository<AzureAccountLogin, AccountLogin>(account),
                 new AccountsFactory(
-                    new RepositoryFactory(uow),
-                    new ScopeableUnitOfWorkFactory(uow)));
+                    new AzureRepository<AzureAccount, Account>(account),
+                    new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                    new AzureRepository<AzureAccountBalance, AccountBalance>(account),
+                    new AzureRepository<AzureAccountLogin, AccountLogin>(account),
+                    new AzureScopeableUnitOfWorkFactory()));
         }
 
         public async Task CreateAsync(IdentityAccount user)

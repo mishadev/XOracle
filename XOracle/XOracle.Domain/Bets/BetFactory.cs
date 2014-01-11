@@ -30,7 +30,7 @@ namespace XOracle.Domain
 
         public async Task<Bet> CreateBet(Account account, Event @event, OutcomesType outcomesType, decimal value)
         {
-            using (await this._scopeableFactory.Create())
+            using (this._scopeableFactory.Create())
             {
                 EventBetCondition conditions = await this._repositorise.Get<EventBetCondition>().Get(@event.EventBetConditionId);
                 CurrencyType currencyType = await this._repositorise.Get<CurrencyType>().Get(conditions.CurrencyTypeId);
@@ -108,7 +108,7 @@ namespace XOracle.Domain
 
         public async Task<BetRate> CalculateBetRate(Account account, Event @event, OutcomesType outcomesType, decimal value)
         {
-            using (var scope = await this._scopeableFactory.Create())
+            using (var scope = this._scopeableFactory.Create())
             {
                 var bet = await CreateBet(account, @event, outcomesType, value);
                 var conditions = await this._repositorise.Get<EventBetCondition>().Get(@event.EventBetConditionId);

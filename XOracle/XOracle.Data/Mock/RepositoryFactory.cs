@@ -1,6 +1,7 @@
-﻿using XOracle.Domain.Core;
+﻿using XOracle.Data.Core;
+using XOracle.Domain.Core;
 
-namespace XOracle.Data.Core
+namespace XOracle.Data
 {
     public class RepositoryFactory : IRepositoryFactory
     {

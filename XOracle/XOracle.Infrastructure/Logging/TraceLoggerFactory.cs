@@ -3,9 +3,9 @@ using XOracle.Infrastructure.Core;
 
 namespace XOracle.Infrastructure
 {
-    public class MockLoggerFactory : IFactory<ILogger>
+    public class TraceLoggerFactory : IFactory<ILogger>
     {
-        public async Task<ILogger> Create()
+        public ILogger Create()
         {
             return new TraceLogger();
         }

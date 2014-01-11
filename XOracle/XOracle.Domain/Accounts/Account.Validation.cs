@@ -22,7 +22,7 @@ namespace XOracle.Domain
 
         private async Task<bool> IsEmailAddressValid(string email)
         {
-            var validator = await Factory<IEmailAddressValidator>.GetInstance();
+            var validator = Factory<IEmailAddressValidator>.GetInstance();
 
             return await validator.IsValid(email);
         }

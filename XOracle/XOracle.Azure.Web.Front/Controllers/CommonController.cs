@@ -19,5 +19,11 @@ namespace XOracle.Azure.Web.Front.Controllers
         {
             return new[] { AlgorithmType.Exponential, AlgorithmType.Linear };
         }
+
+        [Route("OutcomesTypes")]
+        public IEnumerable<string> GetOutcomesTypes()
+        {
+            return new[] { OutcomesType.Happen, OutcomesType.NotHappen };
+        }
     }
 }

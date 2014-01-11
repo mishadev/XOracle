@@ -31,14 +31,31 @@ namespace XOracle.Domain
 
     public class EventsFactory : IEventsFactory
     {
-        private IRepositoryFactory _repositories;
         private IFactory<IScopeable<IUnitOfWork>> _scopeableFactory;
 
+        private IRepository<AccountSet> _repositoryAccountSet;
+        private IRepository<Event> _repositoryEvent;
+        private IRepository<AccountSetAccounts> _repositoryAccountSetAccounts;
+        private IRepository<EventCondition> _repositoryEventCondition;
+        private IRepository<BetRateAlgorithm> _repositoryBetRateAlgorithm;
+        private IRepository<EventBetCondition> _repositoryEventBetCondition;
+
         public EventsFactory(
-            IRepositoryFactory repositories,
+            IRepository<AccountSet> repositoryAccountSet,
+            IRepository<Event> repositoryEvent,
+            IRepository<AccountSetAccounts> repositoryAccountSetAccounts,
+            IRepository<EventCondition> repositoryEventCondition,
+            IRepository<BetRateAlgorithm> repositoryBetRateAlgorithm,
+            IRepository<EventBetCondition> repositoryEventBetCondition,
             IFactory<IScopeable<IUnitOfWork>> scopeableFactory)
         {
-            this._repositories = repositories;
+            this._repositoryAccountSet = repositoryAccountSet;
+            this._repositoryEvent = repositoryEvent;
+            this._repositoryAccountSetAccounts = repositoryAccountSetAccounts;
+            this._repositoryEventCondition = repositoryEventCondition;
+            this._repositoryBetRateAlgorithm = repositoryBetRateAlgorithm;
+            this._repositoryEventBetCondition = repositoryEventBetCondition;
+
             this._scopeableFactory = scopeableFactory;
         }
 
@@ -53,7 +70,7 @@ namespace XOracle.Domain
             DateTime startDate,
             DateTime endDate)
         {
-            using (await this._scopeableFactory.Create())
+            using (this._scopeableFactory.Create())
             {
                 var @event = new Event
                 {
@@ -68,7 +85,7 @@ namespace XOracle.Domain
                     EventBetConditionId = eventBetCondition.Id
                 };
 
-                await this._repositories.Get<Event>().Add(@event);
+                await this._repositoryEvent.Add(@event);
 
                 return @event;
             }
@@ -78,18 +95,18 @@ namespace XOracle.Domain
         {
             accounts = accounts.Where(a => a != null).Distinct();//normalize
 
-            using (await this._scopeableFactory.Create())
+            using (this._scopeableFactory.Create())
             {
                 var accountSet = new AccountSet { AccountId = account.Id };
                 if (accounts.Any())
                 {
-                    await this._repositories.Get<AccountSet>().Add(accountSet);
+                    await this._repositoryAccountSet.Add(accountSet);
 
                     foreach (var acc in accounts)
                     {
                         if (!acc.IsTransient())
                         {
-                            await this._repositories.Get<AccountSetAccounts>().Add(new AccountSetAccounts
+                            await this._repositoryAccountSetAccounts.Add(new AccountSetAccounts
                             {
                                 AccountId = acc.Id,
                                 AccountSetId = accountSet.Id
@@ -103,11 +120,11 @@ namespace XOracle.Domain
 
         public async Task<EventCondition> CreateEventCondition(string description)
         {
-            using (await this._scopeableFactory.Create())
+            using (this._scopeableFactory.Create())
             {
                 var condition = new EventCondition { Description = description };
 
-                await this._repositories.Get<EventCondition>().Add(condition);
+                await this._repositoryEventCondition.Add(condition);
 
                 return condition;
             }
@@ -115,7 +132,7 @@ namespace XOracle.Domain
 
         public async Task<BetRateAlgorithm> CreateEventBetRateAlgorithm(AlgorithmType algorithmType, double startRate, double endRate, double locusRage)
         {
-            using (await this._scopeableFactory.Create())
+            using (this._scopeableFactory.Create())
             {
                 var betRateAlgorithm = new BetRateAlgorithm
                 {
@@ -125,7 +142,7 @@ namespace XOracle.Domain
                     LocusRage = locusRage
                 };
 
-                await this._repositories.Get<BetRateAlgorithm>().Add(betRateAlgorithm);
+                await this._repositoryBetRateAlgorithm.Add(betRateAlgorithm);
 
                 return betRateAlgorithm;
             }
@@ -133,7 +150,7 @@ namespace XOracle.Domain
 
         public async Task<EventBetCondition> CreateEventBetCondition(CurrencyType currencyType, BetRateAlgorithm betRateAlgorithm, DateTime closeDate)
         {
-            using (await this._scopeableFactory.Create())
+            using (this._scopeableFactory.Create())
             {
                 var eventBetCondition = new EventBetCondition
                 {
@@ -142,7 +159,7 @@ namespace XOracle.Domain
                     EventBetRateAlgorithmId = betRateAlgorithm.Id,
                 };
 
-                await this._repositories.Get<EventBetCondition>().Add(eventBetCondition);
+                await this._repositoryEventBetCondition.Add(eventBetCondition);
 
                 return eventBetCondition;
             }

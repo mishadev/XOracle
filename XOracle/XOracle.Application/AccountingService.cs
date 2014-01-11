@@ -10,32 +10,37 @@ namespace XOracle.Application
     public class AccountingService : IAccountingService
     {
         private IAccountsFactory _accountsFactory;
-        private IRepositoryFactory _repositories;
-
-        public IRepositoryFactory Repositories
-        {
-            get { return _repositories; }
-        }
+        private IRepository<Account> _repositoryAccount;
+        private IRepository<CurrencyType> _repositoryCurrencyType;
+        private IRepository<AccountBalance> _repositoryAccountBalance;
+        private IRepository<AccountLogin> _repositoryAccountLogin;
 
         public AccountingService(
-            IRepositoryFactory repositories,
+            IRepository<Account> repositoryAccount,
+            IRepository<CurrencyType> repositoryCurrencyType,
+            IRepository<AccountBalance> repositoryAccountBalance,
+            IRepository<AccountLogin> repositoryAccountLogin,
             IAccountsFactory accountsFactory)
         {
-            this._repositories = repositories;
+            this._repositoryAccount = repositoryAccount;
+            this._repositoryCurrencyType = repositoryCurrencyType;
+            this._repositoryAccountBalance = repositoryAccountBalance;
+            this._repositoryAccountLogin = repositoryAccountLogin;
+
             this._accountsFactory = accountsFactory;
         }
 
         public async Task<GetAccountResponse> GetAccount(GetAccountRequest request)
         {
             var account = request.AccountId.HasValue ?
-                await this._repositories.Get<Account>().Get(request.AccountId.Value) :
-                await this._repositories.Get<Account>().GetBy(a => a.Name == request.Name);
+                await this._repositoryAccount.Get(request.AccountId.Value) :
+                await this._repositoryAccount.GetBy(a => a.Name == request.Name);
 
             var response = new GetAccountResponse();
             if (account != null)
             {
-                var currencyType = await this._repositories.Get<CurrencyType>().GetBy(v => v.Name == CurrencyType.Reputation);
-                var balance = await this._repositories.Get<AccountBalance>().GetBy(b => b.AccountId == account.Id && b.CurrencyTypeId == currencyType.Id);
+                var currencyType = await this._repositoryCurrencyType.GetBy(v => v.Name == CurrencyType.Reputation);
+                var balance = await this._repositoryAccountBalance.GetBy(b => b.AccountId == account.Id && b.CurrencyTypeId == currencyType.Id);
 
                 response.AccountId = account.Id;
                 response.Email = account.Email;
@@ -55,9 +60,9 @@ namespace XOracle.Application
 
         public async Task<DeleteAccountResponse> DeleteAccount(DeleteAccountRequest request)
         {
-            var account = await this._repositories.Get<Account>().Get(request.AccountId);
+            var account = await this._repositoryAccount.Get(request.AccountId);
 
-            await this._repositories.Get<Account>().Remove(account);
+            await this._repositoryAccount.Remove(account);
 
             return new DeleteAccountResponse { };
         }
@@ -65,8 +70,8 @@ namespace XOracle.Application
         public async Task<GetAccountLoginResponse> GetAccountLogin(GetAccountLoginRequest request)
         {
             AccountLogin accountlogin = request.AccountLoginId.HasValue ?
-                await this._repositories.Get<AccountLogin>().Get(request.AccountLoginId.Value) :
-                await this._repositories.Get<AccountLogin>().GetBy(al => al.LoginProvider == request.LoginProvider && al.ProviderKey == request.ProviderKey);
+                await this._repositoryAccountLogin.Get(request.AccountLoginId.Value) :
+                await this._repositoryAccountLogin.GetBy(al => al.LoginProvider == request.LoginProvider && al.ProviderKey == request.ProviderKey);
 
             return this.ConvertAccountLogin(accountlogin);
         }
@@ -80,7 +85,7 @@ namespace XOracle.Application
 
         public async Task<GetAccountLoginsResponse> GetAccountLogins(GetAccountLoginsRequest request)
         {
-            IEnumerable<AccountLogin> accountlogins = await this._repositories.Get<AccountLogin>().GetFiltered(al => al.AccountId == request.AccountId);
+            IEnumerable<AccountLogin> accountlogins = await this._repositoryAccountLogin.GetFiltered(al => al.AccountId == request.AccountId);
 
             return new GetAccountLoginsResponse { AccountLoginResponses = accountlogins.Select(this.ConvertAccountLogin) };
         }

@@ -20,9 +20,15 @@ namespace XOracle.Web.Front
             IUnitOfWork uow = new InmemoryUnitOfWork();
 
             this._accountingService = new AccountingService(
-                new RepositoryFactory(uow),
+                new Repository<Account>(uow),
+                new Repository<CurrencyType>(uow),
+                new Repository<AccountBalance>(uow),
+                new Repository<AccountLogin>(uow),
                 new AccountsFactory(
-                    new RepositoryFactory(uow),
+                    new Repository<Account>(uow),
+                    new Repository<CurrencyType>(uow),
+                    new Repository<AccountBalance>(uow),
+                    new Repository<AccountLogin>(uow),
                     new ScopeableUnitOfWorkFactory(uow)));
         }
 

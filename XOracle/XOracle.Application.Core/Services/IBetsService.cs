@@ -2,7 +2,7 @@
 
 namespace XOracle.Application.Core
 {
-    public interface IBetsService : IAppService
+    public interface IBetsService
     {
         Task<CreateBetResponse> CreateBet(CreateBetRequest request);
 
