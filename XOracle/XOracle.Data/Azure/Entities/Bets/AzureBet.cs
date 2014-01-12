@@ -5,25 +5,36 @@ namespace XOracle.Data.Azure.Entities
 {
     public class AzureBet : TableServiceEntity
     {
-        public override string PartitionKey
+        private Guid _eventId;
+        private Guid _id;
+
+        [RowKeyAttribute]
+        public Guid Id
         {
             get
             {
-                return this.AccountId.ToString() + '_' + this.EventId.ToString();
+                return this._id;
             }
             set
             {
-                var splitted = value.Split('_');
-
-                if (splitted.Length == 2)
-                {
-                    this.AccountId = Guid.Parse(splitted[0]);
-                    this.EventId = Guid.Parse(splitted[1]);
-                }
+                this._id = value;
+                this.RowKey = this._id.ToString();
             }
         }
 
-        public Guid EventId { get; set; }
+        [PartitionKeyAttribute]
+        public Guid EventId
+        {
+            get
+            {
+                return this._eventId;
+            }
+            set
+            {
+                this._eventId = value;
+                this.PartitionKey = this._eventId.ToString();
+            }
+        }
 
         public Guid CurrencyTypeId { get; set; }
 

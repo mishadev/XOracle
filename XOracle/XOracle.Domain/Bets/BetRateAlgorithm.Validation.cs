@@ -10,7 +10,8 @@ namespace XOracle.Domain
     {
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
-            ValidationResult[] results = { 
+            ValidationResult[] results = {
+                this.IsDefault(this.AccountId, "AccountId"),
                 this.IsDefault(this.AlgorithmTypeId, "AlgorithmTypeId"),
                 this.Is(v => v < 0, this.StartRate, "StartRate"),
                 this.Is(v => v < 0, this.EndRate, "EndRate"),

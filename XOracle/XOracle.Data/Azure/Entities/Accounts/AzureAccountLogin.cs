@@ -5,19 +5,36 @@ namespace XOracle.Data.Azure.Entities
 {
     public class AzureAccountLogin : TableServiceEntity
     {
-        public override string PartitionKey
+        private Guid _accountId;
+        private Guid _id;
+
+        [RowKeyAttribute]
+        public Guid Id
         {
             get
             {
-                return this.AccountId.ToString();
+                return this._id;
             }
             set
             {
-                this.AccountId = Guid.Parse(value);
+                this._id = value;
+                this.RowKey = this._id.ToString();
             }
         }
 
-        public Guid AccountId { get; set; }
+        [PartitionKeyAttribute]
+        public Guid AccountId
+        {
+            get
+            {
+                return this._accountId;
+            }
+            set
+            {
+                this._accountId = value;
+                this.PartitionKey = this._accountId.ToString();
+            }
+        }
 
         public string LoginProvider { get; set; }
 

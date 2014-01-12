@@ -11,6 +11,7 @@ namespace XOracle.Domain
         IEnumerable<ValidationResult> IValidatableObject.Validate(ValidationContext validationContext)
         {
             ValidationResult[] results = {
+                this.IsDefault(this.AccountId, "AccountId"),
                 this.Is(desc => string.IsNullOrWhiteSpace(desc) || desc.Length >= 1 << 10, this.Description, "Description"),
             };
 

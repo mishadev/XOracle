@@ -22,11 +22,11 @@ namespace XOracle.Domain
 
         Task<AccountSet> CreateAccountSet(Account account, IEnumerable<Account> accounts);
 
-        Task<EventCondition> CreateEventCondition(string description);
+        Task<EventCondition> CreateEventCondition(Account account, string description);
 
-        Task<BetRateAlgorithm> CreateEventBetRateAlgorithm(AlgorithmType algorithmType, double startRate, double endRate, double locusRage);
+        Task<BetRateAlgorithm> CreateEventBetRateAlgorithm(Account account, AlgorithmType algorithmType, double startRate, double endRate, double locusRage);
 
-        Task<EventBetCondition> CreateEventBetCondition(CurrencyType currencyType, BetRateAlgorithm betRateAlgorithm, DateTime closeDate);
+        Task<EventBetCondition> CreateEventBetCondition(Account account, CurrencyType currencyType, BetRateAlgorithm betRateAlgorithm, DateTime closeDate);
     }
 
     public class EventsFactory : IEventsFactory
@@ -118,11 +118,15 @@ namespace XOracle.Domain
             }
         }
 
-        public async Task<EventCondition> CreateEventCondition(string description)
+        public async Task<EventCondition> CreateEventCondition(Account account, string description)
         {
             using (this._scopeableFactory.Create())
             {
-                var condition = new EventCondition { Description = description };
+                var condition = new EventCondition
+                {
+                    AccountId = account.Id,
+                    Description = description
+                };
 
                 await this._repositoryEventCondition.Add(condition);
 
@@ -130,12 +134,13 @@ namespace XOracle.Domain
             }
         }
 
-        public async Task<BetRateAlgorithm> CreateEventBetRateAlgorithm(AlgorithmType algorithmType, double startRate, double endRate, double locusRage)
+        public async Task<BetRateAlgorithm> CreateEventBetRateAlgorithm(Account account, AlgorithmType algorithmType, double startRate, double endRate, double locusRage)
         {
             using (this._scopeableFactory.Create())
             {
                 var betRateAlgorithm = new BetRateAlgorithm
                 {
+                    AccountId = account.Id,
                     AlgorithmTypeId = algorithmType.Id,
                     StartRate = startRate,
                     EndRate = endRate,
@@ -148,12 +153,13 @@ namespace XOracle.Domain
             }
         }
 
-        public async Task<EventBetCondition> CreateEventBetCondition(CurrencyType currencyType, BetRateAlgorithm betRateAlgorithm, DateTime closeDate)
+        public async Task<EventBetCondition> CreateEventBetCondition(Account account, CurrencyType currencyType, BetRateAlgorithm betRateAlgorithm, DateTime closeDate)
         {
             using (this._scopeableFactory.Create())
             {
                 var eventBetCondition = new EventBetCondition
                 {
+                    AccountId = account.Id,
                     CloseDate = closeDate,
                     CurrencyTypeId = currencyType.Id,
                     EventBetRateAlgorithmId = betRateAlgorithm.Id,

@@ -46,6 +46,7 @@
     <Compile Include="AzureScopeableUnitOfWork.cs" />
     <Compile Include="AzureScopeableUnitOfWorkFactory.cs" />
     <Compile Include="Azure\AzureEntityFactory.cs" />
+    <Compile Include="Azure\AzureTransferExpressionVisitor.cs" />
     <Compile Include="Azure\AzuteRepository.cs" />
     <Compile Include="Azure\Entities\Accounts\AzureAccount.cs" />
     <Compile Include="Azure\Entities\Accounts\AzureAccountBalance.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Azure\Entities\Events\AzureEventBetCondition.cs" />
     <Compile Include="Azure\Entities\Events\AzureEventCondition.cs" />
     <Compile Include="Azure\Entities\Events\AzureEventRelationType.cs" />
+    <Compile Include="Azure\PartitionKeyAttribute.cs" />
     <Compile Include="Mock\InmemryUnitOfWork.Init.cs" />
     <Compile Include="Mock\InmemryUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

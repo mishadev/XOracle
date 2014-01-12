@@ -5,21 +5,38 @@ namespace XOracle.Data.Azure.Entities
 {
     public class AzureEvent : TableServiceEntity
     {
-        public override string PartitionKey
+        private Guid _accountId;
+        private Guid _id;
+
+        [RowKeyAttribute]
+        public Guid Id
         {
             get
             {
-                return this.AccountId.ToString();
+                return this._id;
             }
-            set 
+            set
             {
-                this.AccountId = Guid.Parse(value);
+                this._id = value;
+                this.RowKey = this._id.ToString();
             }
-        } 
+        }
+
+        [PartitionKeyAttribute]
+        public Guid AccountId
+        {
+            get
+            {
+                return this._accountId;
+            }
+            set
+            {
+                this._accountId = value;
+                this.PartitionKey = this._accountId.ToString();
+            }
+        }
 
         public string Title { get; set; }
-
-        public Guid AccountId { get; set; }
 
         public DateTime StartDate { get; set; }
 

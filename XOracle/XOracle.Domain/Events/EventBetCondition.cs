@@ -5,6 +5,8 @@ namespace XOracle.Domain
 {
     public partial class EventBetCondition : Entity
     {
+        public Guid AccountId { get; set; }
+
         public DateTime CloseDate { get; set; }
 
         public Guid EventBetRateAlgorithmId { get; set; }

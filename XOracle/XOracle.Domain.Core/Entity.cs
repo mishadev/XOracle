@@ -15,7 +15,7 @@ namespace XOracle.Domain.Core
             {
                 return _id;
             }
-            protected set
+            set
             {
                 _id = value;
             }

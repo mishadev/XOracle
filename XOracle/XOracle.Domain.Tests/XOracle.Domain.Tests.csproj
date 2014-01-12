@@ -36,7 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -55,6 +57,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\XOracle.Azure.Core\XOracle.Azure.Core.csproj">
+      <Project>{515fedc5-9529-45b7-93ed-22756b7bd9dc}</Project>
+      <Name>XOracle.Azure.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\XOracle.Data\XOracle.Data.csproj">
+      <Project>{383a25bf-1bcb-4820-a785-2a2a03faf2ee}</Project>
+      <Name>XOracle.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XOracle.Domain.Core\XOracle.Domain.Core.csproj">
       <Project>{70ecb2b5-48d1-4056-952d-b7180ecb8e66}</Project>
       <Name>XOracle.Domain.Core</Name>

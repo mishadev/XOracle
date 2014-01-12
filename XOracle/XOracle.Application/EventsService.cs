@@ -58,10 +58,10 @@ namespace XOracle.Application
                     account,
                     request.ParticipantsAccountIds.Select(id => this._repositoryAccount.Get(id).GetAwaiter().GetResult()));
 
-                var eventCondition = await this._eventsFactory.CreateEventCondition(request.ExpectedEventCondition);
+                var eventCondition = await this._eventsFactory.CreateEventCondition(account, request.ExpectedEventCondition);
 
-                var betRateAlgorithm = await this._eventsFactory.CreateEventBetRateAlgorithm(algorithmType, request.StartRate, request.EndRate, request.LocusRage);
-                var betCondition = await this._eventsFactory.CreateEventBetCondition(currencyType, betRateAlgorithm, request.CloseDate);
+                var betRateAlgorithm = await this._eventsFactory.CreateEventBetRateAlgorithm(account, algorithmType, request.StartRate, request.EndRate, request.LocusRage);
+                var betCondition = await this._eventsFactory.CreateEventBetCondition(account, currencyType, betRateAlgorithm, request.CloseDate);
 
                 var @event = await this._eventsFactory.CreateEvent(
                     account,

@@ -5,6 +5,8 @@ namespace XOracle.Domain
 {
     public partial class BetRateAlgorithm : Entity
     {
+        public Guid AccountId { get; set; }
+
         public double StartRate { get; set; }
 
         public double EndRate { get; set; }

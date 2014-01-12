@@ -5,19 +5,36 @@ namespace XOracle.Data.Azure.Entities
 {
     public class AzureBetRateAlgorithm : TableServiceEntity
     {
-        public override string PartitionKey
+        private Guid _id;
+        private Guid _accountId;
+
+        [RowKeyAttribute]
+        public Guid Id
         {
             get
             {
-                return this.AccountId.ToString();
+                return this._id;
             }
             set
             {
-                this.AccountId = Guid.Parse(value);
+                this._id = value;
+                this.RowKey = this._id.ToString();
             }
         }
 
-        public Guid AccountId { get; set; }
+        [PartitionKeyAttribute]
+        public Guid AccountId
+        {
+            get
+            {
+                return this._accountId;
+            }
+            set
+            {
+                this._accountId = value;
+                this.PartitionKey = this._accountId.ToString();
+            }
+        }
 
         public double StartRate { get; set; }
 
