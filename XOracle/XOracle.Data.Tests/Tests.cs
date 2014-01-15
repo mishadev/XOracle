@@ -2,6 +2,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using XOracle.Azure.Core.Helpers;
+using XOracle.Data.Azure;
+using XOracle.Data.Azure.Entities;
 using XOracle.Data.Core;
 using XOracle.Domain;
 using XOracle.Infrastructure;
@@ -341,6 +344,23 @@ namespace XOracle.Data.Tests
             }
 
             Assert.AreEqual(count + 2, (await repo.GetFiltered(x => true)).Count());
+        }
+
+        [TestMethod]
+        public async Task AzureRepository()
+        {
+            var account = CloudConfiguration.GetStorageAccount("DataConnectionString");
+
+            var repository = new AzureRepository<AzureAccount, Account>(account);
+
+            var acc = new Account { Name = "misha", Email = "misha_dev@live.com" };
+
+            await repository.Add(acc);
+            var acc2 = await repository.Get(acc.Id);
+
+            Assert.AreEqual(acc.Id, acc2.Id);
+            Assert.AreEqual(acc.Name, acc2.Name);
+            Assert.AreEqual(acc.Email, acc2.Email);
         }
     }
 }

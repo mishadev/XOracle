@@ -33,7 +33,7 @@ namespace XOracle.Data.Azure
                     Id = e.Id,
                     AccountId = e.AccountId,
                     CurrencyTypeId = e.CurrencyTypeId,
-                    Value = e.Value
+                    Value = e.Value.ToString(),
                 } as TAzureEntity;
             }
             else if (entity is AccountLogin)
@@ -196,12 +196,12 @@ namespace XOracle.Data.Azure
                     Id = e.Id,
                     AccountId = e.AccountId,
                     CurrencyTypeId = e.CurrencyTypeId,
-                    Value = e.Value
+                    Value = decimal.Parse(e.Value),
                 } as TEntity;
             }
             else if (entity is AzureAccountLogin)
             {
-                var e = entity as AccountLogin;
+                var e = entity as AzureAccountLogin;
                 return new AccountLogin
                 {
                     Id = e.Id,
@@ -212,7 +212,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureAccountSet)
             {
-                var e = entity as AccountSet;
+                var e = entity as AzureAccountSet;
                 return new AccountSet
                 {
                     Id = e.Id,
@@ -221,7 +221,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureAccountSetAccounts)
             {
-                var e = entity as AccountSetAccounts;
+                var e = entity as AzureAccountSetAccounts;
                 return new AccountSetAccounts
                 {
                     Id = e.Id,
@@ -231,7 +231,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureBet)
             {
-                var e = entity as Bet;
+                var e = entity as AzureBet;
                 return new Bet
                 {
                     Id = e.Id,
@@ -245,7 +245,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureBetRateAlgorithm)
             {
-                var e = entity as BetRateAlgorithm;
+                var e = entity as AzureBetRateAlgorithm;
                 return new BetRateAlgorithm
                 {
                     Id = e.Id,
@@ -258,7 +258,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureAlgorithmType)
             {
-                var e = entity as AlgorithmType;
+                var e = entity as AzureAlgorithmType;
                 return new AlgorithmType
                 {
                     Id = e.Id,
@@ -267,7 +267,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureCurrencyType)
             {
-                var e = entity as CurrencyType;
+                var e = entity as AzureCurrencyType;
                 return new CurrencyType
                 {
                     Id = e.Id,
@@ -276,7 +276,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureOutcomesType)
             {
-                var e = entity as OutcomesType;
+                var e = entity as AzureOutcomesType;
                 return new OutcomesType
                 {
                     Id = e.Id,
@@ -285,7 +285,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureEvent)
             {
-                var e = entity as Event;
+                var e = entity as AzureEvent;
                 return new Event
                 {
                     Id = e.Id,
@@ -304,7 +304,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureEventBetCondition)
             {
-                var e = entity as EventBetCondition;
+                var e = entity as AzureEventBetCondition;
                 return new EventBetCondition
                 {
                     Id = e.Id,
@@ -316,7 +316,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureEventCondition)
             {
-                var e = entity as EventCondition;
+                var e = entity as AzureEventCondition;
                 return new EventCondition
                 {
                     Id = e.Id,
@@ -326,7 +326,7 @@ namespace XOracle.Data.Azure
             }
             else if (entity is AzureEventRelationType)
             {
-                var e = entity as EventRelationType;
+                var e = entity as AzureEventRelationType;
                 return new EventRelationType
                 {
                     Id = e.Id,

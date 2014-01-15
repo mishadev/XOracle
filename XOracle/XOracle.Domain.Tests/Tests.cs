@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using XOracle.Azure.Core.Helpers;
 using XOracle.Data.Azure;
 using XOracle.Data.Azure.Entities;
 

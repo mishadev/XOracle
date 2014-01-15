@@ -8,7 +8,7 @@ namespace XOracle.Data.Azure.Entities
         private Guid _accountId;
         private Guid _id;
 
-        [RowKeyAttribute]
+        [RowKey]
         public Guid Id
         {
             get 
@@ -22,7 +22,7 @@ namespace XOracle.Data.Azure.Entities
             }
         }
 
-        [PartitionKeyAttribute]
+        [PartitionKey]
         public Guid AccountId
         {
             get
@@ -42,7 +42,7 @@ namespace XOracle.Data.Azure.Entities
         private Guid _accountSetId;
         private Guid _id;
 
-        [RowKeyAttribute]
+        [RowKey]
         public Guid Id
         {
             get
@@ -56,7 +56,7 @@ namespace XOracle.Data.Azure.Entities
             }
         }
 
-        [PartitionKeyAttribute]
+        [PartitionKey]
         public Guid AccountSetId
         {
             get

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using XOracle.Azure.Core.Stores.Storage;
 using XOracle.Data.Core;
 using XOracle.Domain.Core;
+using XOracle.Infrastructure.Core;
 
 namespace XOracle.Data.Azure
 {
@@ -15,15 +16,26 @@ namespace XOracle.Data.Azure
         where TAzureEntity : TableServiceEntity
         where TEntity : Entity
     {
+        private readonly static IValidator _validator = Factory<IValidator>.GetInstance();
+
         private readonly IAzureTable<TAzureEntity> _table;
+        private bool _inited = false;
 
         public AzureRepository(CloudStorageAccount storageAccount)
         {
             this._table = typeof(IEnum).IsAssignableFrom(typeof(TEntity)) ?
                 new AzureTable<TAzureEntity>(storageAccount, "Enum") :
                 new AzureTable<TAzureEntity>(storageAccount, typeof(TEntity).Name);
-            
-            this._table.EnsureExist().GetAwaiter().GetResult();
+        }
+
+        public async Task EnsureInitialize()
+        {
+            if (!this._inited)
+            {
+                await this._table.EnsureExist();
+
+                this._inited = true;
+            }
         }
 
         public async Task Add(TEntity item)
@@ -33,7 +45,13 @@ namespace XOracle.Data.Azure
 
         public async Task Add(IEnumerable<TEntity> items)
         {
-            var azureItems = items.Select(Convert);
+            await this.EnsureInitialize();
+
+            var azureItems = items.Select(i => {
+                Validate(i);
+                i.EnsureIdentity();
+                return Convert(i);
+            });
 
             await this._table.Add(azureItems);
         }
@@ -45,6 +63,8 @@ namespace XOracle.Data.Azure
 
         public async Task Remove(IEnumerable<TEntity> items)
         {
+            await this.EnsureInitialize();
+
             var azureItems = items.Select(Convert);
 
             await this._table.Delete(azureItems);
@@ -57,21 +77,16 @@ namespace XOracle.Data.Azure
 
         public async Task Modify(IEnumerable<TEntity> items)
         {
+            await this.EnsureInitialize();
+
             var azureItems = items.Select(Convert);
 
             await this._table.AddOrUpdate(azureItems);
         }
 
-        public Task<TEntity> Get(Guid id)
+        public async Task<TEntity> Get(Guid id)
         {
-            var query = this._table.Query.Where(row => row.RowKey == id.ToString());
-
-            var azureItem = this._table
-                .GetRetryPolicyFactoryInstance()
-                .GetDefaultAzureStorageRetryPolicy()
-                .ExecuteAction<TAzureEntity>(() => query.SingleOrDefault());
-
-            return Task.FromResult(Convert(azureItem));
+            return await this.GetBy(e => e.Id == id);
         }
 
         public async Task<TEntity> GetBy(Expression<Func<TEntity, bool>> filter)
@@ -79,9 +94,22 @@ namespace XOracle.Data.Azure
             return (await this.GetFiltered(filter)).SingleOrDefault();
         }
 
-        public Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter)
+        public async Task<IEnumerable<TEntity>> GetFiltered(Expression<Func<TEntity, bool>> filter)
         {
-            return Task.FromResult(this._table.Query.Where(Convert(filter)).Select(Convert));
+            await this.EnsureInitialize();
+
+            try
+            {
+                var x = Convert(filter);
+                var b = x.Compile();
+
+                return this._table.Query.Where(x).Select(Convert);
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
         }
 
         private Expression<Func<TAzureEntity, bool>> Convert(Expression<Func<TEntity, bool>> filter)
@@ -100,5 +128,13 @@ namespace XOracle.Data.Azure
         }
 
         public void Dispose() { }
+
+        private static void Validate(TEntity item)
+        {
+            var validationErrors = _validator.GetErrorMessages(item);
+
+            if (validationErrors.Any())
+                throw new InvalidOperationException("validation errors: " + string.Join(", ", validationErrors));
+        }
     }
 }

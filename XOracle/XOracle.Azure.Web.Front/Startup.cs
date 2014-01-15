@@ -11,6 +11,7 @@ namespace XOracle.Azure.Web.Front
         {
             Startup_Auth();
             Startup_Factories();
+            Startup_Enums();
         }
 
         public void Configuration(IAppBuilder app)

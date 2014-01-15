@@ -12,7 +12,7 @@ namespace XOracle.Data.Azure.Entities
             this.PartitionKey = this.GetType().Name;
         }
 
-        [RowKeyAttribute]
+        [RowKey]
         public Guid Id
         {
             get

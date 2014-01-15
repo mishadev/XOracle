@@ -32,15 +32,16 @@ namespace XOracle.Application
 
         public async Task<GetAccountResponse> GetAccount(GetAccountRequest request)
         {
+            var name = request.Name;
             var account = request.AccountId.HasValue ?
                 await this._repositoryAccount.Get(request.AccountId.Value) :
-                await this._repositoryAccount.GetBy(a => a.Name == request.Name);
+                await this._repositoryAccount.GetBy(a => a.Name == name);
 
             var response = new GetAccountResponse();
             if (account != null)
             {
                 var currencyType = await this._repositoryCurrencyType.GetBy(v => v.Name == CurrencyType.Reputation);
-                var balance = await this._repositoryAccountBalance.GetBy(b => b.AccountId == account.Id && b.CurrencyTypeId == currencyType.Id);
+                var balance = await this._accountsFactory.GetOrCreateBalance(account, currencyType);
 
                 response.AccountId = account.Id;
                 response.Email = account.Email;
@@ -69,9 +70,12 @@ namespace XOracle.Application
 
         public async Task<GetAccountLoginResponse> GetAccountLogin(GetAccountLoginRequest request)
         {
+            var loginProvider = request.LoginProvider;
+            var providerKey = request.ProviderKey;
+
             AccountLogin accountlogin = request.AccountLoginId.HasValue ?
                 await this._repositoryAccountLogin.Get(request.AccountLoginId.Value) :
-                await this._repositoryAccountLogin.GetBy(al => al.LoginProvider == request.LoginProvider && al.ProviderKey == request.ProviderKey);
+                await this._repositoryAccountLogin.GetBy(al => al.LoginProvider == loginProvider && al.ProviderKey == providerKey);
 
             return this.ConvertAccountLogin(accountlogin);
         }
@@ -85,7 +89,8 @@ namespace XOracle.Application
 
         public async Task<GetAccountLoginsResponse> GetAccountLogins(GetAccountLoginsRequest request)
         {
-            IEnumerable<AccountLogin> accountlogins = await this._repositoryAccountLogin.GetFiltered(al => al.AccountId == request.AccountId);
+            var accountId = request.AccountId;
+            IEnumerable<AccountLogin> accountlogins = await this._repositoryAccountLogin.GetFiltered(al => al.AccountId == accountId);
 
             return new GetAccountLoginsResponse { AccountLoginResponses = accountlogins.Select(this.ConvertAccountLogin) };
         }

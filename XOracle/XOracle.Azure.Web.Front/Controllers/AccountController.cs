@@ -202,14 +202,19 @@ namespace XOracle.Azure.Web.Front.Controllers
 
             IdentityAccount account = await _userManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey));
             if (account == null)
-            { 
-                account = new IdentityAccount { UserName = externalLogin.UserName };
-                IdentityResult result = await _userManager.CreateAsync(account);
-                
-                if (!result.Succeeded) return InternalServerError();
+            {
+                IdentityResult result = null;
 
+                account = await _userManager.FindByNameAsync(externalLogin.UserName);
+                if (account == null)
+                {
+                    account = new IdentityAccount { UserName = externalLogin.UserName };
+                    result = await _userManager.CreateAsync(account);
+
+                    if (!result.Succeeded) return InternalServerError();
+                }
+                
                 UserLoginInfo login = new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey);
-                account = await _userManager.FindByNameAsync(account.UserName);
                 result = await _userManager.AddLoginAsync(account.Id, login);
 
                 if (!result.Succeeded) return InternalServerError();

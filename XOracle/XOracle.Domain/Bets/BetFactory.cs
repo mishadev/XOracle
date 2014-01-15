@@ -63,29 +63,36 @@ namespace XOracle.Domain
             if (conditions.CloseDate < DateTime.Now)
                 throw new InvalidOperationException("bet alrady closed");
 
+            var accountSetId = @event.JudgingAccountSetId;
             IEnumerable<AccountSetAccounts> judgingAccounts =
-                await this._repositorise.Get<AccountSetAccounts>().GetFiltered(a => a.AccountSetId == @event.JudgingAccountSetId);
+                await this._repositorise.Get<AccountSetAccounts>().GetFiltered(a => a.AccountSetId == accountSetId);
 
             if (judgingAccounts.Any(a => a.AccountId == account.Id))
                 throw new InvalidOperationException("judges contains this account");
 
             if (@event.ParticipantsAccountSetId != default(Guid))
             {
+                accountSetId = @event.ParticipantsAccountSetId;
                 IEnumerable<AccountSetAccounts> participantsAccounts =
-                    await this._repositorise.Get<AccountSetAccounts>().GetFiltered(a => a.AccountSetId == @event.ParticipantsAccountSetId);
+                    await this._repositorise.Get<AccountSetAccounts>().GetFiltered(a => a.AccountSetId == accountSetId);
 
                 if (!participantsAccounts.Any(setitem => setitem.AccountId == account.Id) && account.Id != ownerAccountId)
                     throw new InvalidOperationException("Participants account has not you accountId");
             }
 
+            var eventId = @event.Id;
+            var accountId = account.Id;
+
             EventRelationType relationType = await this._repositorise.Get<EventRelationType>().Get(@event.EventRelationTypeId);
-            Bet bet = await this._repositorise.Get<Bet>().GetBy(b => b.EventId == @event.Id && b.AccountId == account.Id);
+            Bet bet = await this._repositorise.Get<Bet>().GetBy(b => b.EventId == eventId && b.AccountId == accountId);
             if (currencyType.Name == CurrencyType.Reputation && bet != null)
                 throw new InvalidOperationException("you already bet you reputation");
 
             if (relationType.Name != EventRelationType.MenyVsMeny)
             {
-                Bet ownrbet = await this._repositorise.Get<Bet>().GetBy(b => b.EventId == @event.Id && b.AccountId == ownerAccountId);
+                eventId = @event.Id;
+
+                Bet ownrbet = await this._repositorise.Get<Bet>().GetBy(b => b.EventId == eventId && b.AccountId == ownerAccountId);
                 if (ownrbet == null)
                 {
                     if (ownerAccountId != account.Id)
@@ -99,7 +106,8 @@ namespace XOracle.Domain
 
                 if (relationType.Name == EventRelationType.OneVsOne)
                 {
-                    IEnumerable<Bet> bets = await this._repositorise.Get<Bet>().GetFiltered(b => b.EventId == @event.Id);
+                    eventId = @event.Id;
+                    IEnumerable<Bet> bets = await this._repositorise.Get<Bet>().GetFiltered(b => b.EventId == eventId);
                     if (bets.Count() > 1)
                         throw new InvalidOperationException("alrady bet on all outcomes in One vs One relations");
                 }
@@ -110,9 +118,10 @@ namespace XOracle.Domain
         {
             using (var scope = this._scopeableFactory.Create())
             {
+                var eventId = @event.Id;
                 var bet = await CreateBet(account, @event, outcomesType, value);
                 var conditions = await this._repositorise.Get<EventBetCondition>().Get(@event.EventBetConditionId);
-                var bets = await this._repositorise.Get<Bet>().GetFiltered(b => b.EventId == @event.Id);
+                var bets = await this._repositorise.Get<Bet>().GetFiltered(b => b.EventId == eventId);
                 var algorithm = await this._repositorise.Get<BetRateAlgorithm>().Get(conditions.EventBetRateAlgorithmId);
 
                 DateTime date = DateTime.Now;

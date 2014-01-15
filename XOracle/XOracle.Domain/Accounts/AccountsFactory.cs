@@ -14,6 +14,8 @@ namespace XOracle.Domain
         Task<AccountLogin> CreateAccountLogin(Guid accountId, string loginProvider, string providerKey);
 
         Task<AccountBalance> CreateAccountBalance(Account account, CurrencyType currencyType, decimal value);
+
+        Task<AccountBalance> GetOrCreateBalance(Account account, CurrencyType currencyType);
     }
 
     public class AccountsFactory : IAccountsFactory
@@ -92,6 +94,21 @@ namespace XOracle.Domain
 
                 return accountLogin;
             }
+        }
+
+        public async Task<AccountBalance> GetOrCreateBalance(Account account, CurrencyType currencyType)
+        {
+            var accountId = account.Id;
+            var currencyTypeId = currencyType.Id;
+
+            var balance = await this._repositoryAccountBalance.GetBy(b => b.AccountId == accountId && b.CurrencyTypeId == currencyTypeId);
+            if (balance == null)
+            {
+                decimal value = currencyType.Name != CurrencyType.Reputation ? 0 : 1;
+
+                await this.CreateAccountBalance(account, currencyType, value);
+            }
+            return balance;
         }
     }
 }

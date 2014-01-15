@@ -89,7 +89,8 @@ namespace XOracle.Application
 
         public async Task<GetEventsResponse> GetEvents(GetEventsRequest request)
         {
-            IEnumerable<Event> events = await this._repositoryEvent.GetFiltered(e => e.AccountId == request.AccountId);
+            var accountId = request.AccountId;
+            IEnumerable<Event> events = await this._repositoryEvent.GetFiltered(e => e.AccountId == accountId);
 
             return new GetEventsResponse { EventIds = events.Select(e => e.Id) };
         }

@@ -5,11 +5,13 @@
       <Site name="Web">
         <Bindings>
           <Binding name="Endpoint1" endpointName="HttpsIn" />
+          <Binding name="Endpoint1" endpointName="httpIn" />
         </Bindings>
       </Site>
     </Sites>
     <Endpoints>
-      <InputEndpoint name="HttpsIn" protocol="https" port="443" />
+      <InputEndpoint name="HttpsIn" protocol="https" port="446" certificate="localhost" />
+      <InputEndpoint name="httpIn" protocol="http" port="80" />
     </Endpoints>
     <Imports>
       <Import moduleName="Diagnostics" />
