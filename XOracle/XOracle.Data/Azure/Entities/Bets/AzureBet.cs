@@ -38,7 +38,7 @@ namespace XOracle.Data.Azure.Entities
 
         public Guid CurrencyTypeId { get; set; }
 
-        public decimal Value { get; set; }
+        public double Value { get; set; }
 
         public DateTime CreationDate { get; set; }
 

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace XOracle.Azure.Web.Front.Models
 {
-    public class EventBindingModels
+    public class EventBindingModel
     {
         [Required]
         [DataType(DataType.Text)]
@@ -34,8 +32,8 @@ namespace XOracle.Azure.Web.Front.Models
         public string ParticipantsAccounts { get; set; }
 
         [DataType(DataType.Text)]
-        [Display(Name = "Judging Accounts")]
-        public string JudgingAccounts { get; set; }
+        [Display(Name = "Arbiter Accounts")]
+        public string ArbiterAccounts { get; set; }
 
         [Required]
         [DataType(DataType.Text)]

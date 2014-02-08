@@ -26,11 +26,14 @@ namespace XOracle.Azure.Web.Front
                 new AzureRepository<AzureCurrencyType, CurrencyType>(account),
                 new AzureRepository<AzureAccountBalance, AccountBalance>(account),
                 new AzureRepository<AzureAccountLogin, AccountLogin>(account),
+                new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
                 new AccountsFactory(
                     new AzureRepository<AzureAccount, Account>(account),
                     new AzureRepository<AzureCurrencyType, CurrencyType>(account),
                     new AzureRepository<AzureAccountBalance, AccountBalance>(account),
                     new AzureRepository<AzureAccountLogin, AccountLogin>(account),
+                    new AzureRepository<AzureAccountSet, AccountSet>(account),
+                    new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
                     new AzureScopeableUnitOfWorkFactory()));
         }
 

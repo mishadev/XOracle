@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using XOracle.Application.Core;
@@ -14,18 +15,21 @@ namespace XOracle.Application
         private IRepository<CurrencyType> _repositoryCurrencyType;
         private IRepository<AccountBalance> _repositoryAccountBalance;
         private IRepository<AccountLogin> _repositoryAccountLogin;
+        private IRepository<AccountSetAccounts> _repositoryAccountSetAccounts;
 
         public AccountingService(
             IRepository<Account> repositoryAccount,
             IRepository<CurrencyType> repositoryCurrencyType,
             IRepository<AccountBalance> repositoryAccountBalance,
             IRepository<AccountLogin> repositoryAccountLogin,
+            IRepository<AccountSetAccounts> repositoryAccountSetAccounts,
             IAccountsFactory accountsFactory)
         {
             this._repositoryAccount = repositoryAccount;
             this._repositoryCurrencyType = repositoryCurrencyType;
             this._repositoryAccountBalance = repositoryAccountBalance;
             this._repositoryAccountLogin = repositoryAccountLogin;
+            this._repositoryAccountSetAccounts = repositoryAccountSetAccounts;
 
             this._accountsFactory = accountsFactory;
         }
@@ -39,17 +43,47 @@ namespace XOracle.Application
 
             var response = new GetAccountResponse();
             if (account != null)
-            {
-                var currencyType = await this._repositoryCurrencyType.GetBy(v => v.Name == CurrencyType.Reputation);
-                var balance = await this._accountsFactory.GetOrCreateBalance(account, currencyType);
-
-                response.AccountId = account.Id;
-                response.Email = account.Email;
-                response.Name = account.Name;
-                response.Reputation = balance.Value;
-            }
+                response = await this.GetDetails(account, request.DetalizationLevel);
 
             return response;
+        }
+
+        private async Task<GetAccountResponse> GetDetails(Account account, DetalizationLevel level)
+        {
+            switch (level)
+            {
+                case DetalizationLevel.Second:
+                case DetalizationLevel.Full:
+                case DetalizationLevel.First:
+                    return await FillFirstDetalization(account);
+                default:
+                    return FillBaseDetalization(account);
+            }
+        }
+
+        private GetAccountResponse FillBaseDetalization(Account account, GetAccountResponse model = null)
+        {
+            model = model ?? new GetAccountResponse();
+
+            model.AccountId = account.Id;
+            model.Name = account.Name;
+            model.Email = account.Email;
+
+            return model;
+        }
+
+        private async Task<GetAccountResponseFirst> FillFirstDetalization(Account account, GetAccountResponseFirst model = null)
+        {
+            model = model ?? new GetAccountResponseFirst();
+
+            FillBaseDetalization(account, model);
+
+            var currencyType = await this._repositoryCurrencyType.GetBy(v => v.Name == CurrencyType.Reputation);
+            var balance = await this._accountsFactory.GetOrCreateBalance(account, currencyType);
+
+            model.Reputation = balance.Value;
+
+            return model;
         }
 
         public async Task<CreateAccountResponse> CreateAccount(CreateAccountRequest request)
@@ -85,6 +119,72 @@ namespace XOracle.Application
             var accountLogin = await this._accountsFactory.CreateAccountLogin(request.AccountId, request.LoginProvider, request.ProviderKey);
 
             return new CreateAccountLoginResponse { AccountLoginId = accountLogin.Id };
+        }
+
+        public async Task<GetAccountsSetResponse> GetAccountsSet(GetAccountsSetRequest request)
+        {
+            var setId = request.AccountSetId;
+            var accountSetAccounts = await this._repositoryAccountSetAccounts.GetFiltered(asa => asa.AccountSetId == setId);
+
+            var details = await this.GetDetails(accountSetAccounts, request.DetalizationLevel);
+            return details;
+        }
+
+        private async Task<GetAccountsSetResponse> GetDetails(IEnumerable<AccountSetAccounts> accountSetAccounts, DetalizationLevel level)
+        {
+            switch (level)
+            {
+                case DetalizationLevel.First:
+                    return await FillFirstDetalization(accountSetAccounts, DetalizationLevel.None);
+                case DetalizationLevel.Second:
+                case DetalizationLevel.Full:
+                    return await FillFirstDetalization(accountSetAccounts, DetalizationLevel.First);
+                default:
+                    return FillBaseDetalization(accountSetAccounts);
+            }
+        }
+
+        private GetAccountsSetResponse FillBaseDetalization(IEnumerable<AccountSetAccounts> accountSetAccounts, GetAccountsSetResponse model = null)
+        {
+            model = model ?? new GetAccountsSetResponse();
+
+            model.AccountIds = accountSetAccounts.Select(asa => asa.AccountId);
+            model.AccountsSetId = accountSetAccounts.FirstOrDefault().AccountSetId;
+
+            return model;
+        }
+
+        private async Task<GetAccountsSetResponseFirst> FillFirstDetalization(IEnumerable<AccountSetAccounts> accountSetAccounts, DetalizationLevel inner, GetAccountsSetResponseFirst model = null)
+        {
+            model = model ?? new GetAccountsSetResponseFirst();
+
+            FillBaseDetalization(accountSetAccounts, model);
+
+            var list = new List<GetAccountResponse>(accountSetAccounts.Count());
+            foreach (var asa in accountSetAccounts)
+                list.Add(await this.GetAccount(new GetAccountRequest { AccountId = asa.AccountId, DetalizationLevel = inner }));
+
+            model.Accounts = list;
+
+            return model;
+        }
+
+        public async Task<CreateAccountsSetResponse> CreateAccountsSet(CreateAccountsSetRequest request)
+        {
+            var account = await this._repositoryAccount.Get(request.CreatorAccountId);
+            var accountset = await this._accountsFactory.CreateAccountSet(account, await this.GetByIds(request.AccountIds));
+
+            return new CreateAccountsSetResponse { Id = accountset.Id };
+        }
+
+        private async Task<IEnumerable<Account>> GetByIds(IEnumerable<Guid> ids)
+        {
+            var list = new List<Account>(ids.Count());
+
+            foreach (var id in ids)
+                list.Add(await this._repositoryAccount.Get(id));
+
+            return list;
         }
 
         public async Task<GetAccountLoginsResponse> GetAccountLogins(GetAccountLoginsRequest request)

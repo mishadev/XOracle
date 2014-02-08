@@ -98,18 +98,7 @@ namespace XOracle.Data.Azure
         {
             await this.EnsureInitialize();
 
-            try
-            {
-                var x = Convert(filter);
-                var b = x.Compile();
-
-                return this._table.Query.Where(x).Select(Convert);
-            }
-            catch (Exception)
-            {
-                
-                throw;
-            }
+            return this._table.Query.Where(Convert(filter)).Select(Convert);
         }
 
         private Expression<Func<TAzureEntity, bool>> Convert(Expression<Func<TEntity, bool>> filter)

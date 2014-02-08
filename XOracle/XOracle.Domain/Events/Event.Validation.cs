@@ -20,7 +20,7 @@ namespace XOracle.Domain
                 this.IsDefault(this.EndDate, "EndDate"),
                 this.IsDefault(this.AccountId, "CreatorAccountId"),
                 this.IsDefault(this.EventRelationTypeId, "EventRelationTypeId"),
-                this.IsDefault(this.JudgingAccountSetId, "JudgingAccountSetId"),
+                this.IsDefault(this.ArbiterAccountSetId, "ArbiterAccountSetId"),
                 this.IsDefault(this.ExpectedEventConditionId, "ExpectedEventConditionId"),
                 this.IsDefault(this.EventBetConditionId, "EventBetConditionId"),
             };

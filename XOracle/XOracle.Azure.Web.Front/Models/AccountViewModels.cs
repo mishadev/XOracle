@@ -5,6 +5,13 @@ namespace XOracle.Azure.Web.Front.Models
 {
     // Models returned by AccountController actions.
 
+    public class AccountViewModel
+    {
+        public string Name { get; set; }
+
+        public string Id { get; set; }
+    }
+
     public class ManageInfoViewModel
     {
         public string LocalLoginProvider { get; set; }

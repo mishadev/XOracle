@@ -77,7 +77,7 @@ namespace XOracle.Data.Azure
                     CurrencyTypeId = e.CurrencyTypeId,
                     EventId = e.EventId,
                     OutcomesTypeId = e.OutcomesTypeId,
-                    Value = e.Value
+                    Value = (double)e.Value
                 } as TAzureEntity;
             }
             else if (entity is BetRateAlgorithm)
@@ -132,7 +132,7 @@ namespace XOracle.Data.Azure
                     EventRelationTypeId = e.EventRelationTypeId,
                     ExpectedEventConditionId = e.ExpectedEventConditionId,
                     ImageId = e.ImageId,
-                    JudgingAccountSetId = e.JudgingAccountSetId,
+                    ArbiterAccountSetId = e.ArbiterAccountSetId,
                     ParticipantsAccountSetId = e.ParticipantsAccountSetId,
                     RealEventConditionId = e.RealEventConditionId,
                     StartDate = e.StartDate,
@@ -240,7 +240,7 @@ namespace XOracle.Data.Azure
                     CurrencyTypeId = e.CurrencyTypeId,
                     EventId = e.EventId,
                     OutcomesTypeId = e.OutcomesTypeId,
-                    Value = e.Value
+                    Value = (decimal)e.Value
                 } as TEntity;
             }
             else if (entity is AzureBetRateAlgorithm)
@@ -295,7 +295,7 @@ namespace XOracle.Data.Azure
                     EventRelationTypeId = e.EventRelationTypeId,
                     ExpectedEventConditionId = e.ExpectedEventConditionId,
                     ImageId = e.ImageId,
-                    JudgingAccountSetId = e.JudgingAccountSetId,
+                    ArbiterAccountSetId = e.ArbiterAccountSetId,
                     ParticipantsAccountSetId = e.ParticipantsAccountSetId,
                     RealEventConditionId = e.RealEventConditionId,
                     StartDate = e.StartDate,

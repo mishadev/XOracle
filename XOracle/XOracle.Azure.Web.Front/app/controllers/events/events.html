@@ -11,7 +11,25 @@
                             <div data-ng-if="vm.hasEvents">
                                 <ul class="nav">
                                     <li data-ng-repeat="event in vm.events">
-                                        {{event}}
+                                        <p>Title : <span>{{event.Title}}</span></p>
+                                        <p>Condition : <span>{{event.Condition}}</span></p>
+                                        <p>Duration : <span>{{event.StartDate | date: 'dd/MM/yyyy'}} - {{event.EndDate | date: 'dd/MM/yyyy'}}</span></p>
+                                        <p>
+                                            Arbiters :
+                                            <ul class="nav">
+                                                <li data-ng-repeat="account in event.ArbiterAccountSet">
+                                                    <a href="#/{{account.Name}}">@{{account.Name}}</a>
+                                                </li>
+                                            </ul>
+                                        </p>
+                                        <p>
+                                            <button class="btn btn-default" data-ng-click="vm.createHappenBet(event)" data-ng-if="event.HappenBetRate">
+                                                H {{event.HappenBetRate.WinValue | number:3}}({{event.HappenBetRate.WinRate | number:3}})
+                                            </button>
+                                            <button class="btn btn-default" data-ng-click="vm.createNotHappenBet(event)" data-ng-if="event.NotHappenBetRate">
+                                                BH {{event.NotHappenBetRate.WinValue | number:3}}({{event.NotHappenBetRate.WinRate | number:3}})
+                                            </button>
+                                        </p>
                                     </li>
                                 </ul>
                             </div>
@@ -71,14 +89,14 @@
                                 <input id="eventlocusRage" type="text" data-ng-model="vm.event.locusRage" />
                             </div>
                             <div class="form-group">
-                                <label for="eventRelationType">Relation Type</label>
-                                <select id="eventRelationType" data-ng-model="vm.event.algorithmType">
+                                <label for="eventalgorithmType">Relation Type</label>
+                                <select id="eventalgorithmType" data-ng-model="vm.event.algorithmType">
                                     <option data-ng-repeat="algorithmType in vm.algorithmTypes">{{algorithmType}}</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="eventjudgingAccounts">Judging Accounts</label>
-                                <input id="eventjudgingAccounts" type="text" data-ng-model="vm.event.judgingAccounts" />
+                                <label for="eventarbiterAccounts">Arbiter Accounts</label>
+                                <input id="eventarbiterAccounts" type="text" data-ng-model="vm.event.arbiterAccounts" />
                             </div>
                             <button class="btn btn-default" data-ng-click="vm.create()">Create</button>
                         </div>

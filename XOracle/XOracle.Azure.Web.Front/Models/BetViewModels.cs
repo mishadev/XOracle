@@ -1,11 +1,7 @@
-﻿using System;
-
-namespace XOracle.Application.Core
+﻿namespace XOracle.Azure.Web.Front
 {
-    public class CalculateBetRateResponse
+    public class BetRateViewModel
     {
-        public DateTime CreationDate { get; set; }
-
         public decimal Rate { get; set; }
 
         public decimal WinRate { get; set; }

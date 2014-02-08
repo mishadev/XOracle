@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace XOracle.Application.Core
 {
-    public class GetBetsResponse
+    public class GetEventsResponse
     {
-        public IEnumerable<GetBetResponse> Bets { get; set; }
+        public IEnumerable<GetEventResponse> Events { get; set; }
     }
 }

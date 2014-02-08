@@ -2,7 +2,7 @@
 
 namespace XOracle.Application.Core
 {
-    public class GetBetsDetailsRequest
+    public class GetBetRequest
     {
         public Guid BetId { get; set; }
     }

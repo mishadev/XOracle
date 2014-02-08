@@ -16,6 +16,8 @@ namespace XOracle.Domain
         Task<AccountBalance> CreateAccountBalance(Account account, CurrencyType currencyType, decimal value);
 
         Task<AccountBalance> GetOrCreateBalance(Account account, CurrencyType currencyType);
+
+        Task<AccountSet> CreateAccountSet(Account account, IEnumerable<Account> accounts);
     }
 
     public class AccountsFactory : IAccountsFactory
@@ -26,18 +28,24 @@ namespace XOracle.Domain
         private IRepository<CurrencyType> _repositoryCurrencyType;
         private IRepository<AccountBalance> _repositoryAccountBalance;
         private IRepository<AccountLogin> _repositoryAccountLogin;
+        private IRepository<AccountSet> _repositoryAccountSet;
+        private IRepository<AccountSetAccounts> _repositoryAccountSetAccounts;
 
         public AccountsFactory(
             IRepository<Account> repositoryAccount,
             IRepository<CurrencyType> repositoryCurrencyType,
             IRepository<AccountBalance> repositoryAccountBalance,
             IRepository<AccountLogin> repositoryAccountLogin,
+            IRepository<AccountSet> repositoryAccountSet,
+            IRepository<AccountSetAccounts> repositoryAccountSetAccounts,
             IFactory<IScopeable<IUnitOfWork>> scopeableFactory)
         {
             this._repositoryAccount = repositoryAccount;
             this._repositoryCurrencyType = repositoryCurrencyType;
             this._repositoryAccountBalance = repositoryAccountBalance;
             this._repositoryAccountLogin = repositoryAccountLogin;
+            this._repositoryAccountSet = repositoryAccountSet;
+            this._repositoryAccountSetAccounts = repositoryAccountSetAccounts;
 
             this._scopeableFactory = scopeableFactory;
         }
@@ -109,6 +117,33 @@ namespace XOracle.Domain
                 await this.CreateAccountBalance(account, currencyType, value);
             }
             return balance;
+        }
+
+        public async Task<AccountSet> CreateAccountSet(Account account, IEnumerable<Account> accounts)
+        {
+            accounts = accounts.Where(a => a != null).Distinct();//normalize
+
+            using (this._scopeableFactory.Create())
+            {
+                var accountSet = new AccountSet { AccountId = account.Id };
+                if (accounts.Any())
+                {
+                    await this._repositoryAccountSet.Add(accountSet);
+
+                    foreach (var acc in accounts)
+                    {
+                        if (!acc.IsTransient())
+                        {
+                            await this._repositoryAccountSetAccounts.Add(new AccountSetAccounts
+                            {
+                                AccountId = acc.Id,
+                                AccountSetId = accountSet.Id
+                            });
+                        }
+                    }
+                }
+                return accountSet;
+            }
         }
     }
 }

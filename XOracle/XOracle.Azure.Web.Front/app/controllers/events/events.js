@@ -18,7 +18,7 @@
                 endRate: '100',
                 locusRage: '1',
                 algorithmType: 'Exponential',
-                judgingAccounts: ''
+                arbiterAccounts: ''
             };
 
         vm.events = [];
@@ -80,13 +80,30 @@
             logError(data.ExceptionMessage || data.Message || data);
         }
 
+        function createBet(data) {
+            return datacontext.CreateBet(data)
+               .then(function (output) {
+                   log(data.OutcomesType + ' Bet created!');
+               }, logErrors);
+        }
+
         /* public */
 
         vm.create = function () {
             return datacontext.CreateEvent(vm.event)
                .then(function (data) {
-                   log('Event created!')
+                   log('Event created!');
                }, logErrors);
+        }
+
+        vm.createHappenBet = function (event) {
+            debugger
+            return createBet({ EventId: event.EventId, OutcomesType: "Happen", BetAmount: 1 });
+        }
+
+        vm.createNotHappenBet = function (event) {
+            debugger
+            return createBet({ EventId: event.EventId, OutcomesType: "NotHappen", BetAmount: 1 });
         }
     }
 })();

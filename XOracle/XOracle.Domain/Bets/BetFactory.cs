@@ -17,14 +17,38 @@ namespace XOracle.Domain
 
     public class BetsFactory : IBetsFactory
     {
-        private IRepositoryFactory _repositorise;
         private IFactory<IScopeable<IUnitOfWork>> _scopeableFactory;
 
+        private IRepository<Bet> _repositoryBet;
+        private IRepository<EventBetCondition> _repositoryEventBetCondition;
+        private IRepository<EventRelationType> _repositoryEventRelationType;
+
+        private IRepository<CurrencyType> _repositoryCurrencyType;
+        private IRepository<AlgorithmType> _repositoryAlgorithmType;
+
+        private IRepository<AccountSetAccounts> _repositoryAccountSetAccounts;
+        private IRepository<BetRateAlgorithm> _repositoryBetRateAlgorithm;
+
         public BetsFactory(
-            IRepositoryFactory repositorise,
+            IRepository<Bet> repositoryBet,
+            IRepository<EventBetCondition> repositoryEventBetCondition,
+            IRepository<EventRelationType> repositoryEventRelationType,
+            IRepository<CurrencyType> repositoryCurrencyType,
+            IRepository<AlgorithmType> repositoryAlgorithmType,
+            IRepository<AccountSetAccounts> repositoryAccountSetAccounts,
+            IRepository<BetRateAlgorithm> repositoryBetRateAlgorithm,
             IFactory<IScopeable<IUnitOfWork>> scopeableFactory)
         {
-            this._repositorise = repositorise;
+            this._repositoryBet = repositoryBet;
+            this._repositoryEventBetCondition = repositoryEventBetCondition;
+            this._repositoryEventRelationType = repositoryEventRelationType;
+
+            this._repositoryCurrencyType = repositoryCurrencyType;
+            this._repositoryAlgorithmType = repositoryAlgorithmType;
+
+            this._repositoryAccountSetAccounts = repositoryAccountSetAccounts;
+            this._repositoryBetRateAlgorithm = repositoryBetRateAlgorithm;
+
             this._scopeableFactory = scopeableFactory;
         }
 
@@ -32,8 +56,8 @@ namespace XOracle.Domain
         {
             using (this._scopeableFactory.Create())
             {
-                EventBetCondition conditions = await this._repositorise.Get<EventBetCondition>().Get(@event.EventBetConditionId);
-                CurrencyType currencyType = await this._repositorise.Get<CurrencyType>().Get(conditions.CurrencyTypeId);
+                EventBetCondition conditions = await this._repositoryEventBetCondition.Get(@event.EventBetConditionId);
+                CurrencyType currencyType = await this._repositoryCurrencyType.Get(conditions.CurrencyTypeId);
 
                 await Checks(@event, account, outcomesType, conditions, currencyType);
 
@@ -50,7 +74,7 @@ namespace XOracle.Domain
                     Value = value
                 };
 
-                await this._repositorise.Get<Bet>().Add(bet);
+                await this._repositoryBet.Add(bet);
 
                 return bet;
             }
@@ -63,18 +87,18 @@ namespace XOracle.Domain
             if (conditions.CloseDate < DateTime.Now)
                 throw new InvalidOperationException("bet alrady closed");
 
-            var accountSetId = @event.JudgingAccountSetId;
-            IEnumerable<AccountSetAccounts> judgingAccounts =
-                await this._repositorise.Get<AccountSetAccounts>().GetFiltered(a => a.AccountSetId == accountSetId);
+            var accountSetId = @event.ArbiterAccountSetId;
+            IEnumerable<AccountSetAccounts> arbiterAccounts =
+                await this._repositoryAccountSetAccounts.GetFiltered(a => a.AccountSetId == accountSetId);
 
-            if (judgingAccounts.Any(a => a.AccountId == account.Id))
-                throw new InvalidOperationException("judges contains this account");
+            if (arbiterAccounts.Any(a => a.AccountId == account.Id))
+                throw new InvalidOperationException("you are arbiter of this bet");
 
             if (@event.ParticipantsAccountSetId != default(Guid))
             {
                 accountSetId = @event.ParticipantsAccountSetId;
                 IEnumerable<AccountSetAccounts> participantsAccounts =
-                    await this._repositorise.Get<AccountSetAccounts>().GetFiltered(a => a.AccountSetId == accountSetId);
+                    await this._repositoryAccountSetAccounts.GetFiltered(a => a.AccountSetId == accountSetId);
 
                 if (!participantsAccounts.Any(setitem => setitem.AccountId == account.Id) && account.Id != ownerAccountId)
                     throw new InvalidOperationException("Participants account has not you accountId");
@@ -83,8 +107,8 @@ namespace XOracle.Domain
             var eventId = @event.Id;
             var accountId = account.Id;
 
-            EventRelationType relationType = await this._repositorise.Get<EventRelationType>().Get(@event.EventRelationTypeId);
-            Bet bet = await this._repositorise.Get<Bet>().GetBy(b => b.EventId == eventId && b.AccountId == accountId);
+            EventRelationType relationType = await this._repositoryEventRelationType.Get(@event.EventRelationTypeId);
+            Bet bet = await this._repositoryBet.GetBy(b => b.EventId == eventId && b.AccountId == accountId);
             if (currencyType.Name == CurrencyType.Reputation && bet != null)
                 throw new InvalidOperationException("you already bet you reputation");
 
@@ -92,7 +116,7 @@ namespace XOracle.Domain
             {
                 eventId = @event.Id;
 
-                Bet ownrbet = await this._repositorise.Get<Bet>().GetBy(b => b.EventId == eventId && b.AccountId == ownerAccountId);
+                Bet ownrbet = await this._repositoryBet.GetBy(b => b.EventId == eventId && b.AccountId == ownerAccountId);
                 if (ownrbet == null)
                 {
                     if (ownerAccountId != account.Id)
@@ -107,7 +131,7 @@ namespace XOracle.Domain
                 if (relationType.Name == EventRelationType.OneVsOne)
                 {
                     eventId = @event.Id;
-                    IEnumerable<Bet> bets = await this._repositorise.Get<Bet>().GetFiltered(b => b.EventId == eventId);
+                    IEnumerable<Bet> bets = await this._repositoryBet.GetFiltered(b => b.EventId == eventId);
                     if (bets.Count() > 1)
                         throw new InvalidOperationException("alrady bet on all outcomes in One vs One relations");
                 }
@@ -118,48 +142,47 @@ namespace XOracle.Domain
         {
             using (var scope = this._scopeableFactory.Create())
             {
-                var eventId = @event.Id;
-                var bet = await CreateBet(account, @event, outcomesType, value);
-                var conditions = await this._repositorise.Get<EventBetCondition>().Get(@event.EventBetConditionId);
-                var bets = await this._repositorise.Get<Bet>().GetFiltered(b => b.EventId == eventId);
-                var algorithm = await this._repositorise.Get<BetRateAlgorithm>().Get(conditions.EventBetRateAlgorithmId);
+                EventBetCondition conditions = await this._repositoryEventBetCondition.Get(@event.EventBetConditionId);
+                CurrencyType currencyType = await this._repositoryCurrencyType.Get(conditions.CurrencyTypeId);
+
+                try
+                {
+                    await Checks(@event, account, outcomesType, conditions, currencyType);
+                }
+                catch { return null; }
+
+                Guid eventId = @event.Id;
+                var bets = await this._repositoryBet.GetFiltered(b => b.EventId == eventId);
+                var algorithm = await this._repositoryBetRateAlgorithm.Get(conditions.EventBetRateAlgorithmId);
 
                 DateTime date = DateTime.Now;
                 ICalculator<double, DateTime> calculator = await GetBetRateCalculator(algorithm, @event);
 
-                IEnumerable<Bet> samebets = bets.Where(b => b.OutcomesTypeId == bet.OutcomesTypeId);
-                IEnumerable<Bet> differentbets = bets.Where(b => b.OutcomesTypeId != bet.OutcomesTypeId);
+                IEnumerable<Bet> samebets = bets.Where(b => b.OutcomesTypeId == outcomesType.Id);
+                IEnumerable<Bet> differentbets = bets.Where(b => b.OutcomesTypeId != outcomesType.Id);
 
-                decimal samebetssum = samebets.Sum(b => b.Value);
+                decimal betRate = GetRate(value, calculator, date);
+                decimal totalBetRate = samebets.Sum(b => GetRate(b.Value, calculator, b.CreationDate));
+
                 decimal differentbetssum = differentbets.Sum(b => b.Value);
+                decimal winRate =  betRate / (totalBetRate + betRate);
+                decimal winValue = differentbetssum * winRate;
 
-                decimal betRate = GetRate(bet, samebetssum, calculator, date);
-
-                decimal totalBetRate = samebets.Sum(b => GetRate(b, samebetssum, calculator, date));
-
-                decimal possibleWinValue = differentbetssum / totalBetRate * betRate;
-
-                await scope.Rollback();
-                return new BetRate { CreationDate = date, Rate = betRate, PossibleWinValue = possibleWinValue };
+                return new BetRate { CreationDate = date, Rate = betRate, WinRate = winRate, WinValue = winValue };
             }
         }
 
-        public decimal GetRate(Bet bet, decimal samebetssum, ICalculator<double, DateTime> calculator, DateTime date)
-        {
-            return this.GetRawRate(bet, calculator, date) / samebetssum;
-        }
-
-        public decimal GetRawRate(Bet bet, ICalculator<double, DateTime> calculator, DateTime date)
+        public decimal GetRate(decimal value, ICalculator<double, DateTime> calculator, DateTime date)
         {
             var rate = calculator.Calculate(date);
 
-            return bet.Value * (decimal)rate;
+            return value * (decimal)rate;
         }
 
         public async Task<ICalculator<double, DateTime>> GetBetRateCalculator(BetRateAlgorithm betRateAlgorithm, Event @event)
         {
             var factory = new BetRateCalculatorFactory(betRateAlgorithm.StartRate, betRateAlgorithm.EndRate, betRateAlgorithm.LocusRage, @event.StartDate, @event.EndDate);
-            AlgorithmType algorithmType = await this._repositorise.Get<AlgorithmType>().Get(betRateAlgorithm.AlgorithmTypeId);
+            AlgorithmType algorithmType = await this._repositoryAlgorithmType.Get(betRateAlgorithm.AlgorithmTypeId);
 
             return factory.Create(algorithmType.Name);
         }

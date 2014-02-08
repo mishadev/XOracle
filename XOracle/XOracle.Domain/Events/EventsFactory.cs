@@ -11,7 +11,7 @@ namespace XOracle.Domain
     {
         Task<Event> CreateEvent(
             Account account,
-            AccountSet judgingAccountSet,
+            AccountSet arbiterAccountSet,
             AccountSet participantsAccountSet,
             EventCondition eventCondition,
             EventRelationType eventRelationType,
@@ -19,8 +19,6 @@ namespace XOracle.Domain
             string title,
             DateTime startDate,
             DateTime endDate);
-
-        Task<AccountSet> CreateAccountSet(Account account, IEnumerable<Account> accounts);
 
         Task<EventCondition> CreateEventCondition(Account account, string description);
 
@@ -33,25 +31,19 @@ namespace XOracle.Domain
     {
         private IFactory<IScopeable<IUnitOfWork>> _scopeableFactory;
 
-        private IRepository<AccountSet> _repositoryAccountSet;
         private IRepository<Event> _repositoryEvent;
-        private IRepository<AccountSetAccounts> _repositoryAccountSetAccounts;
         private IRepository<EventCondition> _repositoryEventCondition;
         private IRepository<BetRateAlgorithm> _repositoryBetRateAlgorithm;
         private IRepository<EventBetCondition> _repositoryEventBetCondition;
 
         public EventsFactory(
-            IRepository<AccountSet> repositoryAccountSet,
             IRepository<Event> repositoryEvent,
-            IRepository<AccountSetAccounts> repositoryAccountSetAccounts,
             IRepository<EventCondition> repositoryEventCondition,
             IRepository<BetRateAlgorithm> repositoryBetRateAlgorithm,
             IRepository<EventBetCondition> repositoryEventBetCondition,
             IFactory<IScopeable<IUnitOfWork>> scopeableFactory)
         {
-            this._repositoryAccountSet = repositoryAccountSet;
             this._repositoryEvent = repositoryEvent;
-            this._repositoryAccountSetAccounts = repositoryAccountSetAccounts;
             this._repositoryEventCondition = repositoryEventCondition;
             this._repositoryBetRateAlgorithm = repositoryBetRateAlgorithm;
             this._repositoryEventBetCondition = repositoryEventBetCondition;
@@ -61,7 +53,7 @@ namespace XOracle.Domain
 
         public async Task<Event> CreateEvent(
             Account account,
-            AccountSet judgingAccountSet,
+            AccountSet arbiterAccountSet,
             AccountSet participantsAccountSet,
             EventCondition eventCondition,
             EventRelationType eventRelationType,
@@ -76,10 +68,10 @@ namespace XOracle.Domain
                 {
                     AccountId = account.Id,
                     Title = title,
-                    StartDate = startDate,
+                    StartDate = startDate == default(DateTime) ? DateTime.Now : startDate,
                     EndDate = endDate,
                     EventRelationTypeId = eventRelationType.Id,
-                    JudgingAccountSetId = judgingAccountSet.Id,
+                    ArbiterAccountSetId = arbiterAccountSet.Id,
                     ParticipantsAccountSetId = participantsAccountSet.Id,
                     ExpectedEventConditionId = eventCondition.Id,
                     EventBetConditionId = eventBetCondition.Id
@@ -91,32 +83,7 @@ namespace XOracle.Domain
             }
         }
 
-        public async Task<AccountSet> CreateAccountSet(Account account, IEnumerable<Account> accounts)
-        {
-            accounts = accounts.Where(a => a != null).Distinct();//normalize
-
-            using (this._scopeableFactory.Create())
-            {
-                var accountSet = new AccountSet { AccountId = account.Id };
-                if (accounts.Any())
-                {
-                    await this._repositoryAccountSet.Add(accountSet);
-
-                    foreach (var acc in accounts)
-                    {
-                        if (!acc.IsTransient())
-                        {
-                            await this._repositoryAccountSetAccounts.Add(new AccountSetAccounts
-                            {
-                                AccountId = acc.Id,
-                                AccountSetId = accountSet.Id
-                            });
-                        }
-                    }
-                }
-                return accountSet;
-            }
-        }
+        
 
         public async Task<EventCondition> CreateEventCondition(Account account, string description)
         {

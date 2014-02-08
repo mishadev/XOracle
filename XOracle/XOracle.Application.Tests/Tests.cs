@@ -43,39 +43,50 @@ namespace XOracle.Application.Tests
                 new Repository<CurrencyType>(uow),
                 new Repository<AccountBalance>(uow),
                 new Repository<AccountLogin>(uow),
+                new Repository<AccountSetAccounts>(uow),
                 new AccountsFactory(
                     new Repository<Account>(uow),
                     new Repository<CurrencyType>(uow),
                     new Repository<AccountBalance>(uow),
                     new Repository<AccountLogin>(uow),
+                    new Repository<AccountSet>(uow),
+                    new Repository<AccountSetAccounts>(uow),
                     new ScopeableUnitOfWorkFactory(uow)));
+
+            _betsService = new BetsService(
+                new Repository<Bet>(uow),
+                new Repository<Account>(uow),
+                new Repository<Event>(uow),
+                new Repository<OutcomesType>(uow),
+                new Repository<CurrencyType>(uow),
+                new BetsFactory(
+                    new Repository<Bet>(uow),
+                    new Repository<EventBetCondition>(uow),
+                    new Repository<EventRelationType>(uow),
+                    new Repository<CurrencyType>(uow),
+                    new Repository<AlgorithmType>(uow),
+                    new Repository<AccountSetAccounts>(uow),
+                    new Repository<BetRateAlgorithm>(uow),
+                    new ScopeableUnitOfWorkFactory(uow))
+                );
 
             _eventsService = new EventsService(
                 new Repository<Account>(uow),
+                new Repository<AccountSet>(uow),
                 new Repository<EventRelationType>(uow),
                 new Repository<CurrencyType>(uow),
                 new Repository<AlgorithmType>(uow),
                 new Repository<Event>(uow),
+                new Repository<EventCondition>(uow),
                 new EventsFactory(
-                    new Repository<AccountSet>(uow),
                     new Repository<Event>(uow),
-                    new Repository<AccountSetAccounts>(uow),
                     new Repository<EventCondition>(uow),
                     new Repository<BetRateAlgorithm>(uow),
                     new Repository<EventBetCondition>(uow),
                     new ScopeableUnitOfWorkFactory(uow)),
+                _accountingService,
+                _betsService,
                 new ScopeableUnitOfWorkFactory(uow));
-
-            _betsService = new BetsService(
-                new Repository<Account>(uow),
-                new Repository<Event>(uow),
-                new Repository<OutcomesType>(uow),
-                new Repository<Bet>(uow),
-                new Repository<CurrencyType>(uow),
-                new BetsFactory(
-                    new RepositoryFactory(uow),
-                    new ScopeableUnitOfWorkFactory(uow))
-                );
         }
 
         [TestMethod]
@@ -126,9 +137,9 @@ namespace XOracle.Application.Tests
         {
             var email = this.UniqueEmail;
             var response1 = await _accountingService.CreateAccount(new CreateAccountRequest { Email = email });
-            var response2 = await _accountingService.GetAccount(new GetAccountRequest { AccountId = response1.AccountId });
+            var response2 = await _accountingService.GetAccount(new GetAccountRequest { AccountId = response1.AccountId, DetalizationLevel = DetalizationLevel.First });
 
-            Assert.AreEqual(1, response2.Reputation);
+            Assert.AreEqual(1, ((GetAccountResponseFirst)response2).Reputation);
         }
 
         [TestMethod]
@@ -150,7 +161,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { accountId },
+                ArbiterAccountIds = new[] { accountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -179,7 +190,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response1.AccountId },
+                ArbiterAccountIds = new[] { response1.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -190,7 +201,7 @@ namespace XOracle.Application.Tests
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public async Task TestCreateEventEmptyJudgingError()
+        public async Task TestCreateEventEmptyArbiterError()
         {
             var start = DateTime.Now;
             var end = new DateTime(2015, 1, 25);
@@ -208,7 +219,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { Guid.NewGuid() },
+                ArbiterAccountIds = new[] { Guid.NewGuid() },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -237,7 +248,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -268,7 +279,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -278,7 +289,7 @@ namespace XOracle.Application.Tests
 
             var response3 = await _eventsService.GetEvents(new GetEventsRequest { AccountId = response1.AccountId });
 
-            Assert.IsTrue(response3.EventIds.Contains(response.EventId));
+            Assert.IsTrue(response3.Events.Any(r => r.EventId == response.EventId));
         }
 
         [TestMethod]
@@ -301,7 +312,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -309,7 +320,7 @@ namespace XOracle.Application.Tests
                 CurrencyType = CurrencyType.Reputation
             });
 
-            var response3 = await _eventsService.GetEventDetails(new GetEventDetailsRequest { EventId = response.EventId });
+            var response3 = await _eventsService.GetEventDetails(new GetEventRequest { EventId = response.EventId });
 
             Assert.AreEqual("a a 2015", response3.Title);
             Assert.AreEqual(end, response3.EndDate);
@@ -336,7 +347,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -369,7 +380,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -380,7 +391,7 @@ namespace XOracle.Application.Tests
             var response8 = await _betsService.CalculateBetRate(new CalculateBetRateRequest { AccountId = response1.AccountId, EventId = response.EventId, OutcomesType = OutcomesType.Happen });
 
             Assert.IsTrue(DateTime.Now > response8.CreationDate && DateTime.Now.AddSeconds(-10) < response8.CreationDate);
-            Assert.AreEqual(0, response8.PossibleWinValue);
+            Assert.AreEqual(0, response8.WinValue);
             Assert.IsTrue(0.9 < (double)response8.Rate);
         }
 
@@ -409,7 +420,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -426,7 +437,7 @@ namespace XOracle.Application.Tests
             var calculateBetRateResponse = await _betsService.CalculateBetRate(calculateBetRateRequest);
 
             Assert.IsTrue(DateTime.Now > calculateBetRateResponse.CreationDate && DateTime.Now.AddSeconds(-10) < calculateBetRateResponse.CreationDate);
-            Assert.AreEqual(0, calculateBetRateResponse.PossibleWinValue);
+            Assert.AreEqual(0, calculateBetRateResponse.WinValue);
             Assert.IsTrue(0.99 < (double)calculateBetRateResponse.Rate);
 
             createBetRequest.AccountId = response1.AccountId;
@@ -436,7 +447,7 @@ namespace XOracle.Application.Tests
             calculateBetRateRequest.AccountId = response3.AccountId;
             calculateBetRateResponse = await _betsService.CalculateBetRate(calculateBetRateRequest);
 
-            Assert.AreEqual(0, calculateBetRateResponse.PossibleWinValue);
+            Assert.AreEqual(0, calculateBetRateResponse.WinValue);
             Assert.IsTrue(0.99 / 2 < (double)calculateBetRateResponse.Rate);
 
             createBetRequest.AccountId = response3.AccountId;
@@ -445,7 +456,7 @@ namespace XOracle.Application.Tests
             calculateBetRateRequest.AccountId = response4.AccountId;
             calculateBetRateResponse = await _betsService.CalculateBetRate(calculateBetRateRequest);
 
-            Assert.AreEqual(0, calculateBetRateResponse.PossibleWinValue);
+            Assert.AreEqual(0, calculateBetRateResponse.WinValue);
             Assert.IsTrue(0.99 / 3 < (double)calculateBetRateResponse.Rate);
 
             createBetRequest.AccountId = response4.AccountId;
@@ -456,7 +467,7 @@ namespace XOracle.Application.Tests
 
             calculateBetRateResponse = await _betsService.CalculateBetRate(calculateBetRateRequest);
 
-            Assert.AreEqual(3, calculateBetRateResponse.PossibleWinValue);
+            Assert.AreEqual(3, calculateBetRateResponse.WinValue);
             Assert.IsTrue(0.99 < (double)calculateBetRateResponse.Rate);
 
             createBetRequest.AccountId = response5.AccountId;
@@ -466,7 +477,7 @@ namespace XOracle.Application.Tests
             calculateBetRateRequest.AccountId = response6.AccountId;
             calculateBetRateResponse = await _betsService.CalculateBetRate(calculateBetRateRequest);
 
-            Assert.AreEqual(1.5m, calculateBetRateResponse.PossibleWinValue);
+            Assert.AreEqual(1.5m, calculateBetRateResponse.WinValue);
             Assert.IsTrue(0.99 / 2 < (double)calculateBetRateResponse.Rate);
 
             createBetRequest.AccountId = response6.AccountId;
@@ -477,13 +488,13 @@ namespace XOracle.Application.Tests
 
             calculateBetRateResponse = await _betsService.CalculateBetRate(calculateBetRateRequest);
 
-            Assert.AreEqual(0.5m, calculateBetRateResponse.PossibleWinValue);
+            Assert.AreEqual(0.5m, calculateBetRateResponse.WinValue);
             Assert.IsTrue(0.99 / 4 < (double)calculateBetRateResponse.Rate);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public async Task TestJudgingBetEx()
+        public async Task TestArbiterBetEx()
         {
             var start = DateTime.Now;
             var end = new DateTime(2015, 1, 25);
@@ -502,7 +513,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -536,7 +547,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -571,7 +582,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsOne,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -609,7 +620,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -644,7 +655,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -682,7 +693,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -702,7 +713,7 @@ namespace XOracle.Application.Tests
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public async Task TestCreateBetParticipantsJudgingIntersectEx()
+        public async Task TestCreateBetParticipantsArbiterIntersectEx()
         {
             var start = DateTime.Now;
             var end = new DateTime(2015, 1, 25);
@@ -721,7 +732,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 ParticipantsAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
@@ -754,7 +765,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 ParticipantsAccountIds = new[] { response4.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
@@ -790,7 +801,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.OneVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 ParticipantsAccountIds = new[] { response3.AccountId, Guid.Empty },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
@@ -826,7 +837,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -882,7 +893,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -906,7 +917,7 @@ namespace XOracle.Application.Tests
             req.AccountId = response6.AccountId;
             await _betsService.CreateBet(req);
 
-            var response7 = await _betsService.GetBets(new GetBetsRequest { EnentId = req.EventId });
+            var response7 = await _betsService.GetBets(new GetBetsRequest { EventId = req.EventId });
 
             Assert.AreEqual(4, response7.Bets.Count());
         }
@@ -931,7 +942,7 @@ namespace XOracle.Application.Tests
                 CloseDate = close,
                 ExpectedEventCondition = "a a a a a 2015",
                 EventRelationType = EventRelationType.MenyVsMeny,
-                JudgingAccountIds = new[] { response2.AccountId },
+                ArbiterAccountIds = new[] { response2.AccountId },
                 AlgorithmType = AlgorithmType.Exponential,
                 StartRate = 100,
                 LocusRage = 1,
@@ -946,7 +957,7 @@ namespace XOracle.Application.Tests
             req.AccountId = response1.AccountId;
             var bet = await _betsService.CreateBet(req);
 
-            var response7 = await _betsService.GetBetsDetails(new GetBetsDetailsRequest { BetId = bet.BetId });
+            var response7 = await _betsService.GetBetsDetails(new GetBetRequest { BetId = bet.BetId });
 
             Assert.AreEqual(1, response7.Value);
             Assert.IsTrue(DateTime.Now.AddSeconds(-10) < response7.CreationDate);

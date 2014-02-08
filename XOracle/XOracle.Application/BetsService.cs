@@ -18,10 +18,10 @@ namespace XOracle.Application
         private IRepository<CurrencyType> _repositoryCurrencyType;
 
         public BetsService(
+            IRepository<Bet> repositoryBet,
             IRepository<Account> repositoryAccount,
             IRepository<Event> repositoryEvent,
             IRepository<OutcomesType> repositoryOutcomesType,
-            IRepository<Bet> repositoryBet,
             IRepository<CurrencyType> repositoryCurrencyType,
             IBetsFactory betsFactory)
         {
@@ -39,8 +39,8 @@ namespace XOracle.Application
             Account account = await this._repositoryAccount.Get(request.AccountId);
             Event @event = await this._repositoryEvent.Get(request.EventId);
             OutcomesType outcomesType = await this._repositoryOutcomesType.GetBy(v => v.Name == request.OutcomesType);
-            
-            var bet = await this._betsFactory.CreateBet(account, @event, outcomesType, request.BetAmount);
+
+            Bet bet = await this._betsFactory.CreateBet(account, @event, outcomesType, request.BetAmount);
 
             return new CreateBetResponse { BetId = bet.Id };
         }
@@ -53,7 +53,10 @@ namespace XOracle.Application
 
             BetRate betRate = await this._betsFactory.CalculateBetRate(account, @event, outcomesType, request.BetAmount);
 
-            return new CalculateBetRateResponse { CreationDate = betRate.CreationDate, PossibleWinValue = betRate.PossibleWinValue, Rate = betRate.Rate };
+            if (betRate == null)
+                return null;
+
+            return new CalculateBetRateResponse { CreationDate = betRate.CreationDate, WinValue = betRate.WinValue, WinRate = betRate.WinRate, Rate = betRate.Rate };
         }
 
         public async Task<GetBetsResponse> GetBets(GetBetsRequest request)
@@ -67,9 +70,9 @@ namespace XOracle.Application
                 bets = await this._repositoryBet.GetFiltered(b => b.AccountId == accountId);
             }
 
-            if (request.EnentId.HasValue)
+            if (request.EventId.HasValue)
             {
-                var eventId = request.EnentId.Value;
+                var eventId = request.EventId.Value;
 
                 bets = await this._repositoryBet.GetFiltered(b => b.EventId == eventId);
             }
@@ -77,12 +80,12 @@ namespace XOracle.Application
             return new GetBetsResponse { Bets = bets.Select(Convert) };
         }
 
-        public GetBetsDetailsResponse Convert(Bet bet)
+        public GetBetResponse Convert(Bet bet)
         {
             OutcomesType outcomesType = this._repositoryOutcomesType.Get(bet.OutcomesTypeId).GetAwaiter().GetResult();
             CurrencyType currencyType = this._repositoryCurrencyType.Get(bet.CurrencyTypeId).GetAwaiter().GetResult();
-            
-            return new GetBetsDetailsResponse
+
+            return new GetBetResponse
             {
                 AccountId = bet.AccountId,
                 EventId = bet.EventId,
@@ -93,7 +96,7 @@ namespace XOracle.Application
             };
         }
 
-        public async Task<GetBetsDetailsResponse> GetBetsDetails(GetBetsDetailsRequest request)
+        public async Task<GetBetResponse> GetBetsDetails(GetBetRequest request)
         {
             Bet bet = await this._repositoryBet.Get(request.BetId);
 

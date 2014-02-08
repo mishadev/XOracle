@@ -6,6 +6,6 @@ namespace XOracle.Application.Core
     {
         public Guid? AccountId { get; set; }
 
-        public Guid? EnentId { get; set; }
+        public Guid? EventId { get; set; }
     }
 }

@@ -1,14 +1,24 @@
-﻿namespace XOracle.Azure.Web.Front.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace XOracle.Azure.Web.Front.Models
 {
-    public class EventsViewModel
-    {
-
-    }
-
     public class EventBrieflyViewModel
     {
-        string Title { get; set; }
+        public Guid EventId { get; set; }
 
-        IdentityAccountLogin Account { get; set; }
+        public string Title { get; set; }
+
+        public string Condition { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
+
+        public IEnumerable<AccountViewModel> ArbiterAccountSet { get; set; }
+
+        public BetRateViewModel HappenBetRate { get; set; }
+
+        public BetRateViewModel NotHappenBetRate { get; set; }
     }
 }

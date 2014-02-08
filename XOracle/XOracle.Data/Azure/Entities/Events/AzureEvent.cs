@@ -48,7 +48,7 @@ namespace XOracle.Data.Azure.Entities
 
         public Guid ParticipantsAccountSetId { get; set; }
 
-        public Guid JudgingAccountSetId { get; set; }
+        public Guid ArbiterAccountSetId { get; set; }
 
         public Guid ExpectedEventConditionId { get; set; }
 

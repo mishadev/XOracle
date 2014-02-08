@@ -41,10 +41,12 @@
     </Compile>
     <Compile Include="Models\Accounts\CreateAccountRequest.cs" />
     <Compile Include="Models\Accounts\CreateAccountResponse.cs" />
-    <Compile Include="Models\Bets\GetBetsDetailsRequest.cs" />
-    <Compile Include="Models\Bets\GetBetsDetailsResponse.cs" />
-    <Compile Include="Models\Events\GetEventDetailsRequest.cs" />
-    <Compile Include="Models\Events\GetEventDetailsResponse.cs" />
+    <Compile Include="Models\Accounts\GetAccountsSetRequest.cs" />
+    <Compile Include="Models\Accounts\GetAccountsSetResponse.cs" />
+    <Compile Include="Models\Bets\GetBetRequest.cs" />
+    <Compile Include="Models\Bets\GetBetResponse.cs" />
+    <Compile Include="Models\Events\GetEventRequest.cs" />
+    <Compile Include="Models\Events\GetEventResponse.cs" />
     <Compile Include="Models\Accounts\DeleteAccountRequest.cs" />
     <Compile Include="Models\Accounts\DeleteAccountResponse.cs" />
     <Compile Include="Models\Accounts\GetAccountLoginRequest.cs" />
@@ -53,6 +55,8 @@
     <Compile Include="Models\Accounts\CreateAccountLoginResponse.cs" />
     <Compile Include="Models\Accounts\GetAccountLoginsRequest.cs" />
     <Compile Include="Models\Accounts\GetAccountLoginsResponse.cs" />
+    <Compile Include="Models\Accounts\CreateAccountsSetRequest.cs" />
+    <Compile Include="Models\Accounts\CreateAccountsSetResponse.cs" />
     <Compile Include="Services\IAccountingService.cs" />
     <Compile Include="Services\IBetsService.cs" />
     <Compile Include="Services\IEventsService.cs" />
@@ -66,8 +70,8 @@
     <Compile Include="Models\Events\CreateEventResponse.cs" />
     <Compile Include="Models\Bets\GetBetsRequest.cs" />
     <Compile Include="Models\Bets\GetBetsResponse.cs" />
-    <Compile Include="Models\Events\GetEventRequest.cs" />
-    <Compile Include="Models\Events\GetEventResponse.cs" />
+    <Compile Include="Models\Events\GetEventsRequest.cs" />
+    <Compile Include="Models\Events\GetEventsResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

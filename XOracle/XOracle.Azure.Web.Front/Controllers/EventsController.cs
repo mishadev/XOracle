@@ -30,29 +30,58 @@ namespace XOracle.Azure.Web.Front.Controllers
 
             this._eventsService = new EventsService(
                 new AzureRepository<AzureAccount, Account>(account),
+                new AzureRepository<AzureAccountSet, AccountSet>(account),
                 new AzureRepository<AzureEventRelationType, EventRelationType>(account),
                 new AzureRepository<AzureCurrencyType, CurrencyType>(account),
                 new AzureRepository<AzureAlgorithmType, AlgorithmType>(account),
                 new AzureRepository<AzureEvent, Event>(account),
+                new AzureRepository<AzureEventCondition, EventCondition>(account),
                 new EventsFactory(
-                    new AzureRepository<AzureAccountSet, AccountSet>(account),
                     new AzureRepository<AzureEvent, Event>(account),
-                    new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
                     new AzureRepository<AzureEventCondition, EventCondition>(account),
                     new AzureRepository<AzureBetRateAlgorithm, BetRateAlgorithm>(account),
                     new AzureRepository<AzureEventBetCondition, EventBetCondition>(account),
                     new AzureScopeableUnitOfWorkFactory()),
+                new AccountingService(
+                    new AzureRepository<AzureAccount, Account>(account),
+                    new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                    new AzureRepository<AzureAccountBalance, AccountBalance>(account),
+                    new AzureRepository<AzureAccountLogin, AccountLogin>(account),
+                    new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
+                    new AccountsFactory(
+                        new AzureRepository<AzureAccount, Account>(account),
+                        new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                        new AzureRepository<AzureAccountBalance, AccountBalance>(account),
+                        new AzureRepository<AzureAccountLogin, AccountLogin>(account),
+                        new AzureRepository<AzureAccountSet, AccountSet>(account),
+                        new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
+                        new AzureScopeableUnitOfWorkFactory())),
+                new BetsService(
+                    new AzureRepository<AzureBet, Bet>(account),
+                    new AzureRepository<AzureAccount, Account>(account),
+                    new AzureRepository<AzureEvent, Event>(account),
+                    new AzureRepository<AzureOutcomesType, OutcomesType>(account),
+                    new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                    new BetsFactory(
+                        new AzureRepository<AzureBet, Bet>(account),
+                        new AzureRepository<AzureEventBetCondition, EventBetCondition>(account),
+                        new AzureRepository<AzureEventRelationType, EventRelationType>(account),
+                        new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                        new AzureRepository<AzureAlgorithmType, AlgorithmType>(account),
+                        new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
+                        new AzureRepository<AzureBetRateAlgorithm, BetRateAlgorithm>(account),
+                        new AzureScopeableUnitOfWorkFactory())),
                 new AzureScopeableUnitOfWorkFactory());
 
             this._userManager = Startup.UserManagerFactory();
         }
 
         [Route("CreateEvent")]
-        public async Task<CreateEventResponse> CreateEvent(EventBindingModels model)
+        public async Task<Guid> CreateEvent(EventBindingModel model)
         {
             IUser account = await this._userManager.FindByNameAsync(User.Identity.Name);
 
-            return await this._eventsService.CreateEvent(new CreateEventRequest
+            CreateEventResponse response = await this._eventsService.CreateEvent(new CreateEventRequest
             {
                 AccountId = Guid.Parse(account.Id),
                 AlgorithmType = model.AlgorithmType,
@@ -63,36 +92,81 @@ namespace XOracle.Azure.Web.Front.Controllers
                 EventRelationType = model.EventRelationType,
                 ExpectedEventCondition = model.ExpectedEventCondition,
                 ImageUri = model.ImageUri,
-                JudgingAccountIds = MatchesAccounts(model.JudgingAccounts).Select(a => Guid.Parse(a.Id)),
+                ArbiterAccountIds = (await this.MatchesAccounts(model.ArbiterAccounts)).Select(a => Guid.Parse(a.Id)),
                 LocusRage = model.LocusRage,
-                ParticipantsAccountIds = MatchesAccounts(model.ParticipantsAccounts).Select(a => Guid.Parse(a.Id)),
+                ParticipantsAccountIds = (await this.MatchesAccounts(model.ParticipantsAccounts)).Select(a => Guid.Parse(a.Id)),
                 StartDate = model.StartDate,
                 StartRate = model.StartRate,
                 Title = model.Title
             });
+
+            return response.EventId;
         }
 
-        private IEnumerable<IdentityAccount> MatchesAccounts(string names)
+        private async Task<IEnumerable<IdentityAccount>> MatchesAccounts(string names)
         {
-            if (string.IsNullOrWhiteSpace(names))
-                throw new ArgumentNullException("names");
+            var list = new List<IdentityAccount>();
 
-            var matches = Regex.Matches(names, "@\\S*", RegexOptions.Compiled);
+            if (!string.IsNullOrWhiteSpace(names))
+            {
+                var matches = Regex.Matches(names, "@[^\\s@]*", RegexOptions.Compiled);
+                foreach (Match match in matches)
+                    list.Add(await this._userManager.FindByNameAsync(match.Value.Substring(1)));
+            }
 
-            return matches
-                .AsParallel()
-                .OfType<string>()
-                .Select(this._userManager.FindByName)
-                .Where(u => u != null)
-                .AsEnumerable();
+            return list.Where(u => u != null);
         }
 
         [Route("GetEvents")]
-        public async Task<GetEventsResponse> GetEvents()
+        public async Task<IEnumerable<EventBrieflyViewModel>> GetEvents()
         {
             IUser account = await this._userManager.FindByNameAsync(User.Identity.Name);
+            GetEventsResponse response = await this._eventsService.GetEvents(
+                new GetEventsRequest
+                {
+                    AccountId = Guid.Parse(account.Id),
+                    DetalizationLevel = DetalizationLevel.Full
+                });
 
-            return await this._eventsService.GetEvents(new GetEventsRequest { AccountId = Guid.Parse(account.Id) });
+            var events = response.Events.Select(e => Convert((GetEventResponseFull)e));
+            return events;
+        }
+
+        private EventBrieflyViewModel Convert(GetEventResponseFull @event)
+        {
+            return new EventBrieflyViewModel
+            {
+                EventId = @event.EventId,
+                Title = @event.Title,
+                Condition = @event.ExpectedEventCondition,
+                StartDate = @event.StartDate,
+                EndDate = @event.EndDate,
+                ArbiterAccountSet = @event.ArbiterAccounts.Select(Convert),
+                HappenBetRate = Convert(@event.HappenBetRate),
+                NotHappenBetRate = Convert(@event.NotHappenBetRate)
+            };
+        }
+
+        private AccountViewModel Convert(GetAccountResponse model)
+        {
+            return new AccountViewModel
+            {
+                Id = model.AccountId.ToString(),
+                Name = model.Name
+            };
+        }
+
+        private BetRateViewModel Convert(CalculateBetRateResponse model)
+        {
+            if (model == null)
+                return null;
+
+            return new BetRateViewModel
+            {
+                Rate = model.Rate,
+                WinRate = model.WinRate,
+                WinValue = model.WinValue
+            };
         }
 
         [Route("EventRelationTypes")]

@@ -31,16 +31,16 @@ namespace XOracle.Application.Core
             }
         }
 
-        IEnumerable<Guid> _judgingAccountIds;
-        public IEnumerable<Guid> JudgingAccountIds
+        IEnumerable<Guid> _arbiterAccountIds;
+        public IEnumerable<Guid> ArbiterAccountIds
         {
             get
             {
-                return this._judgingAccountIds ?? Enumerable.Empty<Guid>();
+                return this._arbiterAccountIds ?? Enumerable.Empty<Guid>();
             }
             set
             {
-                this._judgingAccountIds = value;
+                this._arbiterAccountIds = value;
             }
         }
 

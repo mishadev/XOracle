@@ -10,13 +10,16 @@
         externalLoginsUrl = '/api/Account/ExternalLogins',
         manageInfoUrl = '/api/Account/ManageInfo',
         userInfoUrl = '/api/Account/UserInfo',
+        accountsInSetUrl = '/api/Account/AccountsSet',
         /*Event*/
         getEventsUrl = '/api/event/GetEvents',
         createEventUrl = '/api/event/CreateEvent',
         getEventRelationTypesUrl = '/api/event/EventRelationTypes',
         /*Commmon*/
         getCurrencyTypeUrl = '/api/common/CurrencyTypes',
-        getAlgorithmTypeUrl = '/api/common/AlgorithmTypes';
+        getAlgorithmTypeUrl = '/api/common/AlgorithmTypes',
+        /*Bet*/
+        createBetUrl = '/api/bet/CreateBet';
 
     angular.module('app').factory(serviceId, ['common', datacontext]);
 
@@ -29,13 +32,16 @@
             Logout: logout,
             GetExternalLogins: getExternalLogins,
             GetUserInfo: getUserInfo,
+            GetAccountsInSet: getAccountsInSet,
             /*Event*/
             GetEvents: getEvents,
             CreateEvent: createEvent,
             GetEventRelationTypes: getEventRelationTypes,
             /*Commmon*/
             GetCurrencyType: getCurrencyType,
-            GetAlgorithmType: getAlgorithmType
+            GetAlgorithmType: getAlgorithmType,
+            /*Bet*/
+            CreateBet: createBet
         };
 
         return service;
@@ -93,6 +99,28 @@
             $http({
                 method: 'GET',
                 url: userInfoUrl,
+                headers: common.GetSecurityHeaders()
+            })
+            .success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            })
+            .error(function (data, status, headers, config) {
+                deferred.reject(data);
+            });
+
+            return deferred.promise;
+        }
+
+        function getAccountsInSet(setId)
+        {
+            var deferred = $q.defer();
+
+            deferred.notify('Get Accounts In Set');
+
+            $http({
+                method: 'GET',
+                url: accountsInSetUrl,
+                params: { setId : setId },
                 headers: common.GetSecurityHeaders()
             })
             .success(function (data, status, headers, config) {
@@ -210,5 +238,29 @@
 
             return deferred.promise;
         }
+
+        /* Event */
+
+        function createBet(data) {
+            var deferred = $q.defer();
+
+            deferred.notify('Create Bet');
+
+            $http({
+                method: 'POST',
+                url: createBetUrl,
+                data: data,
+                headers: common.GetSecurityHeaders()
+            })
+            .success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            })
+            .error(function (data, status, headers, config) {
+                deferred.reject(data);
+            });
+
+            return deferred.promise;
+        }
+        
     }
 })();

@@ -15,5 +15,9 @@ namespace XOracle.Application.Core
         Task<GetAccountLoginsResponse> GetAccountLogins(GetAccountLoginsRequest request);
 
         Task<CreateAccountLoginResponse> CreateAccountLogin(CreateAccountLoginRequest request);
+
+        Task<GetAccountsSetResponse> GetAccountsSet(GetAccountsSetRequest request);
+
+        Task<CreateAccountsSetResponse> CreateAccountsSet(CreateAccountsSetRequest request);
     }
 }

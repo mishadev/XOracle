@@ -8,6 +8,8 @@ namespace XOracle.Domain
 
         public decimal Rate { get; set; }
 
-        public decimal PossibleWinValue { get; set; }
+        public decimal WinValue { get; set; }
+
+        public decimal WinRate { get; set; }
     }
 }

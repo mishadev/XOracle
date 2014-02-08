@@ -12,9 +12,16 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.ModelBinding;
+using XOracle.Application;
+using XOracle.Application.Core;
+using XOracle.Azure.Core.Helpers;
 using XOracle.Azure.Web.Front.Models;
 using XOracle.Azure.Web.Front.Providers;
 using XOracle.Azure.Web.Front.Results;
+using XOracle.Data;
+using XOracle.Data.Azure;
+using XOracle.Data.Azure.Entities;
+using XOracle.Domain;
 
 namespace XOracle.Azure.Web.Front.Controllers
 {
@@ -26,10 +33,28 @@ namespace XOracle.Azure.Web.Front.Controllers
 
         private UserManager<IdentityAccount> _userManager;
         private ISecureDataFormat<AuthenticationTicket> _accessTokenFormat;
+        private AccountingService _accountingService;
 
         public AccountController()
             : this(Startup.UserManagerFactory(), Startup.OAuthOptions.AccessTokenFormat)
-        { }
+        {
+            var account = CloudConfiguration.GetStorageAccount("DataConnectionString");
+
+            this._accountingService = new AccountingService(
+                new AzureRepository<AzureAccount, Account>(account),
+                new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                new AzureRepository<AzureAccountBalance, AccountBalance>(account),
+                new AzureRepository<AzureAccountLogin, AccountLogin>(account),
+                new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
+                new AccountsFactory(
+                    new AzureRepository<AzureAccount, Account>(account),
+                    new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                    new AzureRepository<AzureAccountBalance, AccountBalance>(account),
+                    new AzureRepository<AzureAccountLogin, AccountLogin>(account),
+                    new AzureRepository<AzureAccountSet, AccountSet>(account),
+                    new AzureRepository<AzureAccountSetAccounts, AccountSetAccounts>(account),
+                    new AzureScopeableUnitOfWorkFactory()));
+        }
 
         public AccountController(UserManager<IdentityAccount> userManager,
             ISecureDataFormat<AuthenticationTicket> accessTokenFormat)
@@ -213,7 +238,7 @@ namespace XOracle.Azure.Web.Front.Controllers
 
                     if (!result.Succeeded) return InternalServerError();
                 }
-                
+
                 UserLoginInfo login = new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey);
                 result = await _userManager.AddLoginAsync(account.Id, login);
 
@@ -316,6 +341,21 @@ namespace XOracle.Azure.Web.Front.Controllers
             IHttpActionResult errorResult = GetErrorResult(result);
 
             return errorResult ?? Ok();
+        }
+
+        [Route("AccountsSet")]
+        public async Task<IEnumerable<AccountViewModel>> GetAccountsSet(Guid setId)
+        {
+            var response = await this._accountingService.GetAccountsSet(new GetAccountsSetRequest { AccountSetId = setId });
+
+            var users = new List<AccountViewModel>(response.AccountIds.Count());
+            foreach (var id in response.AccountIds)
+            {
+                var user = await this._userManager.FindByIdAsync(id.ToString());
+                users.Add(new AccountViewModel { Id = user.Id, Name = user.UserName });
+            }
+
+            return users.AsEnumerable();
         }
 
         protected override void Dispose(bool disposing)

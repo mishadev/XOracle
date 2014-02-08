@@ -8,6 +8,6 @@ namespace XOracle.Application.Core
 
         Task<GetEventsResponse> GetEvents(GetEventsRequest request);
 
-        Task<GetEventDetailsResponse> GetEventDetails(GetEventDetailsRequest request);
+        Task<GetEventResponse> GetEventDetails(GetEventRequest request);
     }
 }
