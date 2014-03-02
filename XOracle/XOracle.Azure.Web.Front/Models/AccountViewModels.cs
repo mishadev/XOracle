@@ -34,11 +34,15 @@ namespace XOracle.Azure.Web.Front.Models
 
     public class UserInfoViewModel
     {
+        public string UserId { get; set; }
+
         public string UserName { get; set; }
 
         public bool HasRegistered { get; set; }
 
         public string LoginProvider { get; set; }
+
+        public bool IsCurrent { get; set; }
     }
 
     public class UserLoginInfoViewModel

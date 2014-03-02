@@ -25,9 +25,9 @@
     });
 
     commonModule.factory('common',
-        ['$q', '$rootScope', '$timeout', '$http', '$location', 'commonConfig', 'logger', common]);
+        ['$q', '$rootScope', '$timeout', '$http', '$location', '$routeParams', 'commonConfig', 'logger', common]);
 
-    function common($q, $rootScope, $timeout, $http, $location, commonConfig, logger) {
+    function common($q, $rootScope, $timeout, $http, $location, $routeParams, commonConfig, logger) {
         var throttles = {},
             allowAnonymous = ['login', 'shell', 'sidebar'],
 
@@ -38,6 +38,7 @@
                 $timeout: $timeout,
                 $http: $http,
                 $location: $location,
+                $routeParams: $routeParams,
                 // generic
                 activateController: activateController,
                 createSearchThrottle: createSearchThrottle,
@@ -203,11 +204,7 @@
 
         function ensuteUserAuthenticated(route) {
             if (!isLogedIn()) {
-                if (route) {
-                    if (route.title && route.title !== 'login') {
-                        $location.path('SignUp').replace();
-                    }
-                } else {
+                if (route && route.title === 'auth') {
                     var token = parseQueryString($location.path().substr(1));
                     validateToken(token);
                     verifyStateMatch(token);
@@ -219,6 +216,8 @@
 
                         $location.path('/');
                     }
+                } else if (route && route.title !== 'login') {
+                    $location.path('SignUp').replace();
                 }
             }
         }

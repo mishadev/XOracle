@@ -79,7 +79,7 @@ namespace XOracle.Azure.Web.Front.Controllers
         [Route("CreateEvent")]
         public async Task<Guid> CreateEvent(EventBindingModel model)
         {
-            IUser account = await this._userManager.FindByNameAsync(User.Identity.Name);
+            IUser account = await this._userManager.FindByIdAsync(User.Identity.GetUserId());
 
             CreateEventResponse response = await this._eventsService.CreateEvent(new CreateEventRequest
             {
@@ -120,7 +120,7 @@ namespace XOracle.Azure.Web.Front.Controllers
         [Route("GetEvents")]
         public async Task<IEnumerable<EventBrieflyViewModel>> GetEvents()
         {
-            IUser account = await this._userManager.FindByNameAsync(User.Identity.Name);
+            IUser account = await this._userManager.FindByIdAsync(User.Identity.GetUserId());
             GetEventsResponse response = await this._eventsService.GetEvents(
                 new GetEventsRequest
                 {
@@ -130,6 +130,27 @@ namespace XOracle.Azure.Web.Front.Controllers
 
             var events = response.Events.Select(e => Convert((GetEventResponseFull)e));
             return events;
+        }
+
+        [Route("GetEvents")]
+        public async Task<IEnumerable<EventBrieflyViewModel>> GetEvents(string accountId)
+        {
+            IUser account = await this._userManager.FindByIdAsync(accountId);
+            if (account != null)
+            {
+                GetEventsResponse response = await this._eventsService.GetEvents(
+                new GetEventsRequest
+                {
+                    AccountId = Guid.Parse(account.Id),
+                    DetalizationLevel = DetalizationLevel.Full
+                });
+
+                var events = response.Events.Select(e => Convert((GetEventResponseFull)e));
+
+                return events;
+            }
+
+            return Enumerable.Empty<EventBrieflyViewModel>();
         }
 
         private EventBrieflyViewModel Convert(GetEventResponseFull @event)

@@ -1,9 +1,9 @@
 ﻿(function () {
     'use strict';
-    var controllerId = 'events';
-    angular.module('app').controller(controllerId, ['common', 'datacontext', events]);
+    var controllerId = 'home';
+    angular.module('app').controller(controllerId, ['common', 'datacontext', home]);
 
-    function events(common, datacontext) {
+    function home(common, datacontext) {
         var vm = this,
             log = common.logger.getLogFn(controllerId),
             logError = common.logger.getLogFn(controllerId, 'error'),
@@ -97,12 +97,10 @@
         }
 
         vm.createHappenBet = function (event) {
-            debugger
             return createBet({ EventId: event.EventId, OutcomesType: "Happen", BetAmount: 1 });
         }
 
         vm.createNotHappenBet = function (event) {
-            debugger
             return createBet({ EventId: event.EventId, OutcomesType: "NotHappen", BetAmount: 1 });
         }
     }

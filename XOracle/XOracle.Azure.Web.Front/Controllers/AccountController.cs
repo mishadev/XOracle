@@ -64,17 +64,44 @@ namespace XOracle.Azure.Web.Front.Controllers
         }
 
         // GET api/Account/UserInfo
+        [Route("UserInfo")]
+        public async Task<UserInfoViewModel> GetUserInfo(string accountName)
+        {
+            IdentityAccount account = string.IsNullOrWhiteSpace(accountName) ?
+                await _userManager.FindByIdAsync(User.Identity.GetUserId()) :
+                await _userManager.FindByNameAsync(accountName);
+
+            UserInfoViewModel view = new UserInfoViewModel();
+
+            if (account != null)
+            {
+                view.UserId = account.Id;
+                view.UserName = account.UserName;
+                view.HasRegistered = account.Logins.Any();
+                view.LoginProvider = string.Join("|", account.Logins);
+            }
+
+            return view;
+        }
+
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("UserInfo")]
         public UserInfoViewModel GetUserInfo()
+        {
+            return GetCurrentUserInfo();
+        }
+
+        private UserInfoViewModel GetCurrentUserInfo()
         {
             ExternalLoginData externalLogin = ExternalLoginData.FromIdentity(User.Identity as ClaimsIdentity);
 
             return new UserInfoViewModel
             {
+                UserId = User.Identity.GetUserId(),
                 UserName = User.Identity.GetUserName(),
                 HasRegistered = externalLogin == null,
-                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
+                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null,
+                IsCurrent = true
             };
         }
 

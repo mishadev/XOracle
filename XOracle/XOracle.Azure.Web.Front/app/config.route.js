@@ -21,11 +21,11 @@
             {
                 url: '/',
                 config: {
-                    templateUrl: 'app/controllers/events/events.html',
-                    title: 'events',
+                    templateUrl: 'app/controllers/home/home.html',
+                    title: 'home',
                     settings: {
                         nav: 1,
-                        content: '<i class="icon-login"></i> Events'
+                        content: '<i class="icon-login"></i> Home'
                     }
                 }
             },
@@ -34,6 +34,20 @@
                 config: {
                     templateUrl: 'app/controllers/login/login.html',
                     title: 'login'
+                }
+            },
+            {
+                url: '/access_token=:token&token_type=:type&expires_in=:expires&state=:state',
+                config: {
+                    templateUrl: 'app/controllers/home/home.html',
+                    title: 'auth'
+                }
+            },
+            {
+                url: '/:AccountName',
+                config: {
+                    templateUrl: 'app/controllers/user/user.html',
+                    title: 'user'
                 }
             }
         ];

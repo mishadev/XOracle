@@ -1,0 +1,54 @@
+﻿<section id="user-view" class="mainbar" data-ng-controller="user as vm">
+    <section class="matter">
+        <div class="container-fluid">
+            <div class="row-fluid" data-ng-if="vm.userExists">
+                <div>
+                    <button class="btn btn-default" data-ng-click="vm.follow()" data-ng-if="!vm.isMe">Follow</button>
+                </div>
+                <div class="span6">
+                    <div class="widget wviolet">
+                        <div data-cc-widget-header title="{{vm.title}}"
+                             allow-collapse="true">
+                        </div>
+                        <div class="widget-content text-center text-info" data-ng-if="vm.ready">
+                            <div data-ng-if="vm.hasEvents">
+                                <ul class="nav">
+                                    <li data-ng-repeat="event in vm.events">
+                                        <p>Title : <span>{{event.Title}}</span></p>
+                                        <p>Condition : <span>{{event.Condition}}</span></p>
+                                        <p>Duration : <span>{{event.StartDate | date: 'dd/MM/yyyy'}} - {{event.EndDate | date: 'dd/MM/yyyy'}}</span></p>
+                                        <p>
+                                            Arbiters :
+                                            <ul class="nav">
+                                                <li data-ng-repeat="account in event.ArbiterAccountSet">
+                                                    <a href="#/{{account.Name}}">@{{account.Name}}</a>
+                                                </li>
+                                            </ul>
+                                        </p>
+                                        <p>
+                                            <button class="btn btn-default" data-ng-click="vm.createHappenBet(event)" data-ng-if="event.HappenBetRate">
+                                                H {{event.HappenBetRate.WinValue | number:3}}({{event.HappenBetRate.WinRate | number:3}})
+                                            </button>
+                                            <button class="btn btn-default" data-ng-click="vm.createNotHappenBet(event)" data-ng-if="event.NotHappenBetRate">
+                                                BH {{event.NotHappenBetRate.WinValue | number:3}}({{event.NotHappenBetRate.WinRate | number:3}})
+                                            </button>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div data-ng-if="!vm.hasEvents">
+                                No results
+                            </div>
+                        </div>
+                        <div class="widget-foot">
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-if="!vm.userExists">
+                User not found
+            </div>
+        </div>
+    </section>
+</section>

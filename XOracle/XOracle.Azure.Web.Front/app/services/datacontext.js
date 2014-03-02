@@ -47,8 +47,7 @@
         return service;
 
         /*Account*/
-        function logout()
-        {
+        function logout() {
             var deferred = $q.defer();
 
             deferred.notify('Log Out');
@@ -67,10 +66,9 @@
             });
 
             return deferred.promise;
-        }      
+        }
 
-        function getExternalLogins(returnUrl, generateState)
-        {
+        function getExternalLogins(returnUrl, generateState) {
             var deferred = $q.defer();
 
             deferred.notify('External Logins');
@@ -90,8 +88,7 @@
             return deferred.promise;
         }
 
-        function getUserInfo()
-        {
+        function getUserInfo(accountName) {
             var deferred = $q.defer();
 
             deferred.notify('Get User Info');
@@ -99,6 +96,7 @@
             $http({
                 method: 'GET',
                 url: userInfoUrl,
+                params: { accountName: accountName },
                 headers: common.GetSecurityHeaders()
             })
             .success(function (data, status, headers, config) {
@@ -111,8 +109,7 @@
             return deferred.promise;
         }
 
-        function getAccountsInSet(setId)
-        {
+        function getAccountsInSet(setId) {
             var deferred = $q.defer();
 
             deferred.notify('Get Accounts In Set');
@@ -120,7 +117,7 @@
             $http({
                 method: 'GET',
                 url: accountsInSetUrl,
-                params: { setId : setId },
+                params: { setId: setId },
                 headers: common.GetSecurityHeaders()
             })
             .success(function (data, status, headers, config) {
@@ -134,8 +131,7 @@
         }
 
         /*Event*/
-        function getEvents()
-        {
+        function getEvents(accountId) {
             var deferred = $q.defer();
 
             deferred.notify('Get Events Url');
@@ -143,6 +139,7 @@
             $http({
                 method: 'GET',
                 url: getEventsUrl,
+                params: { accountId: accountId },
                 headers: common.GetSecurityHeaders()
             })
             .success(function (data, status, headers, config) {
@@ -155,8 +152,7 @@
             return deferred.promise;
         }
 
-        function createEvent(data)
-        {
+        function createEvent(data) {
             var deferred = $q.defer();
 
             deferred.notify('Create Event');
@@ -177,8 +173,7 @@
             return deferred.promise;
         }
 
-        function getEventRelationTypes()
-        {
+        function getEventRelationTypes() {
             var deferred = $q.defer();
 
             deferred.notify('Get Event Relation Types');
@@ -261,6 +256,6 @@
 
             return deferred.promise;
         }
-        
+
     }
 })();
