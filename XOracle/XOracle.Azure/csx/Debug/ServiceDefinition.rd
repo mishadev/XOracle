@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<serviceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="XOracle.Azure" generation="1" functional="0" release="0" Id="265ace70-8df2-4d54-a203-d6a2a45eddc8" dslVersion="1.2.0.0" xmlns="http://schemas.microsoft.com/dsltools/RDSM">
+<serviceModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="XOracle.Azure" generation="1" functional="0" release="0" Id="26a42769-143d-46da-90f3-3e1c1745b542" dslVersion="1.2.0.0" xmlns="http://schemas.microsoft.com/dsltools/RDSM">
   <groups>
     <group name="XOracle.AzureGroup" generation="1" functional="0" release="0">
       <componentports>
@@ -116,14 +116,14 @@
     </group>
   </groups>
   <implements>
-    <implementation Id="366103fe-1a9f-408d-96a3-735cde5cd744" ref="Microsoft.RedDog.Contract\ServiceContract\XOracle.AzureContract@ServiceDefinition">
+    <implementation Id="21564f18-4120-4127-8398-51ea35e00e00" ref="Microsoft.RedDog.Contract\ServiceContract\XOracle.AzureContract@ServiceDefinition">
       <interfacereferences>
-        <interfaceReference Id="80341a2e-85ca-4bd1-9c30-79cc085f56bb" ref="Microsoft.RedDog.Contract\Interface\XOracle.Azure.Web.Front:httpIn@ServiceDefinition">
+        <interfaceReference Id="747a18e1-db5d-4975-8716-078989cffee1" ref="Microsoft.RedDog.Contract\Interface\XOracle.Azure.Web.Front:httpIn@ServiceDefinition">
           <inPort>
             <inPortMoniker name="/XOracle.Azure/XOracle.AzureGroup/XOracle.Azure.Web.Front:httpIn" />
           </inPort>
         </interfaceReference>
-        <interfaceReference Id="230f4a24-477a-4fb3-8f73-1c4a0231be4e" ref="Microsoft.RedDog.Contract\Interface\XOracle.Azure.Web.Front:HttpsIn@ServiceDefinition">
+        <interfaceReference Id="a89dc22c-b075-4e53-a135-2599597f0508" ref="Microsoft.RedDog.Contract\Interface\XOracle.Azure.Web.Front:HttpsIn@ServiceDefinition">
           <inPort>
             <inPortMoniker name="/XOracle.Azure/XOracle.AzureGroup/XOracle.Azure.Web.Front:HttpsIn" />
           </inPort>

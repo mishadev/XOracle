@@ -143,7 +143,7 @@ namespace XOracle.Application.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NullReferenceException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public async Task TestCreateEventError1()
         {
             var start = DateTime.Now;
@@ -388,7 +388,7 @@ namespace XOracle.Application.Tests
                 CurrencyType = CurrencyType.Reputation
             });
 
-            var response8 = await _betsService.CalculateBetRate(new CalculateBetRateRequest { AccountId = response1.AccountId, EventId = response.EventId, OutcomesType = OutcomesType.Happen });
+            var response8 = await _betsService.CalculateBetRate(new CalculateBetRateRequest { BetAmount = 1, AccountId = response1.AccountId, EventId = response.EventId, OutcomesType = OutcomesType.Happen });
 
             Assert.IsTrue(DateTime.Now > response8.CreationDate && DateTime.Now.AddSeconds(-10) < response8.CreationDate);
             Assert.AreEqual(0, response8.WinValue);
@@ -430,7 +430,7 @@ namespace XOracle.Application.Tests
 
             var createBetRequest = new CreateBetRequest { EventId = response.EventId };
 
-            var calculateBetRateRequest = new CalculateBetRateRequest { EventId = response.EventId };
+            var calculateBetRateRequest = new CalculateBetRateRequest { BetAmount = 1, EventId = response.EventId };
             calculateBetRateRequest.AccountId = response1.AccountId;
             calculateBetRateRequest.OutcomesType = OutcomesType.Happen;
 
@@ -477,7 +477,7 @@ namespace XOracle.Application.Tests
             calculateBetRateRequest.AccountId = response6.AccountId;
             calculateBetRateResponse = await _betsService.CalculateBetRate(calculateBetRateRequest);
 
-            Assert.AreEqual(1.5m, calculateBetRateResponse.WinValue);
+            Assert.IsTrue(1.5m > calculateBetRateResponse.WinValue && calculateBetRateResponse.WinValue > 1.49m);
             Assert.IsTrue(0.99 / 2 < (double)calculateBetRateResponse.Rate);
 
             createBetRequest.AccountId = response6.AccountId;
@@ -488,7 +488,7 @@ namespace XOracle.Application.Tests
 
             calculateBetRateResponse = await _betsService.CalculateBetRate(calculateBetRateRequest);
 
-            Assert.AreEqual(0.5m, calculateBetRateResponse.WinValue);
+            Assert.IsTrue(0.5m > calculateBetRateResponse.WinValue && calculateBetRateResponse.WinValue > 0.49m);
             Assert.IsTrue(0.99 / 4 < (double)calculateBetRateResponse.Rate);
         }
 

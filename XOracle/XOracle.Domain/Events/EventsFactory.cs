@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using XOracle.Data.Core;
 using XOracle.Infrastructure.Core;
+using XOracle.Domain.Core.Utils;
 
 namespace XOracle.Domain
 {
@@ -71,8 +72,8 @@ namespace XOracle.Domain
                     StartDate = startDate == default(DateTime) ? DateTime.Now : startDate,
                     EndDate = endDate,
                     EventRelationTypeId = eventRelationType.Id,
-                    ArbiterAccountSetId = arbiterAccountSet.Id,
-                    ParticipantsAccountSetId = participantsAccountSet.Id,
+                    ArbiterAccountSetId = arbiterAccountSet.GetIdentifier(),
+                    ParticipantsAccountSetId = participantsAccountSet.GetIdentifier(),
                     ExpectedEventConditionId = eventCondition.Id,
                     EventBetConditionId = eventBetCondition.Id
                 };
@@ -82,8 +83,6 @@ namespace XOracle.Domain
                 return @event;
             }
         }
-
-        
 
         public async Task<EventCondition> CreateEventCondition(Account account, string description)
         {
