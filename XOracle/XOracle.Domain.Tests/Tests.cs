@@ -33,5 +33,7 @@ namespace XOracle.Domain.Tests
 
             Assert.IsTrue(answer.Any());
         }
+
+
     }
 }
