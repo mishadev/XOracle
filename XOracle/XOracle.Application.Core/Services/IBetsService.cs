@@ -9,5 +9,7 @@ namespace XOracle.Application.Core
         Task<CalculateBetRateResponse> CalculateBetRate(CalculateBetRateRequest request);
 
         Task<GetBetsResponse> GetBets(GetBetsRequest request);
+
+        Task<GetBetConditionsResponse> GetBetConditions(GetBetConditionsRequest request);
     }
 }

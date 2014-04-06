@@ -13,6 +13,8 @@ namespace XOracle.Domain
         Task<Bet> CreateBet(Account account, Event @event, OutcomesType outcomesType, decimal value);
 
         Task<BetRate> CalculateBetRate(Account account, Event @event, OutcomesType outcomesType, decimal value);
+
+        Task<byte[]> CalculateBetConditionChartData(BetRateAlgorithm betRateAlgorithm);
     }
 
     public class BetsFactory : IBetsFactory
@@ -165,7 +167,7 @@ namespace XOracle.Domain
                 decimal totalBetRate = samebets.Sum(b => GetRate(b.Value, calculator, b.CreationDate));
 
                 decimal differentbetssum = differentbets.Sum(b => b.Value);
-                decimal winRate =  betRate / (totalBetRate + betRate);
+                decimal winRate = betRate / (totalBetRate + betRate);
                 decimal winValue = differentbetssum * winRate;
 
                 return new BetRate { CreationDate = date, Rate = betRate, WinRate = winRate, WinValue = winValue };
@@ -179,12 +181,31 @@ namespace XOracle.Domain
             return value * (decimal)rate;
         }
 
-        public async Task<ICalculator<double, DateTime>> GetBetRateCalculator(BetRateAlgorithm betRateAlgorithm, Event @event)
+        private async Task<BetRateCalculatorDateTime> GetBetRateCalculator(BetRateAlgorithm betRateAlgorithm, Event @event)
         {
-            var factory = new BetRateCalculatorFactory(betRateAlgorithm.StartRate, betRateAlgorithm.EndRate, betRateAlgorithm.LocusRage, @event.StartDate, @event.EndDate);
+            var factory = new BetRateCalculatorFactory(betRateAlgorithm.LocusRage);
+            AlgorithmType algorithmType = await this._repositoryAlgorithmType.Get(betRateAlgorithm.AlgorithmTypeId);
+
+            return factory.CreateDateTime(algorithmType.Name, @event.StartDate, @event.EndDate);
+        }
+
+        private async Task<BetRateCalculator> GetBetRateCalculator(BetRateAlgorithm betRateAlgorithm)
+        {
+            var factory = new BetRateCalculatorFactory(betRateAlgorithm.LocusRage);
             AlgorithmType algorithmType = await this._repositoryAlgorithmType.Get(betRateAlgorithm.AlgorithmTypeId);
 
             return factory.Create(algorithmType.Name);
+        }
+
+        public async Task<byte[]> CalculateBetConditionChartData(BetRateAlgorithm betRateAlgorithm)
+        {
+            ICalculator<double, double> calculator = await GetBetRateCalculator(betRateAlgorithm);
+
+            byte[] data = Enumerable.Range(0, 100)
+                .Select(p => (byte)(calculator.Calculate(p / 100.0) * byte.MaxValue))
+                .ToArray();
+
+            return data;
         }
     }
 }

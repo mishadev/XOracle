@@ -49,5 +49,7 @@ namespace XOracle.Application.Core
         public CalculateBetRateResponse HappenBetRate { get; set; }
 
         public CalculateBetRateResponse NotHappenBetRate { get; set; }
+
+        public GetBetConditionsResponse BetConditions { get; set; }
     }
 }

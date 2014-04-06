@@ -34,6 +34,8 @@ namespace XOracle.Azure.Web.Front.Controllers
                 new AzureRepository<AzureEvent, Event>(account),
                 new AzureRepository<AzureOutcomesType, OutcomesType>(account),
                 new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                new AzureRepository<AzureEventBetCondition, EventBetCondition>(account),
+                new AzureRepository<AzureBetRateAlgorithm, BetRateAlgorithm>(account),
                 new BetsFactory(
                     new AzureRepository<AzureBet, Bet>(account),
                     new AzureRepository<AzureEventBetCondition, EventBetCondition>(account),

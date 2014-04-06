@@ -15,6 +15,7 @@
         getEventsUrl = '/api/event/GetEvents',
         createEventUrl = '/api/event/CreateEvent',
         getEventRelationTypesUrl = '/api/event/EventRelationTypes',
+        getEventUrl = 'event/GetEvent',
         /*Commmon*/
         getCurrencyTypeUrl = '/api/common/CurrencyTypes',
         getAlgorithmTypeUrl = '/api/common/AlgorithmTypes',
@@ -37,6 +38,7 @@
             GetEvents: getEvents,
             CreateEvent: createEvent,
             GetEventRelationTypes: getEventRelationTypes,
+            GetEvent : getEvent,
             /*Commmon*/
             GetCurrencyType: getCurrencyType,
             GetAlgorithmType: getAlgorithmType,
@@ -174,6 +176,26 @@
         }
 
         function getEventRelationTypes() {
+            var deferred = $q.defer();
+
+            deferred.notify('Get Event Relation Types');
+
+            $http({
+                method: 'GET',
+                url: getEventUrl,
+                headers: common.GetSecurityHeaders()
+            })
+            .success(function (data, status, headers, config) {
+                deferred.resolve(data);
+            })
+            .error(function (data, status, headers, config) {
+                deferred.reject(data);
+            });
+
+            return deferred.promise;
+        }
+
+        function getEvent() {
             var deferred = $q.defer();
 
             deferred.notify('Get Event Relation Types');

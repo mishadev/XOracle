@@ -50,6 +50,8 @@
     <Compile Include="Accounts\AccountsFactory.cs" />
     <Compile Include="Bets\Bet.cs" />
     <Compile Include="Bets\Bet.Validation.cs" />
+    <Compile Include="Bets\BetCalculator.cs" />
+    <Compile Include="Bets\BetCalculatorDateTime.cs" />
     <Compile Include="Bets\BetFactory.cs" />
     <Compile Include="Bets\BetRate.cs" />
     <Compile Include="Bets\BetRateCalculatorFactory.cs" />

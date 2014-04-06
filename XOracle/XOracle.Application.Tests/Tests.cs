@@ -59,6 +59,8 @@ namespace XOracle.Application.Tests
                 new Repository<Event>(uow),
                 new Repository<OutcomesType>(uow),
                 new Repository<CurrencyType>(uow),
+                new Repository<EventBetCondition>(uow),
+                new Repository<BetRateAlgorithm>(uow),
                 new BetsFactory(
                     new Repository<Bet>(uow),
                     new Repository<EventBetCondition>(uow),

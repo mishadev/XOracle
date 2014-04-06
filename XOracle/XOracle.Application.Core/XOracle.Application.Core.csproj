@@ -43,6 +43,8 @@
     <Compile Include="Models\Accounts\CreateAccountResponse.cs" />
     <Compile Include="Models\Accounts\GetAccountsSetRequest.cs" />
     <Compile Include="Models\Accounts\GetAccountsSetResponse.cs" />
+    <Compile Include="Models\Bets\GetBetConditionsRequest.cs" />
+    <Compile Include="Models\Bets\GetBetConditionsResponse.cs" />
     <Compile Include="Models\Bets\GetBetRequest.cs" />
     <Compile Include="Models\Bets\GetBetResponse.cs" />
     <Compile Include="Models\Events\GetEventRequest.cs" />

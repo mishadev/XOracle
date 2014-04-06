@@ -1,32 +1,30 @@
 ﻿using System;
-using XOracle.Domain.Core;
 
 namespace XOracle.Domain
 {
-    public class BetRateCalculatorFactory : ICalculatorFactory<double, DateTime>
+    public class BetRateCalculatorFactory
     {
-        private double _start;
-        private double _end;
         private double _locus;
-        private DateTime _zero;
-        private DateTime _max;
 
-        public BetRateCalculatorFactory(double start, double end, double locus, DateTime zero, DateTime max)
+        public BetRateCalculatorFactory(double locus)
         {
-            this._start = start;
-            this._end = end;
             this._locus = locus;
-            this._zero = zero;
-            this._max = max;
         }
 
-        public ICalculator<double, DateTime> Create(string algorithmType)
+        public BetRateCalculatorDateTime CreateDateTime(string algorithmType, DateTime min, DateTime max)
+        {
+            BetRateCalculator calculator = this.Create(algorithmType);
+
+            return new BetRateCalculatorDateTime(calculator, min, max);
+        }
+
+        public BetRateCalculator Create(string algorithmType)
         {
             if (algorithmType == AlgorithmType.Exponential)
-                return new BetRateExponentialCalculator(this._start, this._end, this._locus, this._zero, this._max);
+                return new BetRateExponentialCalculator(this._locus);
 
             if (algorithmType == AlgorithmType.Linear)
-                return new BetRateLinearCalculator(this._start, this._end, this._locus, this._zero, this._max);
+                return new BetRateLinearCalculator(this._locus);
 
             throw new InvalidOperationException("Create");
         }

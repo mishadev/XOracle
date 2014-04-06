@@ -8,7 +8,7 @@
             log = common.logger.getLogFn(controllerId),
             logError = common.logger.getLogFn(controllerId, 'error');
 
-        vm.title = 'Events';
+        vm.title = 'User Events';
         vm.events = [];
         vm.hasEvents = false;
         vm.ready = false;
@@ -55,10 +55,7 @@
         /* public */
 
         vm.follow = function () {
-            return datacontext.CreateEvent(vm.event)
-               .then(function (data) {
-                   log('followed!');
-               }, logErrors);
+            log('followed!');
         }
     }
 })();

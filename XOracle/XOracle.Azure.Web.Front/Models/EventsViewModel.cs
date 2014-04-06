@@ -15,10 +15,16 @@ namespace XOracle.Azure.Web.Front.Models
 
         public DateTime EndDate { get; set; }
 
+        public int TimeToClose { get; set; }
+
         public IEnumerable<AccountViewModel> ArbiterAccountSet { get; set; }
 
         public BetRateViewModel HappenBetRate { get; set; }
 
         public BetRateViewModel NotHappenBetRate { get; set; }
+    }
+
+    public class EventViewModel : EventBrieflyViewModel
+    {
     }
 }

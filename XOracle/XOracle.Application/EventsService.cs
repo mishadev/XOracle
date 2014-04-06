@@ -226,6 +226,12 @@ namespace XOracle.Application
 
             await FillSecondDetalization(@event, model);
 
+            model.BetConditions = await this._betsService.GetBetConditions(
+                new GetBetConditionsRequest
+                {
+                    BetConditionId = @event.EventBetConditionId
+                });
+
             model.HappenBetRate = await this._betsService.CalculateBetRate(
                 new CalculateBetRateRequest
                 {
@@ -246,6 +252,5 @@ namespace XOracle.Application
 
             return model;
         }
-
     }
 }

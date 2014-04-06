@@ -62,6 +62,8 @@ namespace XOracle.Azure.Web.Front.Controllers
                     new AzureRepository<AzureEvent, Event>(account),
                     new AzureRepository<AzureOutcomesType, OutcomesType>(account),
                     new AzureRepository<AzureCurrencyType, CurrencyType>(account),
+                    new AzureRepository<AzureEventBetCondition, EventBetCondition>(account),
+                    new AzureRepository<AzureBetRateAlgorithm, BetRateAlgorithm>(account),
                     new BetsFactory(
                         new AzureRepository<AzureBet, Bet>(account),
                         new AzureRepository<AzureEventBetCondition, EventBetCondition>(account),
@@ -162,31 +164,32 @@ namespace XOracle.Azure.Web.Front.Controllers
                 Condition = @event.ExpectedEventCondition,
                 StartDate = @event.StartDate,
                 EndDate = @event.EndDate,
+                TimeToClose = (int)(DateTime.Now - @event.BetConditions.CloseDate).TotalSeconds,
                 ArbiterAccountSet = @event.ArbiterAccounts.Select(Convert),
                 HappenBetRate = Convert(@event.HappenBetRate),
                 NotHappenBetRate = Convert(@event.NotHappenBetRate)
             };
         }
 
-        private AccountViewModel Convert(GetAccountResponse model)
+        private AccountViewModel Convert(GetAccountResponse response)
         {
             return new AccountViewModel
             {
-                Id = model.AccountId.ToString(),
-                Name = model.Name
+                Id = response.AccountId.ToString(),
+                Name = response.Name
             };
         }
 
-        private BetRateViewModel Convert(CalculateBetRateResponse model)
+        private BetRateViewModel Convert(CalculateBetRateResponse response)
         {
-            if (model == null)
+            if (response == null)
                 return null;
 
             return new BetRateViewModel
             {
-                Rate = model.Rate,
-                WinRate = model.WinRate,
-                WinValue = model.WinValue
+                Rate = response.Rate,
+                WinRate = response.WinRate,
+                WinValue = response.WinValue
             };
         }
 
@@ -194,6 +197,22 @@ namespace XOracle.Azure.Web.Front.Controllers
         public IEnumerable<string> GetEventRelationTypes()
         {
             return new[] { EventRelationType.MenyVsMeny, EventRelationType.OneVsMeny, EventRelationType.OneVsOne };
+        }
+
+        [Route("Event")]
+        public async Task<EventBrieflyViewModel> GetEvent(Guid eventId)
+        {
+            IUser account = await this._userManager.FindByIdAsync(User.Identity.GetUserId());
+            GetEventRequest request = new GetEventRequest
+            {
+                AccountId = Guid.Parse(account.Id),
+                EventId = eventId,
+                DetalizationLevel = DetalizationLevel.Full
+            };
+
+            GetEventResponse @event = await this._eventsService.GetEventDetails(request);
+
+            return Convert((GetEventResponseFull)@event);
         }
     }
 }

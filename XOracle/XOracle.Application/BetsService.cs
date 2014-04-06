@@ -16,6 +16,8 @@ namespace XOracle.Application
         private IRepository<OutcomesType> _repositoryOutcomesType;
         private IRepository<Bet> _repositoryBet;
         private IRepository<CurrencyType> _repositoryCurrencyType;
+        private IRepository<EventBetCondition> _repositoryEventBetCondition;
+        private IRepository<BetRateAlgorithm> _repositoryBetRateAlgorithm;
 
         public BetsService(
             IRepository<Bet> repositoryBet,
@@ -23,6 +25,8 @@ namespace XOracle.Application
             IRepository<Event> repositoryEvent,
             IRepository<OutcomesType> repositoryOutcomesType,
             IRepository<CurrencyType> repositoryCurrencyType,
+            IRepository<EventBetCondition> repositoryEventBetCondition,
+            IRepository<BetRateAlgorithm> repositoryBetRateAlgorithm,
             IBetsFactory betsFactory)
         {
             this._repositoryAccount = repositoryAccount;
@@ -30,6 +34,8 @@ namespace XOracle.Application
             this._repositoryOutcomesType = repositoryOutcomesType;
             this._repositoryBet = repositoryBet;
             this._repositoryCurrencyType = repositoryCurrencyType;
+            this._repositoryEventBetCondition = repositoryEventBetCondition;
+            this._repositoryBetRateAlgorithm = repositoryBetRateAlgorithm;
 
             this._betsFactory = betsFactory;
         }
@@ -101,6 +107,19 @@ namespace XOracle.Application
             Bet bet = await this._repositoryBet.Get(request.BetId);
 
             return Convert(bet);
+        }
+
+        public async Task<GetBetConditionsResponse> GetBetConditions(GetBetConditionsRequest request)
+        {
+            EventBetCondition condition = await this._repositoryEventBetCondition.Get(request.BetConditionId);
+            CurrencyType currencyType = await this._repositoryCurrencyType.Get(condition.CurrencyTypeId);
+            BetRateAlgorithm algorithm = await this._repositoryBetRateAlgorithm.Get(condition.EventBetRateAlgorithmId);
+
+            return new GetBetConditionsResponse {
+                CloseDate = condition.CloseDate,
+                CurrencyType = currencyType.Name,
+                BetRateChartData = await this._betsFactory.CalculateBetConditionChartData(algorithm)
+            };
         }
     }
 }
