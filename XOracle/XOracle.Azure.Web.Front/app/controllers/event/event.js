@@ -30,7 +30,7 @@
                 .then(function (data) {
                     vm.eventExists = !!data.EventId;
                     if (vm.eventExists) {
-                        event = data;
+                        vm.event = data;
                     }
                 }, logErrors);
         }

@@ -44,6 +44,13 @@
                 }
             },
             {
+                url: '/event/:EventId',
+                config: {
+                    templateUrl: 'app/controllers/event/event.html',
+                    title: 'event'
+                }
+            },
+            {
                 url: '/:AccountName',
                 config: {
                     templateUrl: 'app/controllers/user/user.html',

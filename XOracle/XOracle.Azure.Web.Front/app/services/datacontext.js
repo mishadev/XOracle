@@ -15,7 +15,7 @@
         getEventsUrl = '/api/event/GetEvents',
         createEventUrl = '/api/event/CreateEvent',
         getEventRelationTypesUrl = '/api/event/EventRelationTypes',
-        getEventUrl = 'event/GetEvent',
+        getEventUrl = '/api/event/GetEvent',
         /*Commmon*/
         getCurrencyTypeUrl = '/api/common/CurrencyTypes',
         getAlgorithmTypeUrl = '/api/common/AlgorithmTypes',
@@ -182,7 +182,7 @@
 
             $http({
                 method: 'GET',
-                url: getEventUrl,
+                url: getEventRelationTypesUrl,
                 headers: common.GetSecurityHeaders()
             })
             .success(function (data, status, headers, config) {
@@ -195,14 +195,15 @@
             return deferred.promise;
         }
 
-        function getEvent() {
+        function getEvent(eventId) {
             var deferred = $q.defer();
 
-            deferred.notify('Get Event Relation Types');
+            deferred.notify('Get Event');
 
             $http({
                 method: 'GET',
-                url: getEventRelationTypesUrl,
+                url: getEventUrl,
+                params: { eventId: eventId },
                 headers: common.GetSecurityHeaders()
             })
             .success(function (data, status, headers, config) {

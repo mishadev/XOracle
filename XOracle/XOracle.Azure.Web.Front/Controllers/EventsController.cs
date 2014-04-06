@@ -199,7 +199,7 @@ namespace XOracle.Azure.Web.Front.Controllers
             return new[] { EventRelationType.MenyVsMeny, EventRelationType.OneVsMeny, EventRelationType.OneVsOne };
         }
 
-        [Route("Event")]
+        [Route("GetEvent")]
         public async Task<EventBrieflyViewModel> GetEvent(Guid eventId)
         {
             IUser account = await this._userManager.FindByIdAsync(User.Identity.GetUserId());

@@ -5,13 +5,13 @@
                 <div class="span6">
                     <div class="widget wviolet">
                         <div data-cc-widget-header title="{{vm.title}}"
-                             allow-collapse="true">
+                             data-allow-collapse="true">
                         </div>
                         <div class="widget-content text-center text-info" data-ng-if="vm.ready">
                             <div data-ng-if="vm.hasEvents">
                                 <ul class="nav">
                                     <li data-ng-repeat="event in vm.events">
-                                        <p>Title : <span>{{event.Title}}</span></p>
+                                        <p>Title : <a href="#/event/{{event.EventId}}">{{event.Title}}</a></p>
                                         <p>Condition : <span>{{event.Condition}}</span></p>
                                         <p>Duration : <span>{{event.StartDate | date: 'dd/MM/yyyy'}} - {{event.EndDate | date: 'dd/MM/yyyy'}}</span></p>
                                         <p>

@@ -14,8 +14,8 @@ namespace XOracle.Domain
         {
             this._locus = locus;
 
-            this._minValue = Calculate(0.0);
-            this._maxValue = Calculate(1.0);
+            this._minValue = CalculateInner(0.0);
+            this._maxValue = CalculateInner(1.0);
         }
 
         public double Calculate(double procentec)

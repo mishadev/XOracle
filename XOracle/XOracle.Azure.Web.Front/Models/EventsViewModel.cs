@@ -23,8 +23,4 @@ namespace XOracle.Azure.Web.Front.Models
 
         public BetRateViewModel NotHappenBetRate { get; set; }
     }
-
-    public class EventViewModel : EventBrieflyViewModel
-    {
-    }
 }
