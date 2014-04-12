@@ -157,6 +157,8 @@ namespace XOracle.Azure.Web.Front.Controllers
 
         private EventBrieflyViewModel Convert(GetEventResponseFull @event)
         {
+            DateTime now = DateTime.Now;
+
             return new EventBrieflyViewModel
             {
                 EventId = @event.EventId,
@@ -164,11 +166,46 @@ namespace XOracle.Azure.Web.Front.Controllers
                 Condition = @event.ExpectedEventCondition,
                 StartDate = @event.StartDate,
                 EndDate = @event.EndDate,
-                TimeToClose = (int)(DateTime.Now - @event.BetConditions.CloseDate).TotalSeconds,
+                CloseDate = @event.BetConditions.CloseDate,
+                TimeLeft = this.GetTimeLeft(@event.BetConditions.CloseDate, now),
+                TimeLeftPercentage = this.GetTimePercentage(@event.StartDate, @event.EndDate, @event.BetConditions.CloseDate),
+                NowPercentage = this.GetTimePercentage(@event.StartDate, @event.EndDate, now),
                 ArbiterAccountSet = @event.ArbiterAccounts.Select(Convert),
                 HappenBetRate = Convert(@event.HappenBetRate),
-                NotHappenBetRate = Convert(@event.NotHappenBetRate)
+                NotHappenBetRate = Convert(@event.NotHappenBetRate),
+                BetRateData = @event.BetConditions.BetRateChartData.Select(v => (short)v).ToArray()
             };
+        }
+
+        private float GetTimePercentage(DateTime startDate, DateTime endDate, DateTime closeDate)
+        {
+            TimeSpan total = endDate - startDate;
+            TimeSpan left = endDate - closeDate;
+
+            return (float)(left.TotalSeconds / total.TotalSeconds);
+        }
+
+        private string GetTimeLeft(DateTime closeDate, DateTime now)
+        {
+            float secondsToClose = (float)(closeDate - now).TotalSeconds;
+
+            int min = 60;
+            int hour = 60 * min;
+            int days = 24 * hour;
+
+            float daysLeft = secondsToClose / days;
+            if (daysLeft >= 1)
+                return (int)daysLeft + "d";
+
+            float hoursLeft = secondsToClose / hour;
+            if (hoursLeft >= 1)
+                return (int)hoursLeft + "h";
+
+            float minsLeft = secondsToClose / min;
+            if (minsLeft >= 1)
+                return (int)minsLeft + "m";
+
+            return (int)secondsToClose + "s";
         }
 
         private AccountViewModel Convert(GetAccountResponse response)

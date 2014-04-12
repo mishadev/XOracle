@@ -48,6 +48,7 @@
                 textContains: textContains,
                 archiveSessionStorageToLocalStorage: archiveSessionStorageToLocalStorage,
                 restoreSessionStorageFromLocalStorage: restoreSessionStorageFromLocalStorage,
+                getPlural: getPlural,
                 /*Auth*/
                 //SetAccessToken: setAccessToken,
                 ClearAccessToken: clearAccessToken,
@@ -270,6 +271,13 @@
             }
 
             return data;
+        }
+
+        function getPlural(count, singular, plural) {
+            if (count) return singular;
+            if (plural === 'undefined') plural = singular + "s";
+
+            return count > 1 ? plural : singular;
         }
     }
 })();

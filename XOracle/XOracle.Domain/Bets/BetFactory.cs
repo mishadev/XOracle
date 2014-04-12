@@ -199,7 +199,7 @@ namespace XOracle.Domain
 
         public async Task<byte[]> CalculateBetConditionChartData(BetRateAlgorithm betRateAlgorithm)
         {
-            ICalculator<double, double> calculator = await GetBetRateCalculator(betRateAlgorithm);
+            ICalculator<double, double> calculator = await this.GetBetRateCalculator(betRateAlgorithm);
 
             byte[] data = Enumerable.Range(0, 100)
                 .Select(p => (byte)(calculator.Calculate(p / 100.0) * byte.MaxValue))

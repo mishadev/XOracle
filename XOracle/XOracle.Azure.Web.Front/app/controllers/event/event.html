@@ -1,17 +1,18 @@
 ﻿<section id="event-view" class="mainbar" data-ng-controller="event as vm">
     <section class="matter">
         <div class="container-fluid">
-            <div class="row-fluid" data-ng-if="vm.eventExists">
+            <div class="row-fluid">
                 <div class="span6">
                     <div class="widget wviolet">
                         <div data-cc-widget-header title="{{vm.title}}"
                              data-allow-collapse="true">
                         </div>
-                        <div class="widget-content text-center text-info" data-ng-if="vm.ready">
+                        <div class="widget-content text-center text-info">
                             <div>
                                 <p>Title : <span>{{vm.event.Title}}</span></p>
                                 <p>Condition : <span>{{vm.event.Condition}}</span></p>
                                 <p>Duration : <span>{{vm.event.StartDate | date: 'dd/MM/yyyy'}} - {{vm.event.EndDate | date: 'dd/MM/yyyy'}}</span></p>
+                                <p>TimeLeft : <span>{{vm.event.TimeLeft}} ({{vm.event.CloseDate | date: 'dd/MM/yyyy'}})</span></p>
                                 <p>
                                     Arbiters :
                                     <ul class="nav">
@@ -19,6 +20,9 @@
                                             <a href="#/{{account.Name}}">@{{account.Name}}</a>
                                         </li>
                                     </ul>
+                                </p>
+                                <p>
+                                    <canvas id="retChart" width="500" height="500"></canvas>
                                 </p>
                                 <p>
                                     <button class="btn btn-default" data-ng-click="vm.event.createHappenBet(event)" data-ng-if="vm.event.HappenBetRate">

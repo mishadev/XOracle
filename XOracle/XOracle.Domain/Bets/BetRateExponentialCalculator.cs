@@ -10,7 +10,7 @@ namespace XOracle.Domain
 
         protected override double CalculateInner(double x)
         {
-            return Math.Pow(x, this._locus);
+            return Math.Pow(x, this._locus * 3);
         }
     }
 }

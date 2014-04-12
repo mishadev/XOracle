@@ -15,12 +15,22 @@ namespace XOracle.Azure.Web.Front.Models
 
         public DateTime EndDate { get; set; }
 
-        public int TimeToClose { get; set; }
+        public DateTime CloseDate { get; set; }
+
+        public string TimeLeft { get; set; }
+
+        public float TimeLeftPercentage { get; set; }
+
+        public float NowPercentage { get; set; }
+
+        public int TimeToCloseProcentage { get; set; }
 
         public IEnumerable<AccountViewModel> ArbiterAccountSet { get; set; }
 
         public BetRateViewModel HappenBetRate { get; set; }
 
         public BetRateViewModel NotHappenBetRate { get; set; }
+
+        public short[] BetRateData { get; set; }
     }
 }
