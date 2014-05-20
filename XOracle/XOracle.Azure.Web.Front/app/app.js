@@ -5,7 +5,7 @@
         // Angular modules 
         'ngAnimate',        // animations
         'ngRoute',          // routing
-        'ngSanitize',       // sanitizes html bindings (ex: sidebar.js)
+        'ngSanitize',       // sanitizes html bindings (ex: topnav.js)
 
         // Custom modules 
         'common',           // common functions, logger, spinner

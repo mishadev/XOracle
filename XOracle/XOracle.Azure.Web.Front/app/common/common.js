@@ -29,7 +29,6 @@
 
     function common($q, $rootScope, $timeout, $http, $location, $routeParams, commonConfig, logger) {
         var throttles = {},
-            allowAnonymous = ['login', 'shell', 'sidebar'],
 
             service = {
                 // common angular dependencies

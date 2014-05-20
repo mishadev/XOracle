@@ -3,51 +3,6 @@
 
     var app = angular.module('app');
 
-    app.directive('ccSidebar', ['$window', function ($window) {
-        // Repositions the sidebar on window resize 
-        // and opens and closes the sidebar menu.
-        // Usage:
-        //  <div data-cc-sidebar>
-        // Creates:
-        //  <div data-cc-sidebar class="sidebar">
-        var directive = {
-            link: link,
-            restrict: 'A'
-        };
-        var $win = $($window);
-        return directive;
-
-        function link(scope, element, attrs) {
-            var $sidebarInner = element.find('.sidebar-inner');
-            var $dropdownElement = element.find('.sidebar-dropdown a');
-            element.addClass('sidebar');
-            $win.resize(resize);
-            $dropdownElement.click(dropdown);
-
-            function resize() {
-                $win.width() >= 765 ? $sidebarInner.slideDown(350) : $sidebarInner.slideUp(350);
-            }
-
-            function dropdown(e) {
-                var dropClass = 'dropy';
-                e.preventDefault();
-                if (!$dropdownElement.hasClass(dropClass)) {
-                    hideAllSidebars();
-                    $sidebarInner.slideDown(350);
-                    $dropdownElement.addClass(dropClass);
-                } else if ($dropdownElement.hasClass(dropClass)) {
-                    $dropdownElement.removeClass(dropClass);
-                    $sidebarInner.slideUp(350);
-                }
-
-                function hideAllSidebars() {
-                    $sidebarInner.slideUp(350);
-                    $('.sidebar-dropdown a').removeClass(dropClass);
-                }
-            }
-        }
-    }]);
-
     app.directive('ccWidgetClose', function () {
         // Usage:
         // <a data-cc-widget-close></a>
@@ -108,39 +63,37 @@
         }
     });
 
-    app.directive('ccScrollToTop', ['$window',
-        function ($window) {
-            // Usage:
-            // <span data-cc-scroll-to-top></span>
-            // Creates:
-            // <span data-cc-scroll-to-top="" class="totop">
-            //      <a href="#"><i class="icon-chevron-up"></i></a>
-            // </span>
-            var directive = {
-                link: link,
-                template: '<a href="#"><i class="icon-chevron-up"></i></a>',
-                restrict: 'A'
-            };
-            return directive;
+    app.directive('ccScrollToTop', ['$window', function ($window) {
+        // Usage:
+        // <span data-cc-scroll-to-top></span>
+        // Creates:
+        // <span data-cc-scroll-to-top="" class="totop">
+        //      <a href="#"><i class="icon-chevron-up"></i></a>
+        // </span>
+        var directive = {
+            link: link,
+            template: '<a href="#"><i class="icon-chevron-up"></i></a>',
+            restrict: 'A'
+        };
+        return directive;
 
-            function link(scope, element, attrs) {
-                var $win = $($window);
-                element.addClass('totop');
-                $win.scroll(toggleIcon);
+        function link(scope, element, attrs) {
+            var $win = $($window);
+            element.addClass('totop');
+            $win.scroll(toggleIcon);
 
-                element.find('a').click(function (e) {
-                    e.preventDefault();
-                    // Learning Point: $anchorScroll works, but no animation
-                    //$anchorScroll();
-                    $('body').animate({ scrollTop: 0 }, 500);
-                });
+            element.find('a').click(function (e) {
+                e.preventDefault();
+                // Learning Point: $anchorScroll works, but no animation
+                //$anchorScroll();
+                $('body').animate({ scrollTop: 0 }, 500);
+            });
 
-                function toggleIcon() {
-                    $win.scrollTop() > 300 ? element.slideDown() : element.slideUp();
-                }
+            function toggleIcon() {
+                $win.scrollTop() > 300 ? element.slideDown() : element.slideUp();
             }
         }
-    ]);
+    }]);
 
     app.directive('ccSpinner', ['$window', function ($window) {
         // Description:
@@ -192,15 +145,13 @@
         var logError = common.logger.getLogFn('app', 'error'),
             directive = {
                 link: link,
-                template: '<li class="hide"><a href="#"></a></li>',
+                template: '<a href="#"></a>',
                 restrict: 'A',
             };
 
         return directive;
 
         function link(scope, element, attrs) {
-            attrs.$set('class', 'nav pull-right');
-
             if (common.IsLogedIn()) {
                 getUserInfo();
 
@@ -221,7 +172,7 @@
             function getUserInfo() {
                 return datacontext.GetUserInfo()
                     .then(function (data) {
-                        element.find('li').show();
+                        element.show();
                         element.find('a').text(data.UserName);
                     }, logErrors);
             }

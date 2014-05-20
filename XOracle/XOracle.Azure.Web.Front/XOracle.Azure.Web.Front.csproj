@@ -173,8 +173,7 @@
     <Content Include="app\controllers\user\user.js" />
     <Content Include="app\layout\shell.html" />
     <Content Include="app\layout\shell.js" />
-    <Content Include="app\layout\sidebar.html" />
-    <Content Include="app\layout\sidebar.js" />
+    <Content Include="app\layout\topnav.js" />
     <Content Include="app\layout\topnav.html" />
     <Content Include="app\layout\widgetheader.html" />
     <Content Include="app\services\datacontext.js" />
@@ -183,7 +182,6 @@
     <Content Include="Content\bootstrap-responsive.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\customtheme.css" />
     <Content Include="Content\font-awesome-ie7.css" />
     <Content Include="Content\font-awesome-ie7.min.css" />
     <Content Include="Content\font-awesome.css" />

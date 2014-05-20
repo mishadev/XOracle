@@ -1,18 +1,16 @@
 ﻿(function () { 
     'use strict';
     
-    var controllerId = 'sidebar';
+    var controllerId = 'topnav';
     angular.module('app').controller(controllerId,
-        ['$route', 'config', 'routes', sidebar]);
+        ['$route', 'config', 'routes', topnav]);
 
-    function sidebar($route, config, routes) {
+    function topnav($route, config, routes) {
         var vm = this;
 
         vm.isCurrent = isCurrent;
 
-        activate();
-
-        function activate() { getNavRoutes(); }
+        (function activate() { getNavRoutes(); })();
         
         function getNavRoutes() {
             vm.navRoutes = routes.filter(function(r) {
