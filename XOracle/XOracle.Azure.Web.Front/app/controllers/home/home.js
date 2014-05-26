@@ -21,6 +21,7 @@
                 arbiterAccounts: ''
             };
 
+        vm.creating = false;
         vm.events = [];
         vm.hasEvents = false;
         vm.title = 'Events';

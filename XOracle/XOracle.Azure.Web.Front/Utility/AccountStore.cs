@@ -13,7 +13,7 @@ using XOracle.Domain;
 
 namespace XOracle.Azure.Web.Front
 {
-    public class AccountStore : IUserLoginStore<IdentityAccount>
+    public class AccountStore : IUserLoginStore<IdentityAccount>, IUserStore<IdentityAccount>
     {
         private IAccountingService _accountingService;
 

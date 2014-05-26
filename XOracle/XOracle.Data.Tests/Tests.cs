@@ -347,7 +347,7 @@ namespace XOracle.Data.Tests
         }
 
         [TestMethod]
-        public async Task AzureRepository()
+        public async Task AzureRepositoryAddAccount()
         {
             var account = CloudConfiguration.GetStorageAccount("DataConnectionString");
 
@@ -361,6 +361,10 @@ namespace XOracle.Data.Tests
             Assert.AreEqual(acc.Id, acc2.Id);
             Assert.AreEqual(acc.Name, acc2.Name);
             Assert.AreEqual(acc.Email, acc2.Email);
+
+            await repository.Remove(acc);
+            acc2 = await repository.Get(acc.Id);
+            Assert.IsNull(acc2);
         }
     }
 }

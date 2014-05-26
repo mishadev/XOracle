@@ -72,7 +72,7 @@ namespace XOracle.Domain
             IEnumerable<Account> accounts = await this._repositoryAccount.GetFiltered(a => a.Name == name);
 
             if (accounts.Any())
-                throw new InvalidOperationException("email should be unique");
+                throw new InvalidOperationException("name should be unique");
         }
 
         public async Task<AccountBalance> CreateAccountBalance(Account account, CurrencyType currencyType, decimal value)

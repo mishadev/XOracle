@@ -3,20 +3,12 @@
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span6">
-                    <div class="widget wviolet">
-                        <div data-cc-widget-header title="{{vm.title}}"
-                             allow-collapse="true">
-                        </div>
-                        <div class="widget-content text-center text-info" data-ng-id="vm.ready">
-                            <ul class="nav">
-                                <li data-ng-repeat="provider in vm.loginProviders">
-                                    <button type="submit" class="btn btn-default" data-ng-click="vm.externalLogin(provider)">{{provider.Name}}</button>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="widget-foot">
-                            <div class="clearfix"></div>
-                        </div>
+                    <div class="text-center text-info" data-ng-id="vm.ready">
+                        <ul class="nav">
+                            <li data-ng-repeat="provider in vm.loginProviders">
+                                <button type="submit" class="btn btn-default" data-ng-click="vm.externalLogin(provider)">{{provider.Name}}</button>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

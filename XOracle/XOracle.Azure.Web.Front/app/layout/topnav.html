@@ -1,23 +1,24 @@
-﻿<nav class="navbar navbar-fixed-top" data-ng-controller="topnav as vm">
+﻿<nav class="navbar navbar-default navbar-fixed-top" data-ng-controller="topnav as vm">
     <div class="navbar-inner">
         <div class="container">
-            <!-- Menu button for smallar screens -->
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-            <!-- Site name for smallar screens -->
-            <a href="/" class="brand"><span class="brand-title">xOracle</span></a>
+            <div class="navbar-header">
+                <!-- Menu button for smallar screens -->
+                <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <!-- Site name for smallar screens -->
+                <a href="/" class="navbar-brand"><span class="brand-title">xOracle</span></a>
+            </div>
 
             <!-- Navigation starts -->
-            <div class="nav-collapse collapse">
-                <ul class="nav">
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
                     <li class="nlightblue" data-ng-class="vm.isCurrent(r)"
                         data-ng-repeat="r in vm.navRoutes">
                         <a href="#{{r.url}}" data-ng-bind-html="r.config.settings.content"></a>
                     </li>
-                    <li class="divider-vertical"></li>
                     <li data-cc-widget-singout></li>
                 </ul>
             </div>

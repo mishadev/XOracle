@@ -3,39 +3,31 @@
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span6">
-                    <div class="widget wviolet">
-                        <div data-cc-widget-header title="{{vm.title}}"
-                             data-allow-collapse="true">
-                        </div>
-                        <div class="widget-content text-center text-info">
-                            <div>
-                                <p>Title : <span>{{vm.event.Title}}</span></p>
-                                <p>Condition : <span>{{vm.event.Condition}}</span></p>
-                                <p>Duration : <span>{{vm.event.StartDate | date: 'dd/MM/yyyy'}} - {{vm.event.EndDate | date: 'dd/MM/yyyy'}}</span></p>
-                                <p>TimeLeft : <span>{{vm.event.TimeLeft}} ({{vm.event.CloseDate | date: 'dd/MM/yyyy'}})</span></p>
-                                <p>
-                                    Arbiters :
-                                    <ul class="nav">
-                                        <li data-ng-repeat="account in vm.event.ArbiterAccountSet">
-                                            <a href="#/{{account.Name}}">@{{account.Name}}</a>
-                                        </li>
-                                    </ul>
-                                </p>
-                                <p>
-                                    <canvas id="retChart" width="500" height="500"></canvas>
-                                </p>
-                                <p>
-                                    <button class="btn btn-default" data-ng-click="vm.event.createHappenBet(event)" data-ng-if="vm.event.HappenBetRate">
-                                        H {{vm.event.HappenBetRate.WinValue | number:3}}({{vm.event.HappenBetRate.WinRate | number:3}})
-                                    </button>
-                                    <button class="btn btn-default" data-ng-click="vm.event.createNotHappenBet(event)" data-ng-if="vm.event.NotHappenBetRate">
-                                        BH {{vm.event.NotHappenBetRate.WinValue | number:3}}({{vm.event.NotHappenBetRate.WinRate | number:3}})
-                                    </button>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="widget-foot">
-                            <div class="clearfix"></div>
+                    <div class="text-center text-info">
+                        <div>
+                            <p>Title : <span>{{vm.event.Title}}</span></p>
+                            <p>Condition : <span>{{vm.event.Condition}}</span></p>
+                            <p>Duration : <span>{{vm.event.StartDate | date: 'dd/MM/yyyy'}} - {{vm.event.EndDate | date: 'dd/MM/yyyy'}}</span></p>
+                            <p>TimeLeft : <span>{{vm.event.TimeLeft}} ({{vm.event.CloseDate | date: 'dd/MM/yyyy'}})</span></p>
+                            <p>
+                                Arbiters :
+                                <ul class="nav">
+                                    <li data-ng-repeat="account in vm.event.ArbiterAccountSet">
+                                        <a href="#/{{account.Name}}">@{{account.Name}}</a>
+                                    </li>
+                                </ul>
+                            </p>
+                            <p>
+                                <canvas id="retChart" width="500" height="500"></canvas>
+                            </p>
+                            <p>
+                                <button class="btn btn-default" data-ng-click="vm.event.createHappenBet(event)" data-ng-if="vm.event.HappenBetRate">
+                                    H {{vm.event.HappenBetRate.WinValue | number:3}}({{vm.event.HappenBetRate.WinRate | number:3}})
+                                </button>
+                                <button class="btn btn-default" data-ng-click="vm.event.createNotHappenBet(event)" data-ng-if="vm.event.NotHappenBetRate">
+                                    BH {{vm.event.NotHappenBetRate.WinValue | number:3}}({{vm.event.NotHappenBetRate.WinRate | number:3}})
+                                </button>
+                            </p>
                         </div>
                     </div>
                 </div>
