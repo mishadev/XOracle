@@ -1,0 +1,11 @@
+﻿<p><a href="#/$scope/{{event.$scopeId}}">{{event.Title}}</a></p>
+<p><span>{{event.HappenBetRate.WinValue | number:3}}</span><span>{{event.NotHappenBetRate.WinValue | number:3}}</span></p>
+<p>text : <span>{{event.Condition}}</span></p>
+<p>result : <span>{{event.TimeLeftToEnd | date: 'dd/MM/yyyy'}} ({{event.EndDate | date: 'dd/MM/yyyy'}})</span></p>
+<p>colse : <span>{{event.TimeLeft}} ({{event.CloseDate | date: 'dd/MM/yyyy'}})</span></p>
+<p>
+    Arbiters :
+    <div data-ng-repeat="account in event.ArbiterAccountSet">
+        <a href="#/{{account.Name}}">@{{account.Name}}</a>
+    </div>
+</p>

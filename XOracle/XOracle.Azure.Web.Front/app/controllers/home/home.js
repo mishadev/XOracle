@@ -22,8 +22,10 @@
             };
 
         vm.creating = false;
-        vm.events = [];
-        vm.hasEvents = false;
+
+        vm.eventGroups = [];
+        vm.hasEventsGroup = function () { return !!vm.eventGroups.length; };
+
         vm.title = 'Events';
         vm.ready = false;
         vm.event = defaultEvent;
@@ -36,20 +38,25 @@
         /*private*/
 
         function activate() {
-            var promises = [getEvents(), getEventRelationTypes(), getCurrencyType(), getAlgorithmType()];
+            var promises = [getEventGroups(), getEventRelationTypes(), getCurrencyType(), getAlgorithmType()];
             common.activateController(promises, controllerId)
                 .then(function () {
                     vm.ready = true;
                 }, logErrors);
         }
 
-        function getEvents() {
+        function getEventGroups() {
             return datacontext.GetEvents()
                 .then(function (data) {
-                    if (data && data.length > 0) {
-                        vm.events = data;
-                        vm.hasEvents = true;
-                    }
+                    if (angular.isArray(data))
+                        vm.eventGroups = [
+                            { goupeName: "made bet", events: data },
+                            { goupeName: "folowing bet", events: data },
+                            { goupeName: "folowing bet 2", events: data },
+                            { goupeName: "recommended", events: data },
+                            { goupeName: "recommended 2", events: data },
+                            { goupeName: "recommended 3", events: data }
+                        ];
                 }, logErrors);
         }
 

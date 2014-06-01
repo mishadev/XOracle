@@ -23,8 +23,6 @@ namespace XOracle.Azure.Web.Front.Models
 
         public float NowPercentage { get; set; }
 
-        public int TimeToCloseProcentage { get; set; }
-
         public IEnumerable<AccountViewModel> ArbiterAccountSet { get; set; }
 
         public BetRateViewModel HappenBetRate { get; set; }
@@ -32,5 +30,7 @@ namespace XOracle.Azure.Web.Front.Models
         public BetRateViewModel NotHappenBetRate { get; set; }
 
         public short[] BetRateData { get; set; }
+
+        public string TimeLeftToEnd { get; set; }
     }
 }

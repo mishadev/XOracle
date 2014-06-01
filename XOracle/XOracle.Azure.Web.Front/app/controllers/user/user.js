@@ -22,9 +22,7 @@
         function activate() {
             var promises = [Init()];
             common.activateController(promises, controllerId)
-                .then(function () {
-                    vm.ready = true;
-                }, logErrors);
+                .then(function () { }, logErrors);
         }
 
         function Init() {
@@ -45,6 +43,7 @@
                         vm.events = data;
                         vm.hasEvents = true;
                     }
+                    vm.ready = true;
                 }, logErrors);
         }
 

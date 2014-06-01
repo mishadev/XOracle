@@ -21,10 +21,10 @@
         function activate() {
             var promises = [getEvent()];
             common.activateController(promises, controllerId)
+                .then(Drow, logErrors)
                 .then(function () {
                     vm.ready = true;
-                }, logErrors)
-                .then(Drow);
+                });
         }
 
         function getEvent() {

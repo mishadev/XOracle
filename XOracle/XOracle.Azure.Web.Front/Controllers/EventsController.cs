@@ -167,6 +167,7 @@ namespace XOracle.Azure.Web.Front.Controllers
                 StartDate = @event.StartDate,
                 EndDate = @event.EndDate,
                 CloseDate = @event.BetConditions.CloseDate,
+                TimeLeftToEnd = this.GetTimeLeft(@event.EndDate, now),
                 TimeLeft = this.GetTimeLeft(@event.BetConditions.CloseDate, now),
                 TimeLeftPercentage = this.GetTimePercentage(@event.StartDate, @event.EndDate, @event.BetConditions.CloseDate),
                 NowPercentage = this.GetTimePercentage(@event.StartDate, @event.EndDate, now),
@@ -185,24 +186,24 @@ namespace XOracle.Azure.Web.Front.Controllers
             return (float)(left.TotalSeconds / total.TotalSeconds);
         }
 
-        private string GetTimeLeft(DateTime closeDate, DateTime now)
+        private string GetTimeLeft(DateTime date, DateTime now)
         {
-            float secondsToClose = (float)(closeDate - now).TotalSeconds;
+            float secondsToClose = (float)(date - now).TotalSeconds;
 
             int min = 60;
             int hour = 60 * min;
             int days = 24 * hour;
 
             float daysLeft = secondsToClose / days;
-            if (daysLeft >= 1)
+            if (Math.Abs(daysLeft) >= 1)
                 return (int)daysLeft + "d";
 
             float hoursLeft = secondsToClose / hour;
-            if (hoursLeft >= 1)
+            if (Math.Abs(hoursLeft) >= 1)
                 return (int)hoursLeft + "h";
 
             float minsLeft = secondsToClose / min;
-            if (minsLeft >= 1)
+            if (Math.Abs(minsLeft) >= 1)
                 return (int)minsLeft + "m";
 
             return (int)secondsToClose + "s";

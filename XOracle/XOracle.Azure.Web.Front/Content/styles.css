@@ -1,3 +1,235 @@
-﻿#content {
-    margin-top: 70px;
-}
+﻿.wrapper .content-main {
+  margin-top: 70px;
+  width: 100%; }
+  .wrapper .content-main .container-fluid .row-fb {
+    overflow: hidden; }
+    .wrapper .content-main .container-fluid .row-fb.bet-status-1 {
+      background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…IxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
+      background-image: -webkit-linear-gradient(top, rgba(255, 94, 58, 0.2) 0, rgba(255, 42, 104, 0.2) 100%);
+      background-image: -moz-linear-gradient(top, rgba(255, 94, 58, 0.2) 0, rgba(255, 42, 104, 0.2) 100%);
+      background-image: -o-linear-gradient(top, rgba(255, 94, 58, 0.2) 0, rgba(255, 42, 104, 0.2) 100%);
+      background-image: linear-gradient(to bottom, rgba(255, 94, 58, 0.2) 0, rgba(255, 42, 104, 0.2) 100%); }
+  .wrapper .content-main .container-fluid .col-fb-1 {
+    float: left; }
+  .wrapper .content-main .container-fluid .col-fb-2 {
+    float: left; }
+  .wrapper .content-main .container-fluid .col-fb-3 {
+    float: left; }
+  .wrapper .content-main .container-fluid .col-fb-4 {
+    float: left; }
+  .wrapper .content-main .container-fluid .col-fb-5 {
+    float: left; }
+  .wrapper .content-main .container-fluid .col-fb-6 {
+    float: left; }
+  .wrapper .content-main .container-fluid .container-fb-1 .col-fb-1 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 0%;
+    width: 100%; }
+    .wrapper .content-main .container-fluid .container-fb-1 .col-fb-1 .row-fb {
+      height: 500px; }
+  .wrapper .content-main .container-fluid .container-fb-2 .col-fb-1 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 0%;
+    width: 61.8034%; }
+    .wrapper .content-main .container-fluid .container-fb-2 .col-fb-1 .row-fb {
+      height: 309.01699px; }
+  .wrapper .content-main .container-fluid .container-fb-2 .col-fb-2 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 61.8034%;
+    width: 38.1966%; }
+    .wrapper .content-main .container-fluid .container-fb-2 .col-fb-2 .row-fb {
+      height: 190.98301px; }
+  .wrapper .content-main .container-fluid .container-fb-3 .col-fb-1 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 0%;
+    width: 50%; }
+    .wrapper .content-main .container-fluid .container-fb-3 .col-fb-1 .row-fb {
+      height: 250px; }
+  .wrapper .content-main .container-fluid .container-fb-3 .col-fb-2 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 50%;
+    width: 30.9017%; }
+    .wrapper .content-main .container-fluid .container-fb-3 .col-fb-2 .row-fb {
+      height: 154.5085px; }
+  .wrapper .content-main .container-fluid .container-fb-3 .col-fb-3 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 80.9017%;
+    width: 19.0983%; }
+    .wrapper .content-main .container-fluid .container-fb-3 .col-fb-3 .row-fb {
+      height: 95.4915px; }
+  .wrapper .content-main .container-fluid .container-fb-4 .col-fb-1 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 0%;
+    width: 44.72136%; }
+    .wrapper .content-main .container-fluid .container-fb-4 .col-fb-1 .row-fb {
+      height: 223.6068px; }
+  .wrapper .content-main .container-fluid .container-fb-4 .col-fb-2 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 44.72136%;
+    width: 27.63932%; }
+    .wrapper .content-main .container-fluid .container-fb-4 .col-fb-2 .row-fb {
+      height: 138.1966px; }
+  .wrapper .content-main .container-fluid .container-fb-4 .col-fb-3 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 72.36068%;
+    width: 17.08204%; }
+    .wrapper .content-main .container-fluid .container-fb-4 .col-fb-3 .row-fb {
+      height: 85.4102px; }
+  .wrapper .content-main .container-fluid .container-fb-4 .col-fb-4 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 89.44272%;
+    width: 10.55728%; }
+    .wrapper .content-main .container-fluid .container-fb-4 .col-fb-4 .row-fb {
+      height: 52.7864px; }
+  .wrapper .content-main .container-fluid .container-fb-5 .col-fb-1 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 0%;
+    width: 41.98213%; }
+    .wrapper .content-main .container-fluid .container-fb-5 .col-fb-1 .row-fb {
+      height: 209.91064px; }
+  .wrapper .content-main .container-fluid .container-fb-5 .col-fb-2 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 41.98213%;
+    width: 25.94638%; }
+    .wrapper .content-main .container-fluid .container-fb-5 .col-fb-2 .row-fb {
+      height: 129.73191px; }
+  .wrapper .content-main .container-fluid .container-fb-5 .col-fb-3 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 67.92851%;
+    width: 16.03575%; }
+    .wrapper .content-main .container-fluid .container-fb-5 .col-fb-3 .row-fb {
+      height: 80.17873px; }
+  .wrapper .content-main .container-fluid .container-fb-5 .col-fb-4 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 83.96425%;
+    width: 9.91064%; }
+    .wrapper .content-main .container-fluid .container-fb-5 .col-fb-4 .row-fb {
+      height: 49.55318px; }
+  .wrapper .content-main .container-fluid .container-fb-5 .col-fb-5 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 93.87489%;
+    width: 6.12511%; }
+    .wrapper .content-main .container-fluid .container-fb-5 .col-fb-5 .row-fb {
+      height: 30.62555px; }
+  .wrapper .content-main .container-fluid .container-fb-6 .col-fb-1 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 0%;
+    width: 40.45085%; }
+    .wrapper .content-main .container-fluid .container-fb-6 .col-fb-1 .row-fb {
+      height: 202.25425px; }
+  .wrapper .content-main .container-fluid .container-fb-6 .col-fb-2 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 40.45085%;
+    width: 25%; }
+    .wrapper .content-main .container-fluid .container-fb-6 .col-fb-2 .row-fb {
+      height: 125px; }
+  .wrapper .content-main .container-fluid .container-fb-6 .col-fb-3 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 65.45085%;
+    width: 15.45085%; }
+    .wrapper .content-main .container-fluid .container-fb-6 .col-fb-3 .row-fb {
+      height: 77.25425px; }
+  .wrapper .content-main .container-fluid .container-fb-6 .col-fb-4 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 80.9017%;
+    width: 9.54915%; }
+    .wrapper .content-main .container-fluid .container-fb-6 .col-fb-4 .row-fb {
+      height: 47.74575px; }
+  .wrapper .content-main .container-fluid .container-fb-6 .col-fb-5 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 90.45085%;
+    width: 5.9017%; }
+    .wrapper .content-main .container-fluid .container-fb-6 .col-fb-5 .row-fb {
+      height: 29.5085px; }
+  .wrapper .content-main .container-fluid .container-fb-6 .col-fb-6 {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    top: 70px;
+    overflow-y: scroll;
+    left: 96.35255%;
+    width: 3.64745%; }
+    .wrapper .content-main .container-fluid .container-fb-6 .col-fb-6 .row-fb {
+      height: 18.23725px; }
+
+/*# sourceMappingURL=styles.css.map */
